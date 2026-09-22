@@ -1,0 +1,229 @@
+/* ============================================================
+   Navkar N9 — Registration modal
+   ============================================================ */
+
+.overlay{
+  position:fixed;inset:0;z-index:110;
+  background:rgba(28,4,13,.74);
+  backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);
+  display:flex;align-items:flex-start;justify-content:center;
+  padding:clamp(14px,4vw,48px) clamp(12px,4vw,20px);
+  overflow-y:auto;
+  opacity:0;visibility:hidden;
+  transition:opacity .38s var(--e-out),visibility .38s;
+  -webkit-overflow-scrolling:touch;
+}
+.overlay.open{opacity:1;visibility:visible}
+
+.modal{
+  position:relative;
+  width:100%;max-width:700px;
+  background:var(--cream);
+  border-radius:var(--r-xl);
+  overflow:hidden;
+  box-shadow:0 40px 100px rgba(0,0,0,.45);
+  transform:translateY(26px) scale(.97);
+  transition:transform .48s var(--e-out);
+  margin:auto;
+}
+.overlay.open .modal{transform:none}
+
+/* ------------------------------------------------------------
+   Header
+   ------------------------------------------------------------ */
+.mhead{
+  position:relative;
+  background:var(--jewel);
+  color:#fff;
+  padding:clamp(26px,3.6vw,38px) clamp(24px,3.4vw,40px) clamp(24px,3vw,32px);
+  overflow:hidden;
+}
+.mhead .motif-tr{color:var(--yellow);opacity:.14;width:210px;top:-38%;right:-9%}
+.mhead > *{position:relative;z-index:1}
+.mhead .k{
+  font-family:'Outfit',sans-serif;font-size:10px;font-weight:900;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--yellow);
+}
+.mhead h3{font-size:clamp(25px,3.4vw,36px);font-weight:900;margin-top:9px;letter-spacing:-.035em}
+.mhead p{font-size:14.5px;color:rgba(255,255,255,.88);margin-top:7px;line-height:1.6}
+
+.mclose{
+  position:absolute;top:20px;right:22px;z-index:2;
+  width:38px;height:38px;border-radius:50%;
+  border:1.5px solid rgba(255,255,255,.55);
+  color:#fff;font-size:21px;line-height:1;
+  display:grid;place-items:center;
+  transition:background var(--t-fast),transform var(--t-fast);
+}
+.mclose:hover{background:var(--magenta);transform:rotate(90deg)}
+.mclose:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+
+/* ------------------------------------------------------------
+   Body / steps
+   ------------------------------------------------------------ */
+.mbody{padding:clamp(22px,3vw,30px) clamp(20px,3.4vw,40px) clamp(28px,3.4vw,38px)}
+
+.mstep{
+  padding-bottom:22px;margin-bottom:22px;
+  border-bottom:2px dotted var(--ink-12);
+}
+.mstep:last-of-type{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.mlab{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'Outfit',sans-serif;font-size:10px;font-weight:900;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--magenta-ink);
+}
+.mlab::before{content:"";width:16px;height:2px;background:currentColor;border-radius:2px}
+.mstep h4{font-size:clamp(17px,2vw,20px);font-weight:800;margin-top:6px}
+
+/* ---- Selectable option pills ---- */
+.opts{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
+.opt{
+  border:2px solid var(--line);
+  background:#fff;
+  padding:10px 17px;border-radius:var(--r-pill);
+  font-size:14px;font-weight:600;
+  cursor:pointer;
+  transition:border-color var(--t-fast),background var(--t-fast),
+             color var(--t-fast),transform var(--t-fast);
+}
+.opt:hover{border-color:var(--magenta);transform:translateY(-2px)}
+.opt.sel{background:var(--magenta);border-color:var(--magenta);color:#fff;font-weight:700}
+.opt:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+.opt.sm{padding:9px 15px;font-size:13.5px}
+
+/* ---- Quantity ---- */
+.qty{
+  display:inline-flex;align-items:center;
+  border:2px solid var(--line);background:#fff;
+  border-radius:var(--r-pill);margin-top:16px;overflow:hidden;
+}
+.qty button{
+  padding:10px 18px;font-size:17px;font-weight:700;
+  transition:background var(--t-fast),color var(--t-fast);
+}
+.qty button:hover{background:var(--magenta);color:#fff}
+.qty button:focus-visible{outline:3px solid var(--teal);outline-offset:-3px}
+.qty b{
+  padding:10px 22px;font-size:16px;
+  border-left:2px solid var(--line);border-right:2px solid var(--line);
+  font-variant-numeric:tabular-nums;min-width:56px;text-align:center;
+}
+
+/* ---- Real form fields ---- */
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin-top:16px}
+.fld{
+  width:100%;
+  border:2px solid var(--line);background:#fff;
+  padding:14px 16px;font-size:14.5px;
+  border-radius:var(--r-sm);
+  transition:border-color var(--t-fast),box-shadow var(--t-fast);
+}
+.fld::placeholder{color:#A58466}
+.fld:focus{
+  outline:none;border-color:var(--magenta);
+  box-shadow:0 0 0 4px rgba(227,11,84,.13);
+}
+.fld.full{grid-column:1 / -1}
+
+/* ---- Summary ---- */
+.msum{
+  background:#fff;border:2px solid var(--line);
+  border-radius:var(--r-lg);
+  padding:24px;margin-top:18px;
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:18px 22px;
+}
+.msum .k{
+  font-family:'Outfit',sans-serif;font-size:9.5px;font-weight:900;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--magenta-ink);
+}
+.msum .v{
+  font-family:'Outfit',sans-serif;font-size:17px;font-weight:800;
+  margin-top:4px;letter-spacing:-.02em;
+}
+.msum .tot{
+  grid-column:1 / -1;
+  border-top:2px dotted var(--ink-12);padding-top:16px;
+}
+.msum .tot .v{
+  font-size:clamp(28px,4vw,36px);font-weight:900;letter-spacing:-.04em;
+  background:var(--flame);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+}
+
+/* Two ticketing partners, so two buttons rather than one dead submit */
+.mbook{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:20px}
+.mcta{width:100%;margin-top:0}
+@media (max-width:560px){
+  .mbook{grid-template-columns:minmax(0,1fr)}
+}
+.mfine{
+  font-size:12.5px;color:var(--body);margin-top:16px;
+  text-align:center;line-height:1.65;
+}
+
+@media (max-width:560px){
+  .modal{border-radius:var(--r-lg)}
+  .fields{grid-template-columns:minmax(0,1fr)}
+  .msum{grid-template-columns:minmax(0,1fr);padding:20px}
+  .mclose{top:14px;right:14px;width:34px;height:34px}
+  .opts{gap:7px}
+  .opt{padding:9px 14px;font-size:13.5px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .modal{transform:none !important}
+}
+
+/* ------------------------------------------------------------
+   Passes dialog — price reference, no form
+   ------------------------------------------------------------ */
+.mprices{list-style:none;display:grid;gap:2px;margin-top:14px}
+.mprices li{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:baseline;
+  gap:4px 14px;
+  padding:11px 0;
+  border-bottom:1px dotted var(--ink-12);
+}
+.mprices li:last-child{border-bottom:none}
+.mprices span{
+  font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;color:var(--ink);
+}
+.mprices b{
+  font-family:'Outfit',sans-serif;font-size:19px;font-weight:900;
+  letter-spacing:-.025em;color:var(--magenta-ink);
+}
+.mprices i{
+  grid-column:1 / -1;
+  font-style:normal;font-size:12.5px;color:var(--body);
+}
+.mnote{font-size:14px;color:var(--body);line-height:1.6;margin-top:10px}
+
+/* inline button that reads as a link (workshop hand-off inside the fine print) */
+.mlink{
+  font:inherit;color:var(--magenta-ink);font-weight:700;
+  text-decoration:underline;text-underline-offset:2px;
+  padding:0;cursor:pointer;
+}
+.mlink:hover{color:var(--ink)}
+.mlink:focus-visible{outline:3px solid var(--teal);outline-offset:2px;border-radius:3px}
+
+/* validation message */
+.merr{color:var(--confirm);font-weight:600;text-align:left;margin-top:10px}
+
+/* ---- Workshop: one name per booked place ---- */
+.ws-extra{
+  margin-top:18px;padding-top:18px;
+  border-top:1px dashed var(--ink-12);
+}
+.ws-extra-lab{
+  font-family:'Outfit',sans-serif;font-size:13px;font-weight:800;
+  color:var(--ink);margin-bottom:12px;
+}
+.ws-extra .fields{margin-top:0}
+.msum-names{grid-column:1 / -1}
+.msum-names .v{font-size:14.5px;font-weight:700;line-height:1.5}

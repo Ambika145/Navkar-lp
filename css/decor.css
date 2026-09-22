@@ -1,0 +1,178 @@
+/* ============================================================
+   Navkar N9 — Navratri visual language
+   Mandala / chakra motifs, dandiya marks, light particles,
+   glow blooms, festive marquee and section dividers.
+   Decorative only: everything here is aria-hidden in the markup.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   Mandala + chakra rings (inline SVG, inherit currentColor)
+   ------------------------------------------------------------ */
+.motif{
+  position:absolute;
+  pointer-events:none;
+  color:var(--marigold);
+  opacity:.16;
+  z-index:0;
+}
+/* fill/stroke are inherited properties, so they do cross into the <use>
+   shadow tree — per-shape variation lives on attributes inside the symbol. */
+.motif svg{width:100%;height:100%;overflow:visible;fill:none;stroke:currentColor}
+
+.motif-spin{animation:spin 62s linear infinite}
+.motif-spin-rev{animation:spin 84s linear infinite reverse}
+.motif-pulse{animation:motifPulse 7s var(--e-soft) infinite}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes motifPulse{
+  0%,100%{opacity:.14;transform:scale(1)}
+  50%    {opacity:.26;transform:scale(1.045)}
+}
+
+/* Placement helpers */
+.motif-tr{top:-9%;right:-11%;width:clamp(230px,34vw,520px);aspect-ratio:1}
+.motif-bl{bottom:-13%;left:-12%;width:clamp(200px,29vw,440px);aspect-ratio:1}
+.motif-tl{top:-8%;left:-10%;width:clamp(190px,26vw,400px);aspect-ratio:1}
+.motif-br{bottom:-10%;right:-9%;width:clamp(210px,30vw,460px);aspect-ratio:1}
+
+/* Small inline chakra used as a text ornament */
+.chakra-mark{
+  display:inline-block;width:1em;height:1em;
+  vertical-align:-.12em;color:var(--marigold);opacity:.9;
+}
+
+/* ------------------------------------------------------------
+   Dandiya stick marks — two crossed strokes
+   ------------------------------------------------------------ */
+.dandiya{
+  position:absolute;pointer-events:none;z-index:0;
+  width:clamp(70px,9vw,132px);height:clamp(70px,9vw,132px);
+  color:var(--yellow);opacity:.22;
+}
+.dandiya svg{width:100%;height:100%;fill:none;stroke:currentColor}
+.dandiya-float{animation:dandiyaFloat 9s var(--e-soft) infinite}
+@keyframes dandiyaFloat{
+  0%,100%{transform:translateY(0) rotate(0deg)}
+  50%    {transform:translateY(-16px) rotate(7deg)}
+}
+
+/* ------------------------------------------------------------
+   Light particles — festive sparks drifting upward
+   Spans are injected by js/main.js into any .particles container
+   ------------------------------------------------------------ */
+.particles{
+  position:absolute;inset:0;
+  pointer-events:none;overflow:hidden;z-index:1;
+}
+.particles span{
+  position:absolute;
+  bottom:-14px;
+  left:var(--x,50%);
+  width:var(--s,5px);
+  height:var(--s,5px);
+  border-radius:50%;
+  background:var(--pc,var(--yellow));
+  opacity:0;
+  box-shadow:0 0 var(--glow,10px) var(--pc,var(--yellow));
+  animation:drift var(--dur,15s) linear var(--delay,0s) infinite;
+  will-change:transform,opacity;
+}
+@keyframes drift{
+  0%  {transform:translate3d(0,0,0) scale(.5);opacity:0}
+  12% {opacity:var(--op,.75)}
+  78% {opacity:var(--op,.75)}
+  100%{transform:translate3d(var(--dx,24px),calc(-1 * var(--rise,100vh)),0) scale(1.15);opacity:0}
+}
+
+/* ------------------------------------------------------------
+   Glow blooms — soft stage-light washes behind content
+   ------------------------------------------------------------ */
+.glow{
+  position:absolute;pointer-events:none;z-index:0;
+  border-radius:50%;
+  filter:blur(70px);
+  opacity:.5;
+  will-change:transform;
+}
+.glow-mag  {background:radial-gradient(circle,var(--magenta),transparent 68%)}
+.glow-org  {background:radial-gradient(circle,var(--orange),transparent 68%)}
+.glow-teal {background:radial-gradient(circle,var(--teal),transparent 68%)}
+.glow-pur  {background:radial-gradient(circle,var(--purple),transparent 68%)}
+.glow-mari {background:radial-gradient(circle,var(--marigold),transparent 68%)}
+
+.glow-breathe{animation:breathe 11s var(--e-soft) infinite}
+.glow-breathe-slow{animation:breathe 16s var(--e-soft) infinite reverse}
+@keyframes breathe{
+  0%,100%{transform:translate3d(0,0,0) scale(1);opacity:.42}
+  50%    {transform:translate3d(3%,-4%,0) scale(1.14);opacity:.62}
+}
+
+/* ------------------------------------------------------------
+   Festive marquee ticker
+   ------------------------------------------------------------ */
+/* Pink, not dark — this band sits directly under the hero and is the page's
+   first big flat colour, so it carries the key art's pink rather than more
+   wine. White text on this pink measures 4.73:1. */
+.marquee{
+  position:relative;
+  overflow:hidden;
+  background:var(--magenta);
+  color:#fff;
+  border-top:3px solid var(--ink);
+  border-bottom:3px solid var(--ink);
+  padding:16px 0;
+}
+/* Soften where the text runs off each end.
+   This must be an overlay in the bar's OWN colour — a mask-image on .marquee
+   would erase its background and borders at the ends and let the cream page
+   show through, which reads as a white smudge at both edges. */
+.marquee::before,
+.marquee::after{
+  content:"";
+  position:absolute;top:0;bottom:0;z-index:2;
+  width:clamp(40px,7%,110px);
+  pointer-events:none;
+}
+.marquee::before{left:0;background:linear-gradient(90deg,var(--magenta),rgba(227,11,84,0))}
+.marquee::after{right:0;background:linear-gradient(270deg,var(--magenta),rgba(227,11,84,0))}
+.marquee-gold{background:var(--gold);color:var(--ink);border-color:var(--ink)}
+.marquee-track{
+  display:flex;width:max-content;
+  animation:marquee var(--speed,42s) linear infinite;
+  will-change:transform;
+}
+.marquee:hover .marquee-track{animation-play-state:paused}
+.marquee-group{display:flex;align-items:center;flex:none}
+.marquee-group span{
+  display:inline-flex;align-items:center;gap:18px;
+  font-family:'Outfit',sans-serif;
+  font-size:clamp(14px,1.7vw,20px);
+  font-weight:800;letter-spacing:.055em;text-transform:uppercase;
+  padding:0 26px;white-space:nowrap;
+}
+.marquee-group span::after{
+  content:"";width:9px;height:9px;border-radius:50%;
+  background:var(--marigold);flex:none;
+}
+.marquee-gold .marquee-group span::after{background:var(--magenta)}
+@keyframes marquee{to{transform:translate3d(-50%,0,0)}}
+
+/* ------------------------------------------------------------
+   Decorative dotted divider — toran / bunting inspired
+   ------------------------------------------------------------ */
+.divider{
+  height:14px;
+  background-image:radial-gradient(circle at 7px 7px,var(--marigold) 3.2px,transparent 3.4px);
+  background-size:26px 14px;
+  opacity:.5;
+}
+
+/* Thin festive rule used inside dark sections */
+.rule-gold{height:2px;border:0;background:var(--gold);opacity:.55;border-radius:2px}
+
+@media (prefers-reduced-motion:reduce){
+  .motif-spin,.motif-spin-rev,.motif-pulse,
+  .dandiya-float,.glow-breathe,.glow-breathe-slow{animation:none}
+  .particles{display:none}
+  .marquee-track{animation:none;transform:none}
+}

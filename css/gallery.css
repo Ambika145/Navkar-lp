@@ -1,0 +1,254 @@
+/* ============================================================
+   Navkar N9 — Gallery
+   Drag / snap horizontal film-strip with a full-screen lightbox.
+   ============================================================ */
+
+.gallery{
+  position:relative;
+  padding:var(--sec-y) 0;
+  background:var(--ink);color:#fff;
+  overflow:hidden;
+}
+.gallery .motif-tl{color:var(--magenta);opacity:.12}
+.gallery .motif-br{color:var(--teal);opacity:.12}
+.gallery .glow-1{width:36vw;height:36vw;top:-14%;left:40%;opacity:.26}
+
+.gal-head{
+  max-width:var(--wrap-wide);margin:0 auto;padding:0 var(--gut);
+  display:flex;align-items:flex-end;justify-content:space-between;gap:26px;
+  margin-bottom:clamp(30px,3.6vw,48px);
+  position:relative;z-index:2;
+}
+.gal-head .lede{color:var(--cream-70)}
+
+.gal-ctrl{display:flex;align-items:center;gap:clamp(16px,2vw,26px);flex:none}
+
+/* live position in the strip */
+.gal-count{
+  display:flex;align-items:baseline;gap:4px;
+  font-family:'Outfit',sans-serif;
+  font-variant-numeric:tabular-nums;
+  color:var(--cream-45);
+}
+.gal-count b{
+  font-size:clamp(26px,3vw,38px);font-weight:900;letter-spacing:-.04em;
+  color:var(--yellow);line-height:1;
+}
+.gal-count i{font-style:normal;font-size:15px;opacity:.5;margin:0 2px}
+.gal-count span{font-size:15px;font-weight:700}
+
+.gal-nav{display:flex;gap:10px;flex:none}
+.gal-btn{
+  width:52px;height:52px;border-radius:50%;
+  border:1.5px solid var(--cream-45);
+  background:var(--cream-10);
+  display:grid;place-items:center;
+  color:#fff;
+  transition:background var(--t-fast),transform var(--t-fast),
+             border-color var(--t-fast),opacity var(--t-fast);
+}
+.gal-btn svg{width:18px;height:18px;stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.gal-btn:hover{background:var(--magenta);border-color:var(--magenta);transform:translateY(-3px)}
+.gal-btn:focus-visible{outline:3px solid var(--yellow);outline-offset:3px}
+.gal-btn[disabled]{opacity:.28;pointer-events:none}
+
+/* ------------------------------------------------------------
+   Track — one common height, alternating widths.
+   Equal heights give the strip a flush top and bottom line; the
+   width rhythm (tall, wide, tall) supplies the variation.
+   ------------------------------------------------------------ */
+.gal-track{
+  position:relative;z-index:2;
+  display:flex;gap:clamp(12px,1.6vw,20px);
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  scroll-behavior:smooth;
+  padding:4px var(--gut) 26px;
+  -ms-overflow-style:none;scrollbar-width:none;
+  cursor:grab;
+}
+.gal-track::-webkit-scrollbar{display:none}
+.gal-track.is-dragging{cursor:grabbing;scroll-behavior:auto;scroll-snap-type:none}
+.gal-track.is-dragging .gal-item{pointer-events:none}
+
+.gal-item{
+  position:relative;flex:none;
+  scroll-snap-align:center;
+  height:clamp(330px,42vw,540px);
+  aspect-ratio:4/5;
+  border-radius:var(--r-lg);
+  overflow:hidden;
+  background:var(--ink-800);
+  box-shadow:var(--sh-img);
+  /* entrance */
+  opacity:0;
+  transform:translateY(46px) scale(.95);
+  transition:opacity .8s var(--e-out),transform .8s var(--e-out),box-shadow var(--t-mid);
+  transition-delay:calc(var(--i,0) * 90ms);
+  will-change:transform,opacity;
+}
+.gallery.is-in .gal-item{opacity:1;transform:none}
+/* every third frame is landscape, which sets the rhythm */
+.gal-item:nth-child(3n+2){aspect-ratio:3/2}
+
+.gal-item img{
+  /* oversized so it can drift inside the frame without exposing an edge */
+  width:118%;height:100%;
+  margin-left:-9%;
+  object-fit:cover;
+  transform:translate3d(var(--gx,0px),0,0) scale(var(--gs,1));
+  transition:transform .9s var(--e-out),filter var(--t-mid);
+  will-change:transform;
+}
+.gal-item::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(to top,rgba(42,6,20,.80),rgba(42,6,20,.12) 46%,transparent 70%);
+  opacity:.92;transition:opacity var(--t-mid);
+}
+.gal-item:hover{box-shadow:0 34px 70px rgba(42,6,20,.46)}
+.gal-item:hover img{--gs:1.07}
+.gal-item:hover::after{opacity:.7}
+.gal-item:focus-visible{outline:3px solid var(--yellow);outline-offset:4px}
+
+.gal-cap{
+  position:absolute;left:0;right:0;bottom:0;z-index:2;
+  padding:22px;
+  text-align:left;
+  transform:translateY(6px);
+  transition:transform var(--t-mid);
+}
+.gal-item:hover .gal-cap{transform:translateY(0)}
+.gal-cap .t,.gal-cap .b{display:block}
+.gal-cap .t{
+  font-family:'Outfit',sans-serif;font-size:10px;font-weight:800;
+  letter-spacing:.17em;text-transform:uppercase;color:var(--yellow);
+}
+.gal-cap .b{
+  font-family:'Outfit',sans-serif;font-size:clamp(16px,1.8vw,21px);
+  font-weight:800;color:#fff;margin-top:4px;letter-spacing:-.02em;
+}
+/* expand icon */
+.gal-zoom{
+  position:absolute;top:16px;right:16px;z-index:2;
+  width:40px;height:40px;border-radius:50%;
+  background:rgba(42,6,20,.55);
+  border:1px solid var(--cream-18);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  display:grid;place-items:center;
+  opacity:0;transform:scale(.8) rotate(-20deg);
+  transition:opacity var(--t-fast),transform var(--t-fast),background var(--t-fast);
+}
+.gal-zoom svg{width:15px;height:15px;stroke:#fff;stroke-width:2.2;fill:none;stroke-linecap:round}
+.gal-item:hover .gal-zoom{opacity:1;transform:none}
+.gal-item:hover .gal-zoom:hover{background:var(--magenta)}
+
+/* ------------------------------------------------------------
+   Footer — scroll progress + hint
+   ------------------------------------------------------------ */
+.gal-foot{
+  max-width:var(--wrap-wide);margin:0 auto;padding:0 var(--gut);
+  position:relative;z-index:2;
+  display:flex;align-items:center;gap:clamp(16px,2.4vw,32px);
+}
+.gal-bar{
+  flex:1;height:3px;border-radius:3px;
+  background:var(--cream-18);
+  overflow:hidden;
+}
+.gal-bar span{
+  display:block;height:100%;width:0;
+  border-radius:3px;
+  background:var(--gold);
+  transition:width .18s linear;
+}
+.gal-hint{
+  flex:none;
+  font-size:12px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--cream-45);font-family:'Outfit',sans-serif;font-weight:700;
+}
+
+/* ------------------------------------------------------------
+   Lightbox
+   ------------------------------------------------------------ */
+.lightbox{
+  position:fixed;inset:0;z-index:120;
+  background:rgba(28,4,13,.94);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  display:grid;place-items:center;
+  padding:clamp(16px,4vw,48px);
+  opacity:0;visibility:hidden;
+  transition:opacity .4s var(--e-out),visibility .4s;
+}
+.lightbox.open{opacity:1;visibility:visible}
+
+.lb-stage{
+  position:relative;
+  max-width:min(1180px,94vw);
+  max-height:84vh;
+  transform:scale(.94);
+  transition:transform .45s var(--e-out);
+}
+.lightbox.open .lb-stage{transform:scale(1)}
+.lb-stage img{
+  max-width:100%;max-height:84vh;
+  width:auto;height:auto;
+  border-radius:var(--r-md);
+  box-shadow:0 40px 90px rgba(0,0,0,.6);
+}
+.lb-cap{
+  margin-top:16px;text-align:center;
+  font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--cream-70);
+}
+.lb-cap b{color:var(--yellow);font-weight:800}
+
+.lb-close{
+  position:absolute;top:calc(-1 * clamp(44px,5vw,56px));right:0;
+  width:44px;height:44px;border-radius:50%;
+  border:1.5px solid var(--cream-45);
+  color:#fff;font-size:22px;line-height:1;
+  display:grid;place-items:center;
+  transition:background var(--t-fast),transform var(--t-fast);
+}
+.lb-close:hover{background:var(--magenta);transform:rotate(90deg)}
+
+.lb-arrow{
+  position:fixed;top:50%;transform:translateY(-50%);
+  width:clamp(44px,5vw,56px);height:clamp(44px,5vw,56px);border-radius:50%;
+  border:1.5px solid var(--cream-45);
+  background:rgba(42,6,20,.5);
+  color:#fff;display:grid;place-items:center;
+  transition:background var(--t-fast),border-color var(--t-fast);
+}
+.lb-arrow svg{width:20px;height:20px;stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.lb-arrow:hover{background:var(--magenta);border-color:var(--magenta)}
+.lb-prev{left:clamp(10px,2.5vw,30px)}
+.lb-next{right:clamp(10px,2.5vw,30px)}
+.lb-close:focus-visible,.lb-arrow:focus-visible{outline:3px solid var(--yellow);outline-offset:3px}
+
+/* ------------------------------------------------------------
+   Breakpoints
+   ------------------------------------------------------------ */
+@media (max-width:860px){
+  .gal-head{flex-direction:column;align-items:flex-start;gap:22px}
+  .gal-ctrl{width:100%;justify-content:space-between}
+}
+@media (max-width:620px){
+  /* one frame per screen; the width rhythm does not survive this narrow */
+  .gal-item,
+  .gal-item:nth-child(3n+2){height:auto;width:76vw;aspect-ratio:3/4}
+  .gal-nav{display:none}
+  .gal-zoom{opacity:1;transform:none}
+  .gal-foot{flex-direction:column;align-items:stretch;gap:14px}
+  .gal-hint{text-align:center}
+  .lb-arrow{top:auto;bottom:18px;transform:none}
+  .lb-prev{left:22%}
+  .lb-next{right:22%}
+  .lb-close{top:-52px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .gal-track{scroll-behavior:auto}
+  .gal-item{opacity:1 !important;transform:none !important;transition:none}
+  .gal-item img{transform:none !important}
+}

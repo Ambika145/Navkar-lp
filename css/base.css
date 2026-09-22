@@ -1,0 +1,322 @@
+/* ============================================================
+   Navkar N9 — Base
+   Design tokens, reset, fluid typography, buttons, utilities,
+   and the shared scroll-reveal primitives.
+   Palette is sampled from the Season 9 key art — see :root below.
+   ============================================================ */
+
+:root{
+  /* ---- Brand palette — sampled from the Season 9 key art ----
+     Area census of that artwork: yellows ~50%, PINKS ~8.4%,
+     dark reds ~4.4%. Pink outweighs the dark reds about 2:1, and those
+     dark reds are only the drop-shadows behind the lettering — not
+     surfaces. So the darks here lean WINE (toward the pink) rather than
+     brown-maroon, and pink does the heavy lifting as the accent.
+     The artwork has no purple and no teal, so the two tokens that used
+     to hold those now carry crimson and deep rose. Token NAMES are kept
+     so every rule downstream still resolves. */
+  --ink:#3B0A1F;          /* deep wine — headings + dark sections */
+  --magenta:#E30B54;      /* key-art pink — fills, borders, large type */
+  --magenta-d:#A80038;    /* its pressed/shadow stop */
+  --magenta-ink:#C70046;  /* small pink TEXT on a light background.
+                             The key-art pink only reaches 4.47:1 on --cream,
+                             just under the 4.5 minimum; this clears it at 5.6. */
+  --orange:#EE5A18;       /* warm red-orange, bridges gold and crimson */
+  --orange-ink:#C4400E;   /* the same hue burnt down for small text on light;
+                             plain --orange only manages 2.96:1 on --cream */
+  --marigold:#FBC51B;     /* key-art gold */
+  --yellow:#FCE60A;       /* the dominant key-art yellow */
+  --teal:#C4012F;         /* was teal — now crimson */
+  --teal-d:#95001F;
+  --purple:#9C0043;       /* was purple — now deep rose, still in the pink family */
+  --purple-d:#6E002F;
+  --cream:#FFF9DC;        /* page base — a light wash of the key-art yellow */
+  --cream-2:#FFEF9E;      /* alternating sections — unmistakably yellow */
+  --line:rgba(59,10,31,.13);
+  --body:#6B3A22;         /* warm brown body copy */
+  --confirm:#D62828;      /* placeholder flag, kept loud on purpose */
+
+  /* ---- Derived tones (same hues, deeper/softer stops) ---- */
+  --ink-900:#2A0614;
+  --ink-800:#33081A;
+  --ink-70:rgba(59,10,31,.70);
+  --ink-45:rgba(59,10,31,.45);
+  --ink-12:rgba(59,10,31,.12);
+  --cream-70:rgba(255,249,220,.70);
+  --cream-45:rgba(255,249,220,.45);
+  --cream-18:rgba(255,249,220,.18);
+  --cream-10:rgba(255,249,220,.10);
+
+  /* ---- Festive accents built only from palette hues ---- */
+  --gold:linear-gradient(120deg,var(--marigold),var(--yellow) 48%,var(--orange));
+  --jewel:linear-gradient(135deg,var(--magenta),var(--purple) 55%,var(--ink));
+  --flame:linear-gradient(120deg,var(--orange),var(--magenta));
+  /* top stop is deliberately heavy: it carries nav legibility and mutes the
+     photographer's watermark that sits in the top-right of the source photos */
+  --scrim-v:linear-gradient(to top,var(--ink-900) 2%,rgba(42,6,20,.82) 26%,rgba(42,6,20,.32) 58%,rgba(42,6,20,.70) 88%,rgba(42,6,20,.86) 100%);
+  --scrim-r:linear-gradient(100deg,var(--ink-900) 6%,rgba(42,6,20,.86) 34%,rgba(42,6,20,.36) 64%,rgba(42,6,20,.12) 100%);
+  --scrim-soft:linear-gradient(to top,rgba(42,6,20,.86),rgba(42,6,20,.18) 55%,rgba(42,6,20,.45));
+
+  /* ---- Layout ---- */
+  --wrap:1180px;
+  --wrap-wide:1420px;
+  --gut:clamp(20px,5vw,56px);
+  --sec-y:clamp(68px,9vw,132px);
+
+  /* ---- Radii ---- */
+  --r-sm:14px;
+  --r-md:22px;
+  --r-lg:30px;
+  --r-xl:42px;
+  --r-pill:999px;
+
+  /* ---- Elevation ---- */
+  --sh-sm:0 4px 16px rgba(59,10,31,.08);
+  --sh-md:0 14px 40px rgba(59,10,31,.13);
+  --sh-lg:0 30px 70px rgba(59,10,31,.20);
+  --sh-img:0 26px 60px rgba(59,10,31,.28);
+
+  /* ---- Motion ---- */
+  --e-out:cubic-bezier(.22,.9,.28,1);
+  --e-soft:cubic-bezier(.4,.14,.2,1);
+  --t-fast:.28s var(--e-out);
+  --t-mid:.5s var(--e-out);
+  --t-slow:.9s var(--e-out);
+
+  --nav-h:88px;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+*{margin:0;padding:0}
+
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--nav-h) + 16px);-webkit-text-size-adjust:100%}
+
+body{
+  font-family:'Inter',-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;
+  background:var(--cream);
+  color:var(--ink);
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  overflow-x:hidden;
+}
+/* clip keeps position:sticky working where supported */
+@supports (overflow:clip){ body{overflow-x:clip} }
+
+body.locked{overflow:hidden}
+
+img{display:block;max-width:100%;height:auto}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+a{color:inherit;text-decoration:none}
+input,select,textarea{font:inherit;color:inherit}
+svg{display:block}
+
+::selection{background:var(--magenta);color:#fff}
+
+/* ------------------------------------------------------------
+   Typography
+   ------------------------------------------------------------ */
+h1,h2,h3,h4,.display{
+  font-family:'Outfit',Helvetica,Arial,sans-serif;
+  font-weight:800;
+  line-height:1.05;
+  letter-spacing:-.028em;
+}
+h1,.h1{font-size:clamp(38px,6.6vw,82px);font-weight:900;letter-spacing:-.038em;line-height:1.02}
+h2,.h2{font-size:clamp(29px,4.1vw,54px);line-height:1.07}
+h3,.h3{font-size:clamp(20px,2.1vw,27px)}
+h4,.h4{font-size:clamp(17px,1.6vw,21px)}
+
+.lede{
+  font-size:clamp(16px,1.35vw,19px);
+  color:var(--body);
+  max-width:66ch;
+  line-height:1.72;
+}
+.lede-lg{font-size:clamp(17px,1.6vw,22px);line-height:1.62}
+
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 var(--gut)}
+.wrap-wide{max-width:var(--wrap-wide);margin:0 auto;padding:0 var(--gut)}
+
+/* Eyebrow / kicker */
+.kicker{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:'Outfit',sans-serif;
+  font-size:clamp(10.5px,1vw,12px);
+  font-weight:800;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  margin-bottom:16px;
+}
+.kicker::before{
+  content:"";width:26px;height:2px;border-radius:2px;
+  background:currentColor;opacity:.55;flex:none;
+}
+.k-mag{color:var(--magenta-ink)}
+.k-org{color:var(--orange-ink)}
+.k-teal{color:var(--teal-d)}
+.k-pur{color:var(--purple)}
+.k-yel{color:var(--yellow)}
+.k-cream{color:var(--cream-70)}
+
+/* Hand-drawn style underline on a key phrase */
+.underline{position:relative;white-space:nowrap}
+/* Magenta, not yellow — the page base is now yellow, so a yellow bar would
+   vanish into it. Pink-on-yellow is the key art's own move. */
+.underline::after{
+  content:"";position:absolute;left:-2%;right:-2%;bottom:.04em;height:.30em;
+  background:var(--magenta);border-radius:.15em;z-index:-1;
+  transform:scaleX(0);transform-origin:left center;
+  transition:transform .8s var(--e-out) .15s;
+}
+.is-in .underline::after,.underline.is-in::after{transform:scaleX(1)}
+
+.tag{
+  display:inline-block;font-family:'Outfit',sans-serif;
+  font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  color:#fff;background:var(--confirm);
+  padding:4px 9px;border-radius:var(--r-pill);
+  vertical-align:middle;
+}
+
+/* ------------------------------------------------------------
+   Buttons — pill silhouette with the signature hard offset shadow
+   ------------------------------------------------------------ */
+.btn{
+  position:relative;
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  font-family:'Outfit',sans-serif;font-weight:800;letter-spacing:.03em;
+  font-size:15px;line-height:1;
+  padding:17px 34px;
+  border-radius:var(--r-pill);
+  background:var(--magenta);color:#fff;
+  white-space:nowrap;
+  box-shadow:0 6px 0 var(--magenta-d),var(--sh-sm);
+  transition:transform var(--t-fast),box-shadow var(--t-fast),background var(--t-fast);
+  will-change:transform;
+  isolation:isolate;
+  overflow:hidden;
+}
+/* sweeping gloss on hover */
+.btn::after{
+  content:"";position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.34) 48%,transparent 66%);
+  transform:translateX(-120%);
+  transition:transform .75s var(--e-out);
+}
+.btn:hover{transform:translateY(3px);box-shadow:0 3px 0 var(--magenta-d),var(--sh-sm)}
+.btn:hover::after{transform:translateX(120%)}
+.btn:active{transform:translateY(6px);box-shadow:0 0 0 var(--magenta-d)}
+.btn:focus-visible{outline:3px solid var(--teal);outline-offset:3px}
+
+.btn-lg{font-size:clamp(15px,1.5vw,18px);padding:21px 42px}
+.btn-sm{font-size:13px;padding:13px 24px;box-shadow:0 4px 0 var(--magenta-d)}
+.btn-sm:hover{box-shadow:0 2px 0 var(--magenta-d)}
+
+.btn-yellow{background:var(--yellow);color:var(--ink);box-shadow:0 6px 0 #D2AE00,var(--sh-sm)}
+.btn-yellow:hover{box-shadow:0 3px 0 #D2AE00,var(--sh-sm)}
+.btn-yellow:active{box-shadow:0 0 0 #D2AE00}
+
+.btn-ink{background:var(--ink);color:#fff;box-shadow:0 6px 0 var(--ink-900),var(--sh-sm)}
+.btn-ink:hover{box-shadow:0 3px 0 var(--ink-900),var(--sh-sm)}
+
+.btn-teal{background:var(--teal);color:#fff;box-shadow:0 6px 0 var(--teal-d),var(--sh-sm)}
+.btn-teal:hover{box-shadow:0 3px 0 var(--teal-d),var(--sh-sm)}
+
+.btn-white{background:#fff;color:var(--magenta);box-shadow:0 6px 0 rgba(0,0,0,.18),var(--sh-sm)}
+.btn-white:hover{box-shadow:0 3px 0 rgba(0,0,0,.18),var(--sh-sm)}
+
+/* Glass button for use over imagery */
+.btn-glass{
+  background:rgba(255,249,220,.10);color:#fff;
+  border:1.5px solid var(--cream-45);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  box-shadow:none;
+}
+.btn-glass:hover{background:rgba(255,249,220,.20);transform:translateY(-2px);box-shadow:var(--sh-md)}
+.btn-glass:active{transform:translateY(0)}
+
+/* ------------------------------------------------------------
+   Sections
+   ------------------------------------------------------------ */
+.sec{position:relative;padding:var(--sec-y) 0}
+.sec-alt{background:var(--cream-2)}
+.sec-ink{background:var(--ink);color:#fff}
+.sec-ink .lede{color:var(--cream-70)}
+.sec-tight{padding-top:clamp(44px,5vw,70px)}
+
+.sec-head{max-width:760px;margin-bottom:clamp(34px,4.5vw,58px)}
+.sec-head.center{margin-left:auto;margin-right:auto;text-align:center}
+.sec-head.center .kicker{justify-content:center}
+.sec-head.center .lede{margin-left:auto;margin-right:auto}
+.sec-head h2{margin-bottom:16px}
+
+/* ------------------------------------------------------------
+   Scroll reveal — opacity + slide, staggered by --d
+   ------------------------------------------------------------ */
+[data-reveal]{
+  opacity:0;
+  transform:translate3d(0,26px,0);
+  transition:opacity .85s var(--e-out),transform .85s var(--e-out);
+  transition-delay:var(--d,0ms);
+}
+[data-reveal="left"]{transform:translate3d(-34px,0,0)}
+[data-reveal="right"]{transform:translate3d(34px,0,0)}
+[data-reveal="scale"]{transform:scale(.94)}
+[data-reveal="clip"]{
+  opacity:1;
+  transform:none;
+  clip-path:inset(0 0 100% 0);
+  transition:clip-path 1.05s var(--e-out);
+  transition-delay:var(--d,0ms);
+}
+[data-reveal].is-in{opacity:1;transform:none;clip-path:inset(0 0 0 0)}
+
+/* Word-by-word headline reveal */
+.reveal-words{display:inline-block}
+.reveal-words .w{
+  display:inline-block;overflow:hidden;vertical-align:bottom;
+  padding-bottom:.08em;margin-bottom:-.08em;
+}
+.reveal-words .w > span{
+  display:inline-block;
+  transform:translateY(105%);
+  transition:transform .95s var(--e-out);
+  transition-delay:calc(var(--i,0) * 75ms);
+}
+.reveal-words.is-in .w > span{transform:translateY(0)}
+
+/* ------------------------------------------------------------
+   Utilities
+   ------------------------------------------------------------ */
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;
+}
+.nowrap{white-space:nowrap}
+.center{text-align:center}
+
+/* Skip link */
+.skip{
+  position:absolute;left:12px;top:-60px;z-index:200;
+  background:var(--ink);color:#fff;padding:12px 20px;border-radius:var(--r-pill);
+  font-family:'Outfit',sans-serif;font-weight:700;font-size:14px;
+  transition:top var(--t-fast);
+}
+.skip:focus{top:12px}
+
+/* ------------------------------------------------------------
+   Reduced motion — strip every transform/animation, keep layout
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+    scroll-behavior:auto !important;
+  }
+  [data-reveal]{opacity:1 !important;transform:none !important;clip-path:none !important}
+  .reveal-words .w > span{transform:none !important}
+  .underline::after{transform:scaleX(1) !important}
+}

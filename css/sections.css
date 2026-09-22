@@ -1,0 +1,748 @@
+/* ============================================================
+   Navkar N9 — Content sections
+   Experience grid, legacy band, workshop, passes,
+   venue, promise, final CTA and footer.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   Shared image treatments — the design system's picture frames
+   ------------------------------------------------------------ */
+.img-frame{
+  position:relative;
+  overflow:hidden;
+  border-radius:var(--r-lg);
+  background:var(--ink-800);
+  box-shadow:var(--sh-img);
+  isolation:isolate;
+}
+.img-frame img{
+  width:100%;height:100%;
+  object-fit:cover;
+  transition:transform 1.25s var(--e-out);
+  will-change:transform;
+}
+.img-frame:hover img{transform:scale(1.07)}
+/* warm gradient veil keeps photos inside the palette */
+.img-frame::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(to top,rgba(42,6,20,.55),transparent 52%);
+  opacity:.85;
+  transition:opacity var(--t-mid);
+}
+.img-frame:hover::after{opacity:.6}
+.img-frame.no-veil::after{display:none}
+
+/* Arch — mandap / temple doorway silhouette */
+.img-arch{border-radius:999px 999px var(--r-lg) var(--r-lg)}
+/* Circle — garba ring */
+.img-circle{border-radius:50%;aspect-ratio:1}
+
+/* Festive hairline. Sits INSIDE the frame — an outside ring would be cut off
+   by the overflow:hidden that crops the photo. */
+.img-keyline::before{
+  content:"";position:absolute;inset:11px;
+  border:1.5px solid var(--marigold);
+  border-radius:inherit;
+  opacity:.55;pointer-events:none;z-index:2;
+}
+.img-keyline.img-arch::before{border-radius:999px 999px var(--r-md) var(--r-md)}
+
+/* Caption chip that floats on a photo */
+.img-cap{
+  position:absolute;left:18px;bottom:18px;z-index:2;
+  display:inline-flex;align-items:center;gap:9px;
+  padding:9px 16px;border-radius:var(--r-pill);
+  background:rgba(42,6,20,.58);
+  border:1px solid var(--cream-18);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  font-family:'Outfit',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--cream);
+}
+.img-cap::before{
+  content:"";width:7px;height:7px;border-radius:50%;background:var(--yellow);flex:none;
+}
+
+/* ------------------------------------------------------------
+   1 — Experience : asymmetric colour + photo card grid
+   ------------------------------------------------------------ */
+.exp{position:relative;overflow:hidden}
+.exp .motif-bl{color:var(--teal);opacity:.10}
+.exp-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:clamp(14px,1.6vw,20px);
+}
+.cell{
+  position:relative;
+  border-radius:var(--r-lg);
+  padding:clamp(24px,2.6vw,34px);
+  min-height:230px;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  transition:transform var(--t-mid),box-shadow var(--t-mid);
+  will-change:transform;
+}
+.cell:hover{transform:translateY(-7px);box-shadow:var(--sh-lg)}
+.cell .num{
+  display:block;
+  font-family:'Outfit',sans-serif;font-size:12px;font-weight:900;
+  letter-spacing:.18em;opacity:.5;margin-bottom:auto;
+}
+.cell-img .num{margin-bottom:10px;color:var(--yellow);opacity:.8}
+.cell h3{margin-top:22px;margin-bottom:9px}
+.cell p{font-size:14.5px;line-height:1.66;opacity:.86}
+.cell .pill{
+  align-self:flex-start;
+  margin-top:20px;margin-bottom:-6px;
+  font-family:'Outfit',sans-serif;font-size:10px;font-weight:800;
+  letter-spacing:.15em;text-transform:uppercase;
+  padding:5px 13px;border-radius:var(--r-pill);
+  background:var(--yellow);color:var(--ink);
+}
+/* faint chakra watermark in each card corner */
+.cell::after{
+  content:"";position:absolute;right:-26px;bottom:-26px;
+  width:120px;height:120px;border-radius:50%;
+  border:14px solid currentColor;opacity:.07;
+  transition:transform .9s var(--e-out);
+}
+.cell:hover::after{transform:scale(1.18) rotate(28deg)}
+
+.c-mag  {background:var(--magenta);color:#fff}
+.c-ink  {background:var(--ink);color:#fff}
+.c-teal {background:var(--teal);color:#fff}
+.c-yel  {background:var(--yellow);color:var(--ink)}
+/* ink, not white: white body copy on this orange only reaches 3.4:1 */
+.c-org  {background:var(--orange);color:var(--ink)}
+.c-pur  {background:var(--purple);color:#fff}
+.c-cream{background:#fff;color:var(--ink);box-shadow:var(--sh-sm)}
+.c-cream .num{opacity:.4;color:var(--magenta-ink)}
+.c-cream p{color:var(--body);opacity:1}
+
+/* Photo cells */
+.cell-img{padding:0;min-height:260px;color:#fff}
+.cell-img::after{display:none}
+.cell-img img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  transition:transform 1.3s var(--e-out);
+}
+.cell-img:hover img{transform:scale(1.09)}
+.cell-img .cell-body{
+  position:relative;z-index:2;margin-top:auto;
+  padding:clamp(22px,2.4vw,30px);
+  background:linear-gradient(to top,rgba(42,6,20,.90),rgba(42,6,20,.55) 55%,transparent);
+}
+.cell-img h3{margin-top:0;margin-bottom:7px}
+.cell-img p{color:var(--cream-70);opacity:1}
+.cell-img .tagline{
+  position:absolute;top:20px;left:20px;z-index:2;
+  font-family:'Outfit',sans-serif;font-size:10px;font-weight:800;
+  letter-spacing:.16em;text-transform:uppercase;
+  padding:6px 13px;border-radius:var(--r-pill);
+  background:rgba(42,6,20,.55);border:1px solid var(--cream-18);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  color:var(--yellow);
+}
+
+/* Span helpers for the asymmetric rhythm */
+.sp-2{grid-column:span 2}
+.tall{min-height:340px}
+
+/* ------------------------------------------------------------
+   2 — Legacy : full-bleed photo band with counters
+   ------------------------------------------------------------ */
+.legacy{
+  position:relative;
+  padding:clamp(80px,11vw,150px) 0;
+  overflow:hidden;
+  color:#fff;
+  background:var(--ink-900);
+  isolation:isolate;
+}
+.legacy-media{position:absolute;inset:0;z-index:-2;overflow:hidden}
+.legacy-media img,
+.legacy-media .bg-video{
+  position:absolute;top:-10%;left:0;width:100%;height:120%;
+  object-fit:cover;object-position:50% 45%;
+  transform:translate3d(0,var(--py,0px),0);
+  will-change:transform;
+}
+/* Sits above the still and cross-fades in only once it is genuinely playing */
+.bg-video{
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 1s var(--e-out);
+}
+.bg-video.is-playing{opacity:1}
+.legacy-media::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(105deg,rgba(42,6,20,.95) 12%,rgba(42,6,20,.80) 48%,rgba(156,0,67,.62));
+}
+.legacy .glow-1{width:40vw;height:40vw;top:-18%;right:-8%;opacity:.28}
+.legacy h2{margin-bottom:18px;max-width:17ch}
+.legacy .lede{color:var(--cream-70);max-width:60ch}
+
+.stats{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:clamp(16px,2.6vw,34px);
+  margin-top:clamp(40px,5vw,64px);
+  padding-top:clamp(32px,4vw,46px);
+  border-top:1px solid var(--cream-18);
+}
+.stat .n{
+  font-family:'Outfit',sans-serif;
+  font-size:clamp(42px,6.4vw,82px);font-weight:900;
+  line-height:1;letter-spacing:-.05em;
+  background:var(--gold);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+}
+.stat .l{
+  font-family:'Outfit',sans-serif;font-size:11.5px;font-weight:700;
+  letter-spacing:.15em;text-transform:uppercase;
+  color:var(--cream-70);margin-top:9px;
+}
+
+/* ------------------------------------------------------------
+   3 — Workshop : arch photo + copy + info boxes
+   ------------------------------------------------------------ */
+.ws-sec{position:relative;overflow:hidden}
+.ws-grid{
+  display:grid;
+  grid-template-columns:minmax(0,.86fr) minmax(0,1fr);
+  gap:clamp(36px,6vw,80px);
+  align-items:center;
+}
+.ws-media{position:relative}
+.ws-media .img-arch{aspect-ratio:3/4}
+.ws-float{
+  position:absolute;right:-22px;bottom:34px;z-index:3;
+  background:#fff;
+  border-radius:var(--r-md);
+  padding:18px 24px;
+  box-shadow:var(--sh-lg);
+  text-align:center;
+  min-width:132px;
+}
+.sec-ink .ws-float,.legacy .ws-float{background:#fff;color:var(--ink)}
+.ws-float .n{
+  font-family:'Outfit',sans-serif;font-size:32px;font-weight:900;
+  line-height:1;letter-spacing:-.04em;color:var(--magenta-ink);
+}
+.ws-float .l{
+  font-family:'Outfit',sans-serif;font-size:10px;font-weight:800;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--body);margin-top:5px;
+}
+
+.wslist{margin-top:28px;display:grid;gap:12px}
+.wslist > div{display:flex;align-items:flex-start;gap:13px;font-size:15px;line-height:1.6}
+.tick{
+  flex:none;display:grid;place-items:center;
+  width:25px;height:25px;border-radius:50%;
+  background:var(--teal);color:#fff;
+  font-size:13px;font-weight:700;margin-top:1px;
+}
+.sec-ink .wslist > div{color:var(--cream-70)}
+
+.wsgrid{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;margin-top:32px;
+}
+.wsbox{
+  background:#fff;border-radius:var(--r-md);
+  padding:20px 22px;
+  box-shadow:var(--sh-sm);
+  border:1px solid var(--line);
+  transition:transform var(--t-fast),box-shadow var(--t-fast);
+}
+.wsbox:hover{transform:translateY(-4px);box-shadow:var(--sh-md)}
+.wsbox .k{
+  font-family:'Outfit',sans-serif;font-size:9.5px;font-weight:800;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--magenta-ink);
+}
+.wsbox .v{
+  font-family:'Outfit',sans-serif;font-size:23px;font-weight:900;
+  letter-spacing:-.03em;margin-top:5px;
+}
+.wsbox .s{font-size:12.5px;color:var(--body);margin-top:2px}
+
+/* ------------------------------------------------------------
+   4 — Passes
+   ------------------------------------------------------------ */
+.passes-sec{position:relative;overflow:hidden}
+.passes-sec .motif-br{color:var(--purple);opacity:.09}
+.pass-grid{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:clamp(14px,1.8vw,22px);
+}
+.pass-grid + .pass-grid{margin-top:clamp(14px,1.8vw,22px)}
+
+.pass{
+  position:relative;
+  background:#fff;
+  border:2px solid var(--line);
+  border-radius:var(--r-lg);
+  padding:clamp(26px,2.8vw,34px);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  transition:transform var(--t-mid),box-shadow var(--t-mid),border-color var(--t-mid);
+  will-change:transform;
+}
+.pass:hover{transform:translateY(-8px);box-shadow:var(--sh-lg);border-color:var(--magenta)}
+.pass::before{
+  content:"";position:absolute;left:0;right:0;top:0;height:4px;
+  background:var(--gold);
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .55s var(--e-out);
+}
+.pass:hover::before{transform:scaleX(1)}
+
+.pass.feat{
+  background:var(--ink);color:#fff;border-color:var(--ink);
+  box-shadow:var(--sh-md);
+}
+.pass.feat::before{transform:scaleX(1)}
+.pass.feat .pdesc{color:var(--cream-70)}
+.pass.feat:hover{border-color:var(--yellow)}
+/* chakra watermark on the featured card */
+.pass.feat::after{
+  content:"";position:absolute;right:-50px;top:-50px;
+  width:190px;height:190px;border-radius:50%;
+  border:14px solid var(--magenta);opacity:.14;
+  transition:transform 1s var(--e-out);
+}
+.pass.feat:hover::after{transform:scale(1.15) rotate(30deg)}
+
+.ribbon{
+  align-self:flex-start;
+  font-family:'Outfit',sans-serif;font-size:10px;font-weight:900;
+  letter-spacing:.16em;text-transform:uppercase;
+  padding:6px 14px;border-radius:var(--r-pill);
+  background:var(--gold);color:var(--ink);
+  margin-bottom:16px;
+  position:relative;z-index:1;
+}
+.pname{
+  font-family:'Outfit',sans-serif;font-size:clamp(18px,1.9vw,22px);
+  font-weight:800;letter-spacing:-.02em;
+  position:relative;z-index:1;
+}
+.price{
+  font-family:'Outfit',sans-serif;
+  font-size:clamp(34px,4.4vw,52px);font-weight:900;
+  letter-spacing:-.045em;line-height:1;
+  margin:12px 0 14px;
+  position:relative;z-index:1;
+}
+.price span{
+  display:block;font-size:13px;font-weight:600;letter-spacing:0;
+  color:var(--body);margin-top:7px;
+}
+.pass.feat .price span{color:var(--cream-70)}
+.pdesc{
+  font-size:14px;line-height:1.65;color:var(--body);
+  margin-bottom:24px;flex:1;
+  position:relative;z-index:1;
+}
+/* every pass button carries the same yellow as the hero CTA */
+.pbtn{
+  position:relative;z-index:1;
+  width:100%;
+  font-family:'Outfit',sans-serif;font-weight:800;font-size:14.5px;
+  padding:15px 20px;border-radius:var(--r-pill);
+  background:var(--yellow);color:var(--ink);
+  box-shadow:0 4px 0 #D2AE00;
+  transition:background var(--t-fast),transform var(--t-fast),box-shadow var(--t-fast);
+}
+.pbtn:hover{background:#fff;transform:translateY(2px);box-shadow:0 2px 0 #D2AE00}
+.pbtn:active{transform:translateY(4px);box-shadow:0 0 0 #D2AE00}
+.pbtn:focus-visible{outline:3px solid var(--teal);outline-offset:3px}
+
+.pnote{
+  margin-top:26px;font-size:13.5px;color:var(--body);
+  line-height:1.7;max-width:74ch;
+}
+
+/* Bulk / partner band */
+.bulk{
+  margin-top:clamp(34px,4vw,50px);
+  background:var(--magenta);color:#fff;
+  border-radius:var(--r-lg);
+  padding:clamp(26px,3.2vw,40px);
+  display:flex;align-items:center;justify-content:space-between;
+  gap:26px;flex-wrap:wrap;
+  position:relative;overflow:hidden;
+}
+.bulk::after{
+  content:"";position:absolute;right:-60px;top:-60px;
+  width:230px;height:230px;border-radius:50%;
+  border:22px solid #fff;opacity:.10;
+}
+.bulk > div{position:relative;z-index:1;min-width:0}
+.bulk h4{font-size:clamp(18px,2vw,24px);margin-bottom:7px}
+.bulk p{font-size:14px;color:rgba(255,255,255,.88);line-height:1.7}
+
+/* each contact is its own WhatsApp link, not inert text */
+.bulk-contacts{
+  list-style:none;
+  display:flex;flex-wrap:wrap;gap:8px 10px;
+  margin-top:12px;
+}
+.bulk-contacts a{
+  display:inline-flex;align-items:baseline;gap:6px;
+  font-size:13.5px;color:rgba(255,255,255,.9);
+  padding:7px 14px;border-radius:var(--r-pill);
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.22);
+  transition:background var(--t-fast),border-color var(--t-fast),transform var(--t-fast);
+}
+.bulk-contacts a b{
+  font-family:'Outfit',sans-serif;font-weight:800;color:#fff;
+  white-space:nowrap;
+}
+.bulk-contacts a:hover{background:rgba(255,255,255,.24);border-color:#fff;transform:translateY(-2px)}
+.bulk-contacts a:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+
+/* leading icon inside a .btn */
+.btn-ico{width:17px;height:17px;flex:none;fill:currentColor}
+.bulk .btn{position:relative;z-index:1;flex:none}
+
+/* 4-step register band */
+.regband{
+  margin-top:clamp(20px,2.4vw,28px);
+  background:var(--cream-2);
+  border:2px dashed var(--ink-12);
+  border-radius:var(--r-lg);
+  padding:clamp(26px,3.2vw,40px);
+  display:flex;align-items:center;justify-content:space-between;
+  gap:26px;flex-wrap:wrap;
+}
+.regband > div{min-width:0}
+.regband h3{margin-bottom:8px}
+.regband p{font-size:14.5px;color:var(--body);max-width:56ch}
+.steps{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.steps span{
+  font-family:'Outfit',sans-serif;font-size:11px;font-weight:800;
+  letter-spacing:.11em;text-transform:uppercase;
+  padding:7px 14px;border-radius:var(--r-pill);
+  background:#fff;border:1px solid var(--line);color:var(--body);
+}
+
+/* ------------------------------------------------------------
+   5 — Venue
+   ------------------------------------------------------------ */
+.venue-sec{position:relative;overflow:hidden}
+.venue-grid{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.06fr);
+  gap:clamp(36px,6vw,80px);align-items:center;
+}
+.vrow{
+  display:flex;align-items:baseline;gap:18px;
+  padding:14px 0;border-bottom:1px solid var(--line);
+  font-size:15.5px;
+}
+.vrow .k{
+  flex:none;width:112px;
+  font-family:'Outfit',sans-serif;font-size:10.5px;font-weight:800;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--magenta-ink);
+}
+.sec-ink .vrow{border-bottom-color:var(--cream-18);color:var(--cream)}
+.sec-ink .vrow .k{color:var(--marigold)}
+
+/* ---- Live map ----
+   Replaces the old placeholder card, which was white-on-cream and so had
+   almost no edge once it ran past the photo it was overlapping. */
+.venue-media{position:relative}
+.map-frame{
+  position:relative;
+  aspect-ratio:4/3;
+  border-radius:var(--r-lg) var(--r-lg) 0 0;
+  overflow:hidden;
+  background:var(--cream-2);
+  box-shadow:var(--sh-img);
+  isolation:isolate;
+}
+.map-frame iframe{
+  position:relative;z-index:1;
+  width:100%;height:100%;
+  border:0;display:block;
+}
+.map-fallback{
+  position:absolute;inset:0;z-index:0;
+  display:grid;place-content:center;text-align:center;gap:5px;
+  padding:24px;
+}
+.map-fallback .k{
+  font-family:'Outfit',sans-serif;font-size:clamp(22px,2.6vw,30px);
+  font-weight:900;letter-spacing:-.03em;color:var(--ink);
+}
+.map-fallback .v{
+  font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--body);
+}
+
+/* Address bar welded to the bottom of the map */
+.map-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:18px;flex-wrap:wrap;
+  background:var(--ink);color:#fff;
+  border-radius:0 0 var(--r-lg) var(--r-lg);
+  padding:18px clamp(20px,2.2vw,26px);
+  box-shadow:var(--sh-md);
+}
+.map-addr{min-width:0}
+.map-addr .k{
+  display:block;
+  font-family:'Outfit',sans-serif;font-size:9.5px;font-weight:800;
+  letter-spacing:.17em;text-transform:uppercase;color:var(--marigold);
+}
+.map-addr .v{
+  display:block;margin-top:3px;
+  font-family:'Outfit',sans-serif;font-size:clamp(16px,1.7vw,19px);
+  font-weight:800;letter-spacing:-.02em;
+}
+.map-addr .s{
+  display:block;margin-top:2px;
+  font-size:13px;color:var(--cream-70);
+}
+.map-bar .btn{flex:none}
+
+/* Promise list */
+.promise{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:clamp(14px,1.8vw,20px);
+}
+.pr{
+  display:flex;align-items:flex-start;gap:15px;
+  background:#fff;border-radius:var(--r-md);
+  padding:22px 24px;
+  border:1px solid var(--line);
+  transition:transform var(--t-fast),box-shadow var(--t-fast);
+}
+.pr:hover{transform:translateY(-4px);box-shadow:var(--sh-md)}
+.prd{
+  flex:none;display:grid;place-items:center;
+  width:34px;height:34px;border-radius:50%;
+  color:#fff;font-family:'Outfit',sans-serif;font-weight:900;font-size:15px;
+}
+.pr p{font-size:14.5px;line-height:1.62;color:var(--body);padding-top:4px}
+
+/* ------------------------------------------------------------
+   6 — Final CTA : full-bleed photo
+   ------------------------------------------------------------ */
+.final{
+  position:relative;
+  padding:clamp(84px,12vw,160px) 0;
+  text-align:center;color:#fff;
+  background:var(--ink-900);
+  overflow:hidden;isolation:isolate;
+}
+.final-media{position:absolute;inset:0;z-index:-2;overflow:hidden}
+.final-media img{
+  position:absolute;top:-10%;left:0;width:100%;height:120%;
+  object-fit:cover;object-position:50% 40%;
+  transform:translate3d(0,var(--py,0px),0);
+  will-change:transform;
+}
+.final-media::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(to bottom,rgba(42,6,20,.90),rgba(110,0,47,.82) 50%,rgba(42,6,20,.94));
+}
+.final .glow-1{width:44vw;height:44vw;top:-16%;left:-10%;opacity:.34}
+.final .glow-2{width:36vw;height:36vw;bottom:-18%;right:-8%;opacity:.30}
+.final .wrap{position:relative;z-index:2}
+.final .kicker{justify-content:center}
+.final h2{max-width:20ch;margin:0 auto 18px}
+.final .l2{
+  font-size:clamp(15.5px,1.6vw,19px);color:var(--cream-70);
+  max-width:60ch;margin:0 auto;line-height:1.7;
+}
+.final .dt{
+  display:inline-flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;
+  margin-top:26px;padding:13px 26px;
+  border:1.5px solid var(--cream-45);border-radius:var(--r-pill);
+  font-family:'Outfit',sans-serif;font-size:clamp(13px,1.5vw,16px);
+  font-weight:700;letter-spacing:.03em;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  background:var(--cream-10);
+}
+.final .hash{
+  margin-top:30px;
+  font-family:'Outfit',sans-serif;font-size:clamp(11px,1.3vw,13.5px);
+  font-weight:800;letter-spacing:.17em;text-transform:uppercase;
+  color:var(--marigold);
+  display:flex;flex-wrap:wrap;gap:8px 22px;justify-content:center;
+}
+
+/* ------------------------------------------------------------
+   7 — Footer
+   ------------------------------------------------------------ */
+footer{
+  background:var(--ink-900);color:var(--cream-70);
+  padding:clamp(54px,6vw,80px) 0 30px;
+  font-size:14px;line-height:1.75;
+}
+.fgrid{
+  display:grid;
+  grid-template-columns:minmax(0,1.9fr) repeat(3,minmax(0,1fr));
+  gap:clamp(28px,3.6vw,48px);
+}
+.fh{
+  font-family:'Outfit',sans-serif;font-size:10.5px;font-weight:800;
+  letter-spacing:.17em;text-transform:uppercase;color:var(--yellow);
+  margin-bottom:14px;
+}
+.fh-sub{margin-top:22px}
+
+/* ---- brand block ---- */
+/* Stacked, not side by side: the wordmark needs its full width to stay legible
+   and the copy beside it was wrapping to two words a line. */
+.fbrand{display:flex;flex-direction:column;align-items:flex-start;gap:18px}
+.flogo{
+  flex:none;width:210px;height:auto;
+  filter:drop-shadow(0 6px 20px rgba(0,0,0,.45));
+}
+.fbrand-copy{min-width:0}
+.fbrand-copy strong{
+  display:block;color:var(--cream);font-weight:600;font-size:14.5px;
+}
+/* The wordmark already states the event name and year, so this is the edition
+   marker only. */
+.fbrand-name{
+  display:block;margin-top:2px;
+  font-family:'Outfit',sans-serif;font-size:clamp(17px,1.8vw,21px);
+  font-weight:900;letter-spacing:-.025em;color:#fff;
+}
+.forg{margin-top:12px;font-size:13px;color:var(--cream-45);line-height:1.7}
+
+/* ---- link columns ---- */
+.fcol{min-width:0}
+.flist{list-style:none;display:grid;gap:7px}
+.flist a,
+a.fext{
+  display:inline-flex;align-items:center;gap:7px;
+  color:var(--cream-70);
+  transition:color var(--t-fast);
+}
+.flist a:hover,
+a.fext:hover{color:var(--yellow)}
+.flist a:focus-visible,
+a.fext:focus-visible{outline:3px solid var(--yellow);outline-offset:3px;border-radius:4px}
+
+/* outbound marker — a real arrow-up-right, filled not stroked */
+.fext svg{
+  width:12px;height:12px;flex:none;
+  fill:currentColor;stroke:none;
+  opacity:.65;
+  transition:transform var(--t-fast),opacity var(--t-fast);
+}
+.fext:hover svg{transform:translate(2px,-2px);opacity:1}
+
+.fvisit{font-size:13.5px;line-height:1.7;color:var(--cream-70);margin-bottom:12px}
+.fvisit b{
+  display:block;
+  font-family:'Outfit',sans-serif;font-size:17px;font-weight:800;
+  color:#fff;letter-spacing:-.02em;margin-bottom:2px;
+}
+
+/* ---- social ---- */
+.fsocial{list-style:none;display:grid;gap:10px}
+.fsocial a{
+  display:inline-flex;align-items:center;gap:12px;
+  color:var(--cream-70);
+}
+.fs-ico{
+  flex:none;display:grid;place-items:center;
+  width:38px;height:38px;border-radius:50%;
+  background:var(--cream-10);
+  border:1px solid var(--cream-18);
+  color:var(--cream);
+  transition:background var(--t-fast),border-color var(--t-fast),
+             color var(--t-fast),transform var(--t-fast);
+}
+.fs-ico svg{width:17px;height:17px;fill:currentColor}
+.fs-txt{display:flex;flex-direction:column;line-height:1.3;min-width:0;font-size:12.5px}
+.fs-txt b{
+  font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:800;
+  color:var(--cream);transition:color var(--t-fast);
+}
+.fsocial a:hover .fs-ico{
+  background:var(--magenta);border-color:var(--magenta);
+  color:#fff;transform:translateY(-2px);
+}
+.fsocial a:hover .fs-txt b{color:var(--yellow)}
+.fsocial a:focus-visible{outline:3px solid var(--yellow);outline-offset:3px;border-radius:var(--r-pill)}
+
+/* ---- bottom bar ---- */
+.fline{
+  margin-top:clamp(36px,4vw,54px);padding-top:24px;
+  border-top:1px solid var(--cream-18);
+  display:flex;align-items:center;justify-content:space-between;
+  gap:14px 26px;flex-wrap:wrap;
+  font-size:12.5px;color:var(--cream-45);
+}
+.flegal{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.flegal i{font-style:normal;opacity:.4}
+
+/* build-time note, kept visually apart so it is obvious it must come out */
+.fnote{
+  margin-top:16px;
+  font-size:11.5px;color:var(--cream-45);opacity:.75;
+}
+.fnote .tag{transform:scale(.88);margin:0 2px}
+
+/* ============================================================
+   Breakpoints
+   ============================================================ */
+@media (max-width:1040px){
+  /* Once these stack, the media column must centre — left-aligning it in a
+     full-width row leaves a dead gutter on the right. */
+  .ws-grid,.venue-grid{grid-template-columns:minmax(0,1fr);gap:clamp(34px,6vw,54px)}
+  .ws-grid .ws-media{order:-1;max-width:460px;margin-inline:auto;width:100%}
+  .ws-media .img-arch{aspect-ratio:4/3}
+  .venue-media{max-width:620px;margin-inline:auto;width:100%}
+
+  /* At two columns a span-2 card can't fit beside a single one, which would
+     punch a hole in the row. Drop the spans and let the last card close out. */
+  .exp-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sp-2{grid-column:span 1}
+  .exp-grid > :last-child{grid-column:1 / -1}
+  .cell-img{min-height:320px}
+
+  .promise{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stats{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+
+  .fgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .fgrid > :first-child{grid-column:1 / -1}
+}
+
+@media (max-width:760px){
+  .pass-grid{grid-template-columns:minmax(0,1fr)}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 16px}
+  .bulk,.regband{flex-direction:column;align-items:flex-start}
+  .bulk .btn,.regband .btn{width:100%}
+  .map-bar{flex-direction:column;align-items:stretch;gap:14px}
+  .map-bar .btn{width:100%}
+  .map-frame{aspect-ratio:1}
+  .ws-float{right:12px;bottom:12px}
+}
+
+@media (max-width:620px){
+  .exp-grid{grid-template-columns:minmax(0,1fr)}
+  .sp-2{grid-column:span 1}
+  .cell{min-height:0}
+  /* photo cells need headroom: the tagline pill is pinned top-left and the
+     caption block grows from the bottom — too short and they collide */
+  .tall,.cell-img{min-height:360px}
+  .cell-img .tagline{top:16px;left:16px}
+  .promise{grid-template-columns:minmax(0,1fr)}
+  .fgrid{grid-template-columns:minmax(0,1fr)}
+  .fgrid > :first-child{grid-column:auto}
+
+  .vrow{flex-direction:column;gap:3px;align-items:flex-start}
+  .vrow .k{width:auto}
+
+  .fbrand{gap:16px}
+  .flogo{width:180px}
+
+}

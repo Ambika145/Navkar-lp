@@ -1,0 +1,686 @@
+/* ============================================================
+   Navkar N9 — Interaction layer
+   Nav, drawer, scroll reveal, parallax, counters, particles,
+   background video, gallery + lightbox, and the passes / workshop dialogs.
+   ============================================================ */
+(function () {
+  'use strict';
+
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var $  = function (s, c) { return (c || document).querySelector(s); };
+  var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+
+  /* ==========================================================
+     1 — Hero entrance
+     ========================================================== */
+  (function hero() {
+    var el = $('.hero');
+    if (!el) return;
+    var img = $('.hero-img', el);
+    var ready = function () { el.classList.add('is-ready'); };
+
+    if (!img || img.complete) {
+      // give the first paint a beat so the transition is visible
+      requestAnimationFrame(function () { setTimeout(ready, 60); });
+    } else {
+      img.addEventListener('load', ready, { once: true });
+      img.addEventListener('error', ready, { once: true });
+      setTimeout(ready, 2500); // never leave the hero hidden
+    }
+  })();
+
+  /* ==========================================================
+     2 — Navigation: stuck state, auto-hide, scrollspy
+     ========================================================== */
+  (function nav() {
+    var bar = $('.nav');
+    if (!bar) return;
+    var last = window.pageYOffset;
+    var ticking = false;
+
+    function update() {
+      var y = window.pageYOffset;
+      bar.classList.toggle('is-stuck', y > 40);
+
+      // hide when scrolling down past the hero, reveal on the way up
+      if (!document.body.classList.contains('menu-open')) {
+        var down = y > last && y > 420;
+        bar.classList.toggle('is-hidden', down);
+      }
+      last = y;
+      ticking = false;
+    }
+    window.addEventListener('scroll', function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    }, { passive: true });
+    update();
+
+    /* --- scrollspy --- */
+    var links = $$('.nav-links a[href^="#"]');
+    if (!links.length || !('IntersectionObserver' in window)) return;
+
+    var byId = {};
+    links.forEach(function (a) {
+      var id = a.getAttribute('href').slice(1);
+      var sec = document.getElementById(id);
+      if (sec) byId[id] = a;
+    });
+
+    // Track the full intersecting set: reacting per-entry can leave two links
+    // lit when neighbouring sections both straddle the band.
+    var visible = new Set();
+    var order = Object.keys(byId);
+
+    var spy = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) visible.add(e.target.id);
+        else visible.delete(e.target.id);
+      });
+      var active = order.filter(function (id) { return visible.has(id); })[0];
+      links.forEach(function (a) {
+        a.classList.toggle('on', !!active && byId[active] === a);
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+
+    Object.keys(byId).forEach(function (id) {
+      spy.observe(document.getElementById(id));
+    });
+  })();
+
+  /* ==========================================================
+     3 — Mobile drawer
+     ========================================================== */
+  (function drawer() {
+    var burger = $('.burger');
+    var panel = $('.drawer');
+    if (!burger || !panel) return;
+
+    function close() {
+      document.body.classList.remove('menu-open');
+      burger.setAttribute('aria-expanded', 'false');
+      if (!$('.overlay.open') && !$('.lightbox.open')) document.body.classList.remove('locked');
+    }
+    function toggle() {
+      var open = !document.body.classList.contains('menu-open');
+      document.body.classList.toggle('menu-open', open);
+      document.body.classList.toggle('locked', open);
+      burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (open) $('.nav').classList.remove('is-hidden');
+    }
+
+    burger.addEventListener('click', toggle);
+    $$('.drawer a').forEach(function (a) { a.addEventListener('click', close); });
+    $$('.drawer [data-cta]').forEach(function (b) { b.addEventListener('click', close); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && document.body.classList.contains('menu-open')) close();
+    });
+  })();
+
+  /* ==========================================================
+     4 — Sticky mobile CTA bar (appears once the hero is passed)
+     ========================================================== */
+  (function mobileBar() {
+    var bar = $('.mobile-cta');
+    var heroEl = $('.hero');
+    if (!bar || !heroEl || !('IntersectionObserver' in window)) return;
+
+    new IntersectionObserver(function (entries) {
+      bar.classList.toggle('is-in', !entries[0].isIntersecting);
+    }, { rootMargin: '-70% 0px 0px 0px' }).observe(heroEl);
+  })();
+
+  /* ==========================================================
+     5 — Scroll reveal (+ staggered children, + counters)
+     ========================================================== */
+  (function reveal() {
+    var items = $$('[data-reveal], .reveal-words, [data-count]');
+    if (!items.length) return;
+
+    if (reduced || !('IntersectionObserver' in window)) {
+      items.forEach(function (el) {
+        el.classList.add('is-in');
+        if (el.hasAttribute('data-count')) el.textContent = el.getAttribute('data-count');
+      });
+      return;
+    }
+
+    // stagger any group marked with data-stagger
+    $$('[data-stagger]').forEach(function (group) {
+      var step = parseInt(group.getAttribute('data-stagger'), 10) || 90;
+      $$('[data-reveal]', group).forEach(function (child, i) {
+        child.style.setProperty('--d', (i * step) + 'ms');
+      });
+    });
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('is-in');
+        if (e.target.hasAttribute('data-count')) countUp(e.target);
+        io.unobserve(e.target);
+      });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.12 });
+
+    items.forEach(function (el) { io.observe(el); });
+
+    function countUp(el) {
+      var target = parseFloat(el.getAttribute('data-count')) || 0;
+      var suffix = el.getAttribute('data-suffix') || '';
+      var dur = 1500, t0 = null;
+      function tick(ts) {
+        if (t0 === null) t0 = ts;
+        var p = Math.min((ts - t0) / dur, 1);
+        var eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(target * eased) + suffix;
+        if (p < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+  })();
+
+  /* ==========================================================
+     6 — Parallax (writes --py; CSS consumes it)
+     ========================================================== */
+  (function parallax() {
+    var els = $$('[data-parallax]');
+    if (!els.length || reduced) return;
+
+    var ticking = false;
+    function run() {
+      var vh = window.innerHeight;
+      els.forEach(function (el) {
+        var host = el.closest('[data-parallax-root]') || el.parentElement;
+        var r = host.getBoundingClientRect();
+        if (r.bottom < -200 || r.top > vh + 200) return; // offscreen: skip
+        var speed = parseFloat(el.getAttribute('data-parallax')) || 0.12;
+        var offset = (r.top + r.height / 2 - vh / 2) * speed;
+        el.style.setProperty('--py', offset.toFixed(1) + 'px');
+      });
+      ticking = false;
+    }
+    window.addEventListener('scroll', function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(run); }
+    }, { passive: true });
+    window.addEventListener('resize', run);
+    run();
+  })();
+
+  /* ==========================================================
+     7 — Festive light particles
+     ========================================================== */
+  (function particles() {
+    if (reduced) return;
+    var tints = ['var(--yellow)', 'var(--marigold)', 'var(--orange)', 'var(--magenta)'];
+
+    $$('.particles').forEach(function (host) {
+      var n = parseInt(host.getAttribute('data-count-particles'), 10) || 18;
+      if (window.innerWidth < 640) n = Math.round(n * 0.55);
+      var frag = document.createDocumentFragment();
+
+      for (var i = 0; i < n; i++) {
+        var s = document.createElement('span');
+        var size = (3 + Math.random() * 5).toFixed(1);
+        s.style.setProperty('--x', (Math.random() * 100).toFixed(2) + '%');
+        s.style.setProperty('--s', size + 'px');
+        s.style.setProperty('--dx', (Math.random() * 120 - 60).toFixed(0) + 'px');
+        s.style.setProperty('--dur', (12 + Math.random() * 14).toFixed(1) + 's');
+        s.style.setProperty('--delay', (-Math.random() * 22).toFixed(1) + 's');
+        s.style.setProperty('--op', (0.35 + Math.random() * 0.5).toFixed(2));
+        s.style.setProperty('--glow', (6 + Math.random() * 12).toFixed(0) + 'px');
+        s.style.setProperty('--rise', (70 + Math.random() * 60).toFixed(0) + 'vh');
+        s.style.setProperty('--pc', tints[(Math.random() * tints.length) | 0]);
+        frag.appendChild(s);
+      }
+      host.appendChild(frag);
+    });
+  })();
+
+  /* ==========================================================
+     8 — Background video
+     Lazy: sources are only attached once the section is near the
+     viewport, so the file is never fetched on pages nobody scrolls.
+     Any failure leaves the poster photograph in place.
+     ========================================================== */
+  (function bgVideo() {
+    var vids = $$('[data-bg-video]');
+    if (!vids.length) return;
+
+    var conn = navigator.connection || {};
+    var saveData = conn.saveData === true;
+    var slowNet = /^(slow-)?2g$/.test(conn.effectiveType || '');
+    // Phones pay the most for this and gain the least — keep the still there.
+    var tooSmall = window.matchMedia('(max-width: 768px)').matches;
+
+    if (reduced || saveData || slowNet || tooSmall) return;
+    if (!('IntersectionObserver' in window)) return;
+
+    vids.forEach(function (v) {
+      var loaded = false;
+
+      function load() {
+        if (loaded) return;
+        loaded = true;
+        $$('source', v).forEach(function (s) {
+          var src = s.getAttribute('data-src');
+          if (src) s.setAttribute('src', src);
+        });
+        v.load();
+        var p = v.play();
+        // Autoplay can still be refused; the poster simply stays.
+        if (p && typeof p.catch === 'function') p.catch(function () {});
+      }
+
+      v.addEventListener('playing', function () { v.classList.add('is-playing'); });
+      v.addEventListener('error', function () { v.classList.remove('is-playing'); }, true);
+
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) {
+            load();
+            if (v.paused) { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+          } else if (loaded && !v.paused) {
+            v.pause();   // don't burn cycles decoding offscreen
+          }
+        });
+      }, { rootMargin: '200px 0px' }).observe(v);
+    });
+  })();
+
+  /* ==========================================================
+     9 — Gallery
+     Entrance stagger, scroll-linked image drift, live counter,
+     progress bar, drag with inertia, and the lightbox.
+     ========================================================== */
+  (function gallery() {
+    var section = $('.gallery');
+    var track = $('.gal-track');
+    if (!track) return;
+    var items = $$('.gal-item', track);
+    if (!items.length) return;
+
+    /* ---- entrance: stagger each frame in as the section arrives ---- */
+    items.forEach(function (it, i) { it.style.setProperty('--i', i); });
+    if (section) {
+      if (reduced || !('IntersectionObserver' in window)) {
+        section.classList.add('is-in');
+      } else {
+        var io = new IntersectionObserver(function (e) {
+          if (e[0].isIntersecting) { section.classList.add('is-in'); io.disconnect(); }
+        }, { rootMargin: '0px 0px -18% 0px', threshold: 0.08 });
+        io.observe(track);
+      }
+    }
+
+    /* ---- readouts: counter + progress bar ---- */
+    var bar = $('#galBar'), now = $('#galNow'), total = $('#galTotal');
+    if (total) total.textContent = String(items.length).padStart(2, '0');
+
+    function maxScroll() { return Math.max(1, track.scrollWidth - track.clientWidth); }
+
+    function readout() {
+      var max = maxScroll();
+      if (bar) bar.style.width = Math.min(100, (track.scrollLeft / max) * 100) + '%';
+
+      // The strip reads left to right, so "current" is the leading frame —
+      // measuring from the centre would show 02 while 01 is still on screen.
+      if (now) {
+        var lead = track.scrollLeft, best = 0, bestD = Infinity;
+        items.forEach(function (it, i) {
+          var d = Math.abs(it.offsetLeft - lead);
+          if (d < bestD) { bestD = d; best = i; }
+        });
+        // at the far end the last frame is on screen, so complete the count
+        if (lead >= max - 2) best = items.length - 1;
+        now.textContent = String(best + 1).padStart(2, '0');
+      }
+    }
+
+    /* ---- each image drifts inside its frame as the strip moves ---- */
+    function drift() {
+      if (reduced) return;
+      var vw = track.clientWidth, mid = track.scrollLeft + vw / 2;
+      items.forEach(function (it) {
+        var img = it.firstElementChild;
+        if (!img || img.tagName !== 'IMG') return;
+        var c = it.offsetLeft + it.offsetWidth / 2;
+        // -1 .. 1 across the visible width, clamped
+        var t = Math.max(-1, Math.min(1, (c - mid) / vw));
+        img.style.setProperty('--gx', (t * 26).toFixed(1) + 'px');
+      });
+    }
+
+    var ticking = false;
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () { readout(); drift(); syncArrows(); ticking = false; });
+    }
+    track.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+
+    /* ---- arrows ---- */
+    var prev = $('.gal-prev'), next = $('.gal-next');
+    function step() { return items[0] ? items[0].offsetWidth + 20 : 340; }
+    function syncArrows() {
+      if (!prev || !next) return;
+      prev.disabled = track.scrollLeft <= 2;
+      next.disabled = track.scrollLeft >= maxScroll() - 2;
+    }
+    if (prev) prev.addEventListener('click', function () {
+      track.scrollBy({ left: -step(), behavior: reduced ? 'auto' : 'smooth' });
+    });
+    if (next) next.addEventListener('click', function () {
+      track.scrollBy({ left: step(), behavior: reduced ? 'auto' : 'smooth' });
+    });
+
+    /* ---- drag, with a little inertia on release ---- */
+    var down = false, startX = 0, startScroll = 0, moved = 0;
+    var vel = 0, lastX = 0, lastT = 0, glide = 0;
+
+    track.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'touch') return;      // native touch scrolling is better
+      down = true; moved = 0; vel = 0;
+      startX = lastX = e.clientX;
+      lastT = performance.now();
+      startScroll = track.scrollLeft;
+      cancelAnimationFrame(glide);
+      track.classList.add('is-dragging');
+      track.setPointerCapture(e.pointerId);
+    });
+    track.addEventListener('pointermove', function (e) {
+      if (!down) return;
+      var dx = e.clientX - startX;
+      moved = Math.abs(dx);
+      track.scrollLeft = startScroll - dx;
+
+      var t = performance.now(), dt = t - lastT;
+      if (dt > 0) vel = (e.clientX - lastX) / dt;   // px per ms
+      lastX = e.clientX; lastT = t;
+    });
+    function endDrag(e) {
+      if (!down) return;
+      down = false;
+      track.classList.remove('is-dragging');
+      try { track.releasePointerCapture(e.pointerId); } catch (err) {}
+
+      if (reduced || Math.abs(vel) < 0.15) return;
+      // coast to a stop, then let scroll-snap settle it
+      var v = vel * 16;
+      (function coast() {
+        v *= 0.94;
+        track.scrollLeft -= v;
+        if (Math.abs(v) > 0.4) glide = requestAnimationFrame(coast);
+      })();
+    }
+    track.addEventListener('pointerup', endDrag);
+    track.addEventListener('pointercancel', endDrag);
+    track.addEventListener('pointerleave', endDrag);
+
+    readout(); drift(); syncArrows();
+
+    /* ---- lightbox ---- */
+    var lb = $('.lightbox');
+    if (!lb) return;
+    var lbImg = $('.lb-stage img', lb);
+    var lbCap = $('.lb-cap', lb);
+    var idx = 0, lastFocus = null;
+
+    var slides = items.map(function (it) {
+      var img = $('img', it);
+      return {
+        src: it.getAttribute('data-full') || (img && img.currentSrc) || (img && img.src),
+        alt: (img && img.alt) || '',
+        title: it.getAttribute('data-title') || '',
+        sub: it.getAttribute('data-sub') || ''
+      };
+    });
+
+    function esc(s) {
+      return String(s).replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+      });
+    }
+    function show(i) {
+      idx = (i + slides.length) % slides.length;
+      var s = slides[idx];
+      lbImg.src = s.src;
+      lbImg.alt = s.alt;
+      lbCap.innerHTML = '<b>' + esc(s.title) + '</b> &nbsp;·&nbsp; ' + esc(s.sub) +
+                        ' &nbsp;·&nbsp; ' + (idx + 1) + ' / ' + slides.length;
+    }
+    function open(i) {
+      lastFocus = document.activeElement;
+      show(i);
+      lb.classList.add('open');
+      document.body.classList.add('locked');
+      var c = $('.lb-close', lb); if (c) c.focus();
+    }
+    function close() {
+      lb.classList.remove('open');
+      if (!$('.overlay.open') && !document.body.classList.contains('menu-open')) {
+        document.body.classList.remove('locked');
+      }
+      if (lastFocus) lastFocus.focus();
+    }
+
+    items.forEach(function (it, i) {
+      it.addEventListener('click', function () {
+        if (moved > 6) return;            // that was a drag, not a click
+        open(i);
+      });
+      it.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(i); }
+      });
+    });
+
+    var cl = $('.lb-close', lb); if (cl) cl.addEventListener('click', close);
+    var lp = $('.lb-prev', lb);  if (lp) lp.addEventListener('click', function () { show(idx - 1); });
+    var ln = $('.lb-next', lb);  if (ln) ln.addEventListener('click', function () { show(idx + 1); });
+    lb.addEventListener('click', function (e) { if (e.target === lb) close(); });
+
+    document.addEventListener('keydown', function (e) {
+      if (!lb.classList.contains('open')) return;
+      if (e.key === 'Escape') close();
+      else if (e.key === 'ArrowLeft') show(idx - 1);
+      else if (e.key === 'ArrowRight') show(idx + 1);
+    });
+  })();
+
+
+  /* ==========================================================
+     10 — Dialogs
+     Two separate flows:
+       #ov    passes  -> informational, hands off to District / BookMyShow
+       #wsov  workshop-> booked directly by Navkar, so it takes a form
+     ========================================================== */
+  (function dialogs() {
+
+    /* ---- shared open/close plumbing ---- */
+    function wire(el, closeBtn) {
+      if (!el) return null;
+      var lastFocus = null;
+
+      function open() {
+        lastFocus = document.activeElement;
+        // never leave two dialogs stacked
+        $$('.overlay.open').forEach(function (o) { if (o !== el) hideOnly(o); });
+        el.classList.add('open');
+        el.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('locked');
+        if (closeBtn) setTimeout(function () { closeBtn.focus(); }, 60);
+      }
+      function hideOnly(o) {
+        o.classList.remove('open');
+        o.setAttribute('aria-hidden', 'true');
+      }
+      function close() {
+        hideOnly(el);
+        if (!$('.overlay.open') && !$('.lightbox.open') &&
+            !document.body.classList.contains('menu-open')) {
+          document.body.classList.remove('locked');
+        }
+        if (lastFocus) lastFocus.focus();
+      }
+
+      if (closeBtn) closeBtn.addEventListener('click', close);
+      el.addEventListener('click', function (e) { if (e.target === el) close(); });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && el.classList.contains('open')) close();
+      });
+      // keep tabbing inside the open dialog
+      el.addEventListener('keydown', function (e) {
+        if (e.key !== 'Tab' || !el.classList.contains('open')) return;
+        var f = $$('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])', el)
+                .filter(function (n) { return n.offsetParent !== null; });
+        if (!f.length) return;
+        var first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      });
+
+      return { open: open, close: close };
+    }
+
+    var passes   = wire($('#ov'),   $('#mx'));
+    var workshop = wire($('#wsov'), $('#wsx'));
+
+    /* ---- triggers ---- */
+    if (passes) {
+      $$('[data-cta]').forEach(function (b) {
+        b.addEventListener('click', function (e) { e.preventDefault(); passes.open(); });
+      });
+    }
+    if (workshop) {
+      $$('[data-ws-cta]').forEach(function (b) {
+        b.addEventListener('click', function (e) { e.preventDefault(); workshop.open(); });
+      });
+    }
+
+    /* ---- workshop form ---- */
+    (function workshopForm() {
+      var form = $('#wsForm');
+      if (!form) return;
+
+      var UNIT = 300, WA = '918142111145', MAX = 30;
+      var qty = 1;
+      var val = $('#wsQtyVal'), out = $('#wsQtyOut'), amt = $('#wsAmt'), err = $('#wsErr');
+      var extra = $('#wsExtra'), names = $('#wsNames');
+      var nameOut = $('#wsNameOut');
+
+      /* One name field per extra place. Rebuilt whenever the count changes;
+         names already typed for places that remain are carried over. */
+      function syncNames() {
+        if (!names) return;
+        var want = Math.max(0, qty - 1);
+        var have = $$('input', names);
+        if (have.length === want) return;
+
+        var kept = have.map(function (i) { return i.value; });
+        names.innerHTML = '';
+        for (var i = 0; i < want; i++) {
+          var inp = document.createElement('input');
+          inp.className = 'fld';
+          inp.type = 'text';
+          inp.name = 'attendee' + (i + 2);
+          inp.placeholder = 'Name of person ' + (i + 2);
+          inp.autocomplete = 'off';
+          inp.value = kept[i] || '';
+          names.appendChild(inp);
+        }
+        if (extra) extra.hidden = want === 0;
+      }
+
+      function sync() {
+        if (val) val.textContent = String(qty);
+        if (out) out.textContent = String(qty);
+        if (amt) amt.textContent = '₹' + (UNIT * qty).toLocaleString('en-IN');
+        syncNames();
+      }
+
+      var minus = $('#wsMinus'), plus = $('#wsPlus');
+      if (minus) minus.addEventListener('click', function () { qty = Math.max(1, qty - 1); sync(); });
+      if (plus)  plus.addEventListener('click',  function () { qty = Math.min(MAX, qty + 1); sync(); });
+      sync();
+
+      // keep the confirm panel showing who is actually coming
+      function allNames() {
+        var first = (form.elements.name.value || '').trim();
+        var rest = $$('input', names || document.createElement('div'))
+                   .map(function (i) { return i.value.trim(); });
+        return [first].concat(rest);
+      }
+      form.addEventListener('input', function () {
+        if (!nameOut) return;
+        var list = allNames().filter(Boolean);
+        nameOut.hidden = list.length < 2;
+        nameOut.querySelector('.v').textContent = list.join(', ');
+      });
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var d = new FormData(form);
+        var name = (d.get('name') || '').toString().trim();
+        var mob  = (d.get('mobile') || '').toString().trim();
+
+        function fail(msg, el) {
+          if (err) { err.hidden = false; err.textContent = msg; }
+          if (el) el.focus();
+        }
+
+        if (!name) return fail('Please add your name.', form.elements.name);
+        if (mob.replace(/\D/g, '').length < 10) {
+          return fail('Please add a valid mobile number.', form.elements.mobile);
+        }
+
+        // every booked place needs a name against it
+        var rest = $$('input', names || document.createElement('div'));
+        var blank = rest.filter(function (i) { return !i.value.trim(); })[0];
+        if (blank) {
+          return fail('You booked ' + qty + ' places, so please name everyone attending.', blank);
+        }
+        if (err) err.hidden = true;
+
+        var list = allNames();
+        var lines = [
+          'Garba Workshop registration, 3 October 2026',
+          'Booked by: ' + name,
+          'Mobile: ' + mob,
+          'People: ' + qty,
+          'Total: ₹' + (UNIT * qty)
+        ];
+        if (list.length > 1) {
+          lines.push('Attending:');
+          list.forEach(function (n, i) { lines.push('  ' + (i + 1) + '. ' + n); });
+        }
+        var email = (d.get('email') || '').toString().trim();
+        var city  = (d.get('city')  || '').toString().trim();
+        var note  = (d.get('note')  || '').toString().trim();
+        if (email) lines.push('Email: ' + email);
+        if (city)  lines.push('City: ' + city);
+        if (note)  lines.push('Note: ' + note);
+
+        window.open('https://wa.me/' + WA + '?text=' + encodeURIComponent(lines.join('\n')),
+                    '_blank', 'noopener');
+      });
+    })();
+
+    if (location.hash === '#open'     && passes)   passes.open();
+    if (location.hash === '#workshop-register' && workshop) workshop.open();
+  })();
+
+
+  /* ==========================================================
+     11 — Smooth anchor scrolling that respects the fixed nav
+     ========================================================== */
+  $$('a[href^="#"]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var id = a.getAttribute('href');
+      if (id === '#' || id === '#open') return;
+      var target = document.querySelector(id);
+      if (!target) return;
+      e.preventDefault();
+      target.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+      history.replaceState(null, '', id);
+    });
+  });
+})();

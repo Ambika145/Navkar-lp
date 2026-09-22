@@ -1,0 +1,234 @@
+/* ============================================================
+   Navkar N9 — Navigation
+   Transparent over the hero, frosted + solid once scrolled,
+   with a full-screen festive drawer on small screens.
+   ============================================================ */
+
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:transparent;
+  border-bottom:1px solid transparent;
+  transform:translateY(0);
+  transition:transform .45s var(--e-out),background var(--t-mid),
+             box-shadow var(--t-mid),border-color var(--t-mid);
+}
+.nav-in{
+  max-width:var(--wrap-wide);margin:0 auto;
+  padding:0 var(--gut);
+  height:var(--nav-h);
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+  transition:height var(--t-mid);
+}
+
+/* ---- Scrolled state ---- */
+.nav.is-stuck{
+  background:rgba(255,249,220,.90);
+  backdrop-filter:blur(16px) saturate(1.5);
+  -webkit-backdrop-filter:blur(16px) saturate(1.5);
+  border-bottom-color:var(--ink-12);
+  box-shadow:0 6px 30px rgba(59,10,31,.09);
+}
+.nav.is-stuck .nav-in{height:72px}
+
+/* Hide on scroll-down, show on scroll-up */
+.nav.is-hidden{transform:translateY(-102%)}
+
+/* ------------------------------------------------------------
+   Brand
+   ------------------------------------------------------------ */
+.brand{display:flex;align-items:center;gap:12px;flex:none}
+/* The wordmark already carries the event name, so the nav does not repeat it
+   as text. Its lettering is bulb-lit and fine, so it needs real width to stay
+   readable — hence the two-line crop rather than the full three-line lockup. */
+.blogo{
+  display:block;flex:none;
+  width:clamp(164px,17vw,200px);
+  height:auto;
+  filter:drop-shadow(0 3px 12px rgba(27,3,9,.55));
+  transition:width .5s var(--e-out),opacity .4s var(--e-out),
+             margin .5s var(--e-out),transform var(--t-fast);
+}
+.brand:hover .blogo{transform:translateY(-2px)}
+/* Over the hero the full-size wordmark is already on screen, so the nav slides
+   its own copy in only once you have scrolled past. */
+.nav:not(.is-stuck) .blogo{
+  width:0;opacity:0;margin-right:-12px;pointer-events:none;
+}
+.nav.is-stuck .blogo{filter:none}
+
+
+/* ------------------------------------------------------------
+   Desktop links
+   ------------------------------------------------------------ */
+.nav-links{display:flex;align-items:center;gap:clamp(18px,2.4vw,34px)}
+.nav-links a{
+  position:relative;
+  font-family:'Outfit',sans-serif;
+  font-size:14px;font-weight:600;letter-spacing:.01em;
+  color:rgba(255,249,220,.88);
+  padding:6px 0;
+  transition:color var(--t-fast);
+}
+.nav-links a::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:2px;border-radius:2px;
+  background:var(--yellow);
+  transform:scaleX(0);transform-origin:right center;
+  transition:transform .42s var(--e-out);
+}
+.nav-links a:hover,.nav-links a:focus-visible{color:#fff}
+.nav-links a:hover::after,.nav-links a:focus-visible::after{transform:scaleX(1);transform-origin:left center}
+.nav-links a.on{color:#fff}
+.nav-links a.on::after{transform:scaleX(1);background:var(--magenta)}
+
+.nav.is-stuck .nav-links a{color:var(--body)}
+.nav.is-stuck .nav-links a:hover,
+.nav.is-stuck .nav-links a.on{color:var(--ink)}
+.nav.is-stuck .nav-links a::after{background:var(--magenta)}
+
+.nav-actions{display:flex;align-items:center;gap:14px}
+
+/* Nav CTA inherits .btn; over the hero it goes glass, then solid */
+.nav .btn-nav{
+  background:var(--cream-18);color:#fff;
+  border:1.5px solid var(--cream-45);
+  box-shadow:none;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  transition:background var(--t-fast),color var(--t-mid),border-color var(--t-mid),
+             transform var(--t-fast),box-shadow var(--t-fast);
+}
+.nav .btn-nav:hover{background:rgba(255,249,220,.28);transform:translateY(-2px)}
+.nav.is-stuck .btn-nav{
+  background:var(--yellow);color:var(--ink);border-color:transparent;
+  box-shadow:0 4px 0 #D2AE00;
+}
+.nav.is-stuck .btn-nav:hover{transform:translateY(2px);box-shadow:0 2px 0 #D2AE00}
+
+/* ------------------------------------------------------------
+   Burger
+   ------------------------------------------------------------ */
+.burger{
+  display:none;
+  width:44px;height:44px;flex:none;
+  border-radius:50%;
+  border:1.5px solid var(--cream-45);
+  background:var(--cream-10);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  position:relative;
+  transition:background var(--t-fast),border-color var(--t-mid);
+}
+.burger i{
+  position:absolute;left:50%;width:18px;height:2px;border-radius:2px;
+  background:#fff;transform:translateX(-50%);
+  transition:transform .4s var(--e-out),opacity .25s var(--e-out),background var(--t-mid);
+}
+.burger i:nth-child(1){top:16px}
+.burger i:nth-child(2){top:21px}
+.burger i:nth-child(3){top:26px}
+.nav.is-stuck .burger{border-color:var(--ink-12);background:rgba(59,10,31,.05)}
+.nav.is-stuck .burger i{background:var(--ink)}
+
+body.menu-open .burger i:nth-child(1){transform:translateX(-50%) translateY(5px) rotate(45deg)}
+body.menu-open .burger i:nth-child(2){opacity:0;transform:translateX(-50%) scaleX(.3)}
+body.menu-open .burger i:nth-child(3){transform:translateX(-50%) translateY(-5px) rotate(-45deg)}
+
+/* ------------------------------------------------------------
+   Mobile drawer
+   ------------------------------------------------------------ */
+.drawer{
+  position:fixed;inset:0;z-index:99;
+  background:var(--ink);
+  display:flex;flex-direction:column;justify-content:center;
+  padding:calc(var(--nav-h) + 30px) var(--gut) 40px;
+  clip-path:circle(0% at calc(100% - 46px) 40px);
+  transition:clip-path .72s var(--e-out);
+  pointer-events:none;
+  overflow-y:auto;
+}
+body.menu-open .drawer{
+  clip-path:circle(150% at calc(100% - 46px) 40px);
+  pointer-events:auto;
+}
+.drawer::before{
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 82% 8%,rgba(227,11,84,.34),transparent 52%),
+    radial-gradient(circle at 12% 88%,rgba(156,0,67,.42),transparent 55%);
+  pointer-events:none;
+}
+.drawer-inner{position:relative;z-index:1;max-width:520px;width:100%;margin:0 auto}
+
+.drawer a.dl{
+  display:flex;align-items:baseline;gap:16px;
+  font-family:'Outfit',sans-serif;
+  font-size:clamp(28px,8vw,42px);font-weight:800;letter-spacing:-.03em;
+  color:var(--cream);
+  padding:11px 0;
+  border-bottom:1px solid var(--cream-10);
+  opacity:0;transform:translateY(24px);
+  transition:opacity .5s var(--e-out),transform .5s var(--e-out),color var(--t-fast);
+}
+.drawer a.dl .idx{
+  font-size:12px;font-weight:700;letter-spacing:.14em;
+  color:var(--marigold);flex:none;
+}
+.drawer a.dl:hover{color:var(--yellow)}
+body.menu-open .drawer a.dl{
+  opacity:1;transform:translateY(0);
+  transition-delay:calc(180ms + var(--i,0) * 60ms);
+}
+
+.drawer-foot{
+  margin-top:34px;
+  opacity:0;transform:translateY(20px);
+  transition:opacity .5s var(--e-out),transform .5s var(--e-out);
+}
+body.menu-open .drawer-foot{opacity:1;transform:none;transition-delay:520ms}
+.drawer-foot .btn{width:100%}
+.drawer-meta{
+  margin-top:22px;color:var(--cream-45);
+  font-size:13px;line-height:1.75;
+}
+.drawer-meta strong{color:var(--cream);font-weight:600}
+
+/* ------------------------------------------------------------
+   Sticky mobile booking bar
+   ------------------------------------------------------------ */
+.mobile-cta{
+  display:none;
+  position:fixed;left:0;right:0;bottom:0;z-index:98;
+  padding:11px var(--gut) calc(11px + env(safe-area-inset-bottom));
+  background:rgba(255,249,220,.94);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-top:1px solid var(--ink-12);
+  box-shadow:0 -6px 26px rgba(59,10,31,.11);
+  align-items:center;justify-content:space-between;gap:14px;
+  transform:translateY(120%);
+  transition:transform .5s var(--e-out);
+}
+.mobile-cta.is-in{transform:translateY(0)}
+.mobile-cta .mc-price{line-height:1.25}
+.mobile-cta .mc-price .k{
+  font-family:'Outfit',sans-serif;font-size:9.5px;font-weight:800;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--magenta-ink);
+}
+.mobile-cta .mc-price .v{font-family:'Outfit',sans-serif;font-size:19px;font-weight:900}
+.mobile-cta .btn{flex:none}
+
+/* ------------------------------------------------------------
+   Breakpoints
+   ------------------------------------------------------------ */
+@media (max-width:1040px){
+  .nav-links{display:none}
+  .burger{display:block}
+  .nav .btn-nav{display:none}
+  /* the nav CTA is gone from here down, so the sticky bar takes over as the
+     persistent booking entry point */
+  .mobile-cta{display:flex}
+  body{padding-bottom:78px}
+}
+@media (max-width:640px){
+  :root{--nav-h:74px}
+  .nav.is-stuck .nav-in{height:64px}
+  .blogo{width:clamp(158px,46vw,180px)}
+  body{padding-bottom:74px}
+}

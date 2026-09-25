@@ -964,3 +964,13 @@ a.fext:focus-visible{outline:3px solid var(--yellow);outline-offset:3px;border-r
 /* the closing statement card leads with the line, not a number */
 .cell-say .cell-body h3{font-size:clamp(22px,2.8vw,32px)}
 .cell-say .cell-body p{margin-top:10px;font-weight:700;letter-spacing:.06em}
+
+/* ------------------------------------------------------------
+   Narrow phones: the 03 October card and the caption chip sit on
+   the same line of the workshop photo and collide at 390px and
+   below. The chip only repeats the heading directly beneath the
+   picture, so it is the one that goes.
+   ------------------------------------------------------------ */
+@media (max-width:430px){
+  .ws-media .img-cap{display:none}
+}

@@ -1,5 +1,5 @@
 /* ============================================================
-   Navkar N9 — Interaction layer
+   Navkar Navratri Utsav — Interaction layer
    Nav, drawer, scroll reveal, parallax, counters, particles,
    background video, gallery + lightbox, and the passes / workshop dialogs.
    ============================================================ */
@@ -425,7 +425,13 @@
     var lbCap = $('.lb-cap', lb);
     var idx = 0, lastFocus = null;
 
-    var slides = items.map(function (it) {
+    // Reel tiles are cross-origin iframes that play in place, so the lightbox
+    // is built from the photo frames only — and sits out entirely if there
+    // are none.
+    var shots = items.filter(function (it) { return !it.classList.contains('gal-reel'); });
+    if (!shots.length) return;
+
+    var slides = shots.map(function (it) {
       var img = $('img', it);
       return {
         src: it.getAttribute('data-full') || (img && img.currentSrc) || (img && img.src),
@@ -463,7 +469,7 @@
       if (lastFocus) lastFocus.focus();
     }
 
-    items.forEach(function (it, i) {
+    shots.forEach(function (it, i) {
       it.addEventListener('click', function () {
         if (moved > 6) return;            // that was a drag, not a click
         open(i);
@@ -489,11 +495,250 @@
 
   /* ==========================================================
      10 — Dialogs
-     Two separate flows:
-       #ov    passes  -> informational, hands off to District / BookMyShow
-       #wsov  workshop-> booked directly by Navkar, so it takes a form
+     Two separate flows (no backend):
+       #ov    passes  -> date → tickets → Razorpay → Google Sheet
+       #wsov  workshop-> form → Razorpay → Google Sheet
+     Manual verification happens in the sheet.
      ========================================================== */
   (function dialogs() {
+
+    function cfg() {
+      return window.NAVKAR_CONFIG || {};
+    }
+
+    /* Append one row via Google Apps Script web app.
+       Uses a readable CORS response so we only confirm after the sheet write succeeds.
+       text/plain avoids a CORS preflight on simple deployments. */
+    function saveToSheet(payload) {
+      var endpoint = cfg().sheetsEndpoint || '';
+      if (!endpoint || endpoint.indexOf('REPLACE_ME') !== -1) {
+        return Promise.reject(new Error('Google Sheets endpoint is not configured in js/config.js'));
+      }
+      return fetch(endpoint, {
+        method: 'POST',
+        redirect: 'follow',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      }).then(function (res) {
+        if (!res.ok) {
+          throw new Error('Could not save your registration to our records.');
+        }
+        return res.text().then(function (text) {
+          var data = null;
+          try { data = text ? JSON.parse(text) : null; } catch (e) { data = null; }
+          if (data && data.ok === false) {
+            throw new Error(data.error || 'Could not save your registration to our records.');
+          }
+          /* Some Apps Script deployments return an empty body after redirect;
+             treat HTTP 200 as success when JSON is missing. */
+          if (data && data.ok === true) return data;
+          if (!text || !String(text).trim()) return { ok: true };
+          if (data) return data;
+          throw new Error('Could not confirm that your registration was saved.');
+        });
+      });
+    }
+
+    function sheetSaveSupportMessage(paymentId) {
+      var id = paymentId ? String(paymentId) : '';
+      return 'Payment was received, but we could not save your registration automatically. ' +
+        'Please WhatsApp or call Bookings with your Razorpay Payment ID' +
+        (id ? ' (' + id + ')' : '') +
+        ': +91 81421 11145 / +91 80191 61198.';
+    }
+
+    var PENDING_KEY = 'navkar_pending_booking';
+
+    function stashPending(data) {
+      try { sessionStorage.setItem(PENDING_KEY, JSON.stringify(data)); } catch (e) { /* ignore */ }
+    }
+
+    function readPending() {
+      try {
+        var raw = sessionStorage.getItem(PENDING_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch (e) { return null; }
+    }
+
+    function clearPending() {
+      try { sessionStorage.removeItem(PENDING_KEY); } catch (e) { /* ignore */ }
+    }
+
+    function bookingRow(details, paymentId, proof) {
+      var row = {
+        name: details.name || '',
+        phone: details.phone || '',
+        email: details.email || '',
+        city: details.city || '',
+        bookingType: details.bookingType || '',
+        passType: details.passType || '',
+        quantity: details.quantity,
+        amount: details.amount,
+        paymentId: paymentId || '',
+        paymentStatus: 'Payment Received',
+        verificationStatus: 'Pending Review'
+      };
+      if (proof) {
+        row.proofBase64 = proof.proofBase64;
+        row.proofName = proof.proofName;
+        row.proofMime = proof.proofMime;
+      }
+      return row;
+    }
+
+    var MAX_PROOF_BYTES = 5 * 1024 * 1024;
+
+    function readProofAsBase64(file) {
+      return new Promise(function (resolve, reject) {
+        if (!file) {
+          reject(new Error('Please upload your payment screenshot.'));
+          return;
+        }
+        var okType = /^image\/(png|jpeg|jpg|webp)$/i.test(file.type) ||
+                     /\.(png|jpe?g|webp)$/i.test(file.name || '');
+        if (!okType) {
+          reject(new Error('Please upload an image (PNG, JPG or WEBP).'));
+          return;
+        }
+        if (file.size > MAX_PROOF_BYTES) {
+          reject(new Error('Screenshot must be under 5 MB.'));
+          return;
+        }
+        var reader = new FileReader();
+        reader.onload = function () {
+          resolve({
+            proofBase64: String(reader.result || ''),
+            proofName: file.name || 'payment-proof.jpg',
+            proofMime: file.type || 'image/jpeg'
+          });
+        };
+        reader.onerror = function () {
+          reject(new Error('Could not read that image. Try another file.'));
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function wireProofInput(opts) {
+      var input = opts.input;
+      var preview = opts.preview;
+      var img = opts.img;
+      var changeBtn = opts.changeBtn;
+      var submitBtn = opts.submitBtn;
+      var errEl = opts.errEl;
+      var state = { file: null, url: null };
+
+      function clear() {
+        if (state.url) {
+          try { URL.revokeObjectURL(state.url); } catch (e) { /* ignore */ }
+        }
+        state.file = null;
+        state.url = null;
+        if (input) input.value = '';
+        if (preview) preview.hidden = true;
+        if (img) img.removeAttribute('src');
+        if (submitBtn) submitBtn.disabled = true;
+        if (errEl) errEl.hidden = true;
+      }
+
+      function setFile(file) {
+        if (errEl) errEl.hidden = true;
+        if (!file) { clear(); return; }
+        var okType = /^image\/(png|jpeg|jpg|webp)$/i.test(file.type) ||
+                     /\.(png|jpe?g|webp)$/i.test(file.name || '');
+        if (!okType) {
+          if (errEl) {
+            errEl.hidden = false;
+            errEl.textContent = 'Please upload an image (PNG, JPG or WEBP).';
+          }
+          if (input) input.value = '';
+          return;
+        }
+        if (file.size > MAX_PROOF_BYTES) {
+          if (errEl) {
+            errEl.hidden = false;
+            errEl.textContent = 'Screenshot must be under 5 MB.';
+          }
+          if (input) input.value = '';
+          return;
+        }
+        if (state.url) {
+          try { URL.revokeObjectURL(state.url); } catch (e) { /* ignore */ }
+        }
+        state.file = file;
+        state.url = URL.createObjectURL(file);
+        if (img) img.src = state.url;
+        if (preview) preview.hidden = false;
+        if (submitBtn) submitBtn.disabled = false;
+      }
+
+      if (input) {
+        input.addEventListener('change', function () {
+          setFile(input.files && input.files[0]);
+        });
+      }
+      if (changeBtn && input) {
+        changeBtn.addEventListener('click', function () { input.click(); });
+      }
+
+      return {
+        clear: clear,
+        getFile: function () { return state.file; },
+        getUrl: function () { return state.url; },
+        fail: function (msg) {
+          if (errEl) { errEl.hidden = false; errEl.textContent = msg; }
+        }
+      };
+    }
+
+    /* Razorpay Checkout without server order creation (Option 1).
+       Amount is in INR rupees; converted to paise here. */
+    function payWithRazorpay(opts) {
+      return new Promise(function (resolve, reject) {
+        var key = cfg().razorpayKey || '';
+        if (!key || key.indexOf('REPLACE_ME') !== -1) {
+          reject(new Error('Razorpay key is not configured in js/config.js'));
+          return;
+        }
+        if (typeof window.Razorpay !== 'function') {
+          reject(new Error('Razorpay Checkout failed to load. Check your connection and retry.'));
+          return;
+        }
+        var paise = Math.round(Number(opts.amount) * 100);
+        if (!paise || paise < 100) {
+          reject(new Error('Invalid payment amount.'));
+          return;
+        }
+        var rzp = new window.Razorpay({
+          key: key,
+          amount: paise,
+          currency: 'INR',
+          name: cfg().merchantName || 'Navkar Navratri Utsav',
+          description: opts.description || 'Navkar booking',
+          image: cfg().merchantImage || undefined,
+          prefill: {
+            name: opts.name || '',
+            email: opts.email || '',
+            contact: (opts.mobile || '').replace(/\D/g, '').slice(-10)
+          },
+          notes: opts.notes || {},
+          theme: { color: '#E30B54' },
+          handler: function (response) {
+            resolve(response);
+          },
+          modal: {
+            ondismiss: function () {
+              reject(new Error('Payment cancelled'));
+            }
+          }
+        });
+        rzp.on('payment.failed', function (resp) {
+          var msg = (resp && resp.error && resp.error.description) || 'Payment failed';
+          reject(new Error(msg));
+        });
+        rzp.open();
+      });
+    }
 
     /* ---- shared open/close plumbing ---- */
     function wire(el, closeBtn) {
@@ -544,15 +789,505 @@
     var passes   = wire($('#ov'),   $('#mx'));
     var workshop = wire($('#wsov'), $('#wsx'));
 
-    /* ---- triggers ---- */
-    if (passes) {
-      $$('[data-cta]').forEach(function (b) {
-        b.addEventListener('click', function (e) { e.preventDefault(); passes.open(); });
+    /* ---- passes multi-step booking ---- */
+    (function passBooking() {
+      if (!passes || !$('#bkIntro')) return;
+
+      var MAX = 10;
+      var NIGHTS = {
+        11: { status: 'avail', label: 'Sun 11 Oct' },
+        12: { status: 'avail', label: 'Mon 12 Oct' },
+        13: { status: 'fast',  label: 'Tue 13 Oct' },
+        14: { status: 'fast',  label: 'Wed 14 Oct' },
+        15: { status: 'avail', label: 'Thu 15 Oct' },
+        16: { status: 'fast',  label: 'Fri 16 Oct' },
+        17: { status: 'avail', label: 'Sat 17 Oct' },
+        18: { status: 'avail', label: 'Sun 18 Oct' },
+        19: { status: 'avail', label: 'Mon 19 Oct' }
+      };
+      var PASS_MAP = {
+        'Kids 3–5 Years': 'kids',
+        'Single Night': 'single',
+        'Group of 4': 'g4',
+        'Season Pass': 'season',
+        '9-Day Navratri Pass': 'nav9',
+        'Group of 10': 'g10'
+      };
+
+      var state = {
+        step: 0,
+        date: null,
+        time: '7:00 PM',
+        qty: {},
+        prefer: null,
+        paymentId: null,
+        pending: null
+      };
+
+      var back = $('#bkBack');
+      var stepper = $('#bkStepper');
+      var venueBar = $('#bkVenueBar');
+      var dateLabel = $('#bkDateLabel');
+      var toTickets = $('#bkToTickets');
+      var toReview = $('#bkToReview');
+      var subTotal = $('#bkSubTotal');
+      var tkErr = $('#bkTkErr');
+      var payErr = $('#bkPayErr');
+      var payBtn = $('#bkPayBtn');
+      var form = $('#bkForm');
+      var proofDone = null;
+      var proofDoneImg = null;
+      var proofOk = $('#bkProofOk');
+      var passProof = wireProofInput({
+        input: $('#bkProofFile'),
+        preview: $('#bkProofPreview'),
+        img: $('#bkProofImg'),
+        changeBtn: $('#bkProofChange'),
+        submitBtn: $('#bkProofSubmit'),
+        errEl: $('#bkProofErr')
       });
-    }
+
+      function inr(n) {
+        return '₹' + Number(n).toLocaleString('en-IN');
+      }
+
+      function ticketRows() {
+        return $$('#bkTickets .tk');
+      }
+
+      function cartLines() {
+        return ticketRows().map(function (row) {
+          var id = row.getAttribute('data-id');
+          var q = state.qty[id] || 0;
+          if (!q) return null;
+          return {
+            id: id,
+            name: row.querySelector('.tk-name').textContent.trim(),
+            price: +row.getAttribute('data-price'),
+            qty: q,
+            kind: row.getAttribute('data-kind')
+          };
+        }).filter(Boolean);
+      }
+
+      function cartCount() {
+        return cartLines().reduce(function (s, l) { return s + l.qty; }, 0);
+      }
+
+      function cartTotal() {
+        return cartLines().reduce(function (s, l) { return s + l.price * l.qty; }, 0);
+      }
+
+      function ticketsText() {
+        return cartLines().map(function (l) {
+          return l.name + ' × ' + l.qty + ' (' + inr(l.price * l.qty) + ')';
+        }).join('; ');
+      }
+
+      function renderSummary(el) {
+        if (!el) return;
+        var lines = cartLines();
+        var html = '';
+        html += '<div><div class="k">Night</div><div class="v">' +
+          (state.date ? state.date.label + ' · ' + state.time : '—') + '</div></div>';
+        html += '<div><div class="k">Venue</div><div class="v">Jalvihar, Hyderabad</div></div>';
+        lines.forEach(function (l) {
+          html += '<div><div class="k">' + l.name + ' × ' + l.qty + '</div><div class="v">' +
+            inr(l.price * l.qty) + '</div></div>';
+        });
+        html += '<div class="tot"><div class="k">Total amount</div><div class="v">' +
+          inr(cartTotal()) + '</div></div>';
+        el.innerHTML = html;
+      }
+
+      function updateVenueBar() {
+        if (!venueBar) return;
+        if (state.step === 0) {
+          venueBar.textContent = 'Grand Lawn, Jalvihar · Hyderabad';
+        } else if (state.date) {
+          venueBar.textContent = 'Grand Lawn, Jalvihar · Hyderabad  ·  ' +
+            state.date.label + ' | ' + state.time;
+        } else {
+          venueBar.textContent = 'Grand Lawn, Jalvihar · Hyderabad';
+        }
+      }
+
+      function updateStepper() {
+        if (!stepper) return;
+        var show = state.step >= 1 && state.step <= 3;
+        stepper.hidden = !show;
+        $$('[data-step-dot]', stepper).forEach(function (li) {
+          var n = +li.getAttribute('data-step-dot');
+          li.classList.toggle('is-active', n === state.step);
+          li.classList.toggle('is-done', n < state.step);
+        });
+      }
+
+      function go(step) {
+        state.step = step;
+        $$('.book-pane').forEach(function (p) {
+          var n = +p.getAttribute('data-pane');
+          var on = n === step;
+          p.hidden = !on;
+          p.classList.toggle('is-on', on);
+        });
+        /* After Razorpay succeeds, back is hidden so they cannot re-pay. */
+        if (back) back.hidden = step === 0 || step >= 4;
+        updateStepper();
+        updateVenueBar();
+        if (step === 3) {
+          renderSummary($('#bkSummary'));
+          if (payBtn) {
+            payBtn.disabled = false;
+            payBtn.textContent = 'Pay ' + inr(cartTotal()) + ' with Razorpay';
+          }
+        }
+        if (step === 4) {
+          renderSummary($('#bkDoneSum'));
+          if ($('#bkPayId')) $('#bkPayId').textContent = state.paymentId || '—';
+        }
+        var ov = $('#ov');
+        if (ov) ov.scrollTop = 0;
+      }
+
+      function buildCalendar() {
+        var grid = $('#bkCalGrid');
+        if (!grid || grid.childElementCount) return;
+        var blanks = 4;
+        var daysInMonth = 31;
+        for (var i = 0; i < blanks; i++) {
+          var empty = document.createElement('button');
+          empty.type = 'button';
+          empty.disabled = true;
+          empty.setAttribute('aria-hidden', 'true');
+          grid.appendChild(empty);
+        }
+        for (var d = 1; d <= daysInMonth; d++) {
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.textContent = String(d);
+          btn.setAttribute('data-day', String(d));
+          var night = NIGHTS[d];
+          if (night) {
+            btn.className = 'is-day is-' + night.status;
+            btn.setAttribute('aria-label', night.label);
+          } else {
+            btn.disabled = true;
+          }
+          grid.appendChild(btn);
+        }
+        grid.addEventListener('click', function (e) {
+          var b = e.target.closest('button.is-day');
+          if (!b) return;
+          var day = +b.getAttribute('data-day');
+          var night = NIGHTS[day];
+          if (!night || night.status === 'sold') return;
+          state.date = { day: day, label: night.label, status: night.status };
+          $$('button.is-day', grid).forEach(function (x) { x.classList.remove('is-on'); });
+          b.classList.add('is-on');
+          if (dateLabel) {
+            dateLabel.hidden = false;
+            dateLabel.textContent = 'Date: ' + night.label;
+          }
+          if (toTickets) toTickets.disabled = !state.date || !state.time;
+          updateVenueBar();
+        });
+      }
+
+      function renderTicketActs() {
+        ticketRows().forEach(function (row) {
+          var id = row.getAttribute('data-id');
+          var q = state.qty[id] || 0;
+          var act = row.querySelector('[data-act]');
+          row.classList.toggle('is-picked', q > 0);
+          if (!act) return;
+          if (q === 0) {
+            act.innerHTML = '<button type="button" class="tk-add" data-add="' + id + '">Add</button>';
+          } else {
+            act.innerHTML =
+              '<div class="tk-qty">' +
+              '<button type="button" data-dec="' + id + '" aria-label="Decrease">−</button>' +
+              '<b>' + q + '</b>' +
+              '<button type="button" data-inc="' + id + '" aria-label="Increase">+</button>' +
+              '</div>';
+          }
+        });
+        if (subTotal) subTotal.textContent = inr(cartTotal());
+        if (toReview) toReview.disabled = cartCount() === 0;
+        if (tkErr) tkErr.hidden = true;
+      }
+
+      function setQty(id, next) {
+        var totalOther = cartCount() - (state.qty[id] || 0);
+        next = Math.max(0, Math.min(MAX - totalOther, next));
+        if (next === 0) delete state.qty[id];
+        else state.qty[id] = next;
+        renderTicketActs();
+      }
+
+      function resetBooking() {
+        state.step = 0;
+        state.date = null;
+        state.time = '7:00 PM';
+        state.qty = {};
+        state.paymentId = null;
+        state.pending = null;
+        passProof.clear();
+        clearPending();
+        if (proofOk) proofOk.hidden = true;
+        if (dateLabel) { dateLabel.hidden = true; dateLabel.textContent = 'Date: —'; }
+        if (toTickets) toTickets.disabled = true;
+        $$('#bkCalGrid button.is-day').forEach(function (b) { b.classList.remove('is-on'); });
+        $$('#bkTimes .time-opt').forEach(function (b) {
+          b.classList.toggle('is-on', b.getAttribute('data-time') === '7:00 PM');
+        });
+        if (form) form.reset();
+        if (payErr) payErr.hidden = true;
+        if (payBtn) { payBtn.disabled = false; payBtn.textContent = 'Pay with Razorpay'; }
+        renderTicketActs();
+        go(0);
+        if (state.prefer) {
+          state.qty[state.prefer] = 1;
+          renderTicketActs();
+        }
+      }
+
+      buildCalendar();
+      renderTicketActs();
+
+      var start = $('#bkStart');
+      if (start) start.addEventListener('click', function () { go(1); });
+
+      if (back) back.addEventListener('click', function () {
+        if (state.step === 1) go(0);
+        else if (state.step === 2) go(1);
+        else if (state.step === 3) go(2);
+      });
+
+      if (toTickets) toTickets.addEventListener('click', function () {
+        if (!state.date || !state.time) return;
+        go(2);
+      });
+
+      $$('#bkTimes .time-opt').forEach(function (b) {
+        b.addEventListener('click', function () {
+          state.time = b.getAttribute('data-time');
+          $$('#bkTimes .time-opt').forEach(function (x) { x.classList.remove('is-on'); });
+          b.classList.add('is-on');
+          if (toTickets) toTickets.disabled = !state.date || !state.time;
+          updateVenueBar();
+        });
+      });
+
+      var tickets = $('#bkTickets');
+      if (tickets) tickets.addEventListener('click', function (e) {
+        var add = e.target.closest('[data-add]');
+        var inc = e.target.closest('[data-inc]');
+        var dec = e.target.closest('[data-dec]');
+        if (add) {
+          var id = add.getAttribute('data-add');
+          if (cartCount() >= MAX) {
+            if (tkErr) {
+              tkErr.hidden = false;
+              tkErr.textContent = 'You can add up to 10 tickets only.';
+            }
+            return;
+          }
+          setQty(id, 1);
+        } else if (inc) {
+          var iid = inc.getAttribute('data-inc');
+          if (cartCount() >= MAX) {
+            if (tkErr) {
+              tkErr.hidden = false;
+              tkErr.textContent = 'You can add up to 10 tickets only.';
+            }
+            return;
+          }
+          setQty(iid, (state.qty[iid] || 0) + 1);
+        } else if (dec) {
+          var did = dec.getAttribute('data-dec');
+          setQty(did, (state.qty[did] || 0) - 1);
+        }
+      });
+
+      if (toReview) toReview.addEventListener('click', function () {
+        if (!cartCount()) return;
+        go(3);
+      });
+
+      if (form) form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (payErr) payErr.hidden = true;
+        var d = new FormData(form);
+        var name = (d.get('name') || '').toString().trim();
+        var mob = (d.get('mobile') || '').toString().trim();
+        var email = (d.get('email') || '').toString().trim();
+        var city = (d.get('city') || '').toString().trim();
+        var amount = cartTotal();
+
+        function fail(msg, el) {
+          if (payErr) { payErr.hidden = false; payErr.textContent = msg; }
+          if (el) el.focus();
+          if (payBtn) {
+            payBtn.disabled = false;
+            payBtn.textContent = 'Pay ' + inr(amount || cartTotal()) + ' with Razorpay';
+          }
+        }
+
+        if (!cartCount()) return fail('Add at least one ticket before paying.');
+        if (!state.date) return fail('Pick a night first.');
+        if (!name) return fail('Please add your name.', form.elements.name);
+        if (mob.replace(/\D/g, '').length < 10) {
+          return fail('Please add a valid mobile number.', form.elements.mobile);
+        }
+        if (!email || email.indexOf('@') < 1) {
+          return fail('Please add a valid email.', form.elements.email);
+        }
+
+        if (payBtn) {
+          payBtn.disabled = true;
+          payBtn.textContent = 'Opening Razorpay…';
+        }
+
+        state.pending = {
+          name: name,
+          phone: mob,
+          email: email,
+          city: city,
+          bookingType: 'Pass',
+          passType: ticketsText() + ' · ' + state.date.label + ' · ' + state.time,
+          quantity: cartCount(),
+          amount: amount
+        };
+        stashPending(state.pending);
+
+        payWithRazorpay({
+          amount: amount,
+          name: name,
+          email: email,
+          mobile: mob,
+          description: 'Navkar Passes · ' + state.date.label,
+          notes: {
+            type: 'pass',
+            night: state.date.label,
+            time: state.time,
+            tickets: ticketsText()
+          }
+        }).then(function (response) {
+          state.paymentId = response.razorpay_payment_id || '';
+          var details = state.pending || readPending();
+          if (!details) {
+            fail(sheetSaveSupportMessage(state.paymentId));
+            return;
+          }
+          if (payBtn) payBtn.textContent = 'Saving registration…';
+
+          return saveToSheet(bookingRow(details, state.paymentId)).then(function () {
+            clearPending();
+            passProof.clear();
+            if (proofOk) proofOk.hidden = true;
+            go(4);
+          }).catch(function () {
+            if (payBtn) {
+              payBtn.disabled = true;
+              payBtn.textContent = 'Payment received';
+            }
+            if (payErr) {
+              payErr.hidden = false;
+              payErr.textContent = sheetSaveSupportMessage(state.paymentId);
+            }
+          });
+        }).catch(function (err) {
+          var msg = (err && err.message) || 'Payment could not be completed.';
+          if (msg === 'Payment cancelled') {
+            fail('Payment was cancelled. You can try again when ready.');
+          } else {
+            fail(msg);
+          }
+        });
+      });
+
+      var proofSubmit = $('#bkProofSubmit');
+      if (proofSubmit) {
+        proofSubmit.addEventListener('click', function () {
+          var file = passProof.getFile();
+          if (!file || !state.paymentId) {
+            passProof.fail('Choose a screenshot to attach.');
+            return;
+          }
+          proofSubmit.disabled = true;
+          proofSubmit.textContent = 'Uploading…';
+          if (proofOk) proofOk.hidden = true;
+
+          readProofAsBase64(file).then(function (proof) {
+            return saveToSheet({
+              action: 'attachProof',
+              paymentId: state.paymentId,
+              proofBase64: proof.proofBase64,
+              proofName: proof.proofName,
+              proofMime: proof.proofMime
+            });
+          }).then(function () {
+            if (proofOk) proofOk.hidden = false;
+            proofSubmit.textContent = 'Attached';
+            proofSubmit.disabled = true;
+          }).catch(function (err) {
+            passProof.fail((err && err.message) || 'Could not attach screenshot. Try again.');
+            proofSubmit.disabled = false;
+            proofSubmit.textContent = 'Attach screenshot';
+          });
+        });
+      }
+
+      var doneClose = $('#bkDoneClose');
+      if (doneClose) doneClose.addEventListener('click', function () {
+        passes.close();
+        resetBooking();
+      });
+
+      $$('[data-cta]').forEach(function (b) {
+        b.addEventListener('click', function (e) {
+          e.preventDefault();
+          var pref = b.getAttribute('data-pass');
+          state.prefer = pref && PASS_MAP[pref] ? PASS_MAP[pref] : null;
+          resetBooking();
+          passes.open();
+        });
+      });
+    })();
+
     if (workshop) {
-      $$('[data-ws-cta]').forEach(function (b) {
-        b.addEventListener('click', function (e) { e.preventDefault(); workshop.open(); });
+      /* Registration stays open through 3 Oct 2026 (IST), then every
+         workshop CTA is disabled and the dialog will not open. */
+      var WS_DEADLINE = Date.parse('2026-10-03T23:59:59+05:30');
+      var wsOpen = Date.now() <= WS_DEADLINE;
+      var wsBtns = $$('[data-ws-cta]');
+
+      function disableWorkshop() {
+        wsBtns.forEach(function (b) {
+          b.disabled = true;
+          b.setAttribute('aria-disabled', 'true');
+          b.classList.add('is-closed');
+          if (b.classList.contains('btn-hero-alt')) {
+            b.innerHTML = 'Workshop closed';
+          } else {
+            b.textContent = 'Registration closed';
+          }
+        });
+        var form = $('#wsForm');
+        if (form) {
+          $$('input, button', form).forEach(function (el) { el.disabled = true; });
+        }
+      }
+
+      if (!wsOpen) disableWorkshop();
+
+      wsBtns.forEach(function (b) {
+        b.addEventListener('click', function (e) {
+          e.preventDefault();
+          if (!wsOpen || b.disabled) return;
+          workshop.open();
+        });
       });
     }
 
@@ -561,11 +1296,26 @@
       var form = $('#wsForm');
       if (!form) return;
 
-      var UNIT = 300, WA = '918142111145', MAX = 30;
+      var UNIT = 300, MAX = 30;
       var qty = 1;
       var val = $('#wsQtyVal'), out = $('#wsQtyOut'), amt = $('#wsAmt'), err = $('#wsErr');
       var extra = $('#wsExtra'), names = $('#wsNames');
       var nameOut = $('#wsNameOut');
+      var payBtn = $('#wsPayBtn');
+      var doneStep = $('#wsDoneStep');
+      var wsProofOk = $('#wsProofOk');
+      var wsSaveOk = $('#wsSaveOk');
+      var wsSaveErr = $('#wsSaveErr');
+      var wsPending = null;
+      var wsPaymentId = null;
+      var wsProof = wireProofInput({
+        input: $('#wsProofFile'),
+        preview: $('#wsProofPreview'),
+        img: $('#wsProofImg'),
+        changeBtn: $('#wsProofChange'),
+        submitBtn: $('#wsProofSubmit'),
+        errEl: $('#wsProofErr')
+      });
 
       /* One name field per extra place. Rebuilt whenever the count changes;
          names already typed for places that remain are carried over. */
@@ -618,13 +1368,25 @@
 
       form.addEventListener('submit', function (e) {
         e.preventDefault();
+        if (Date.now() > Date.parse('2026-10-03T23:59:59+05:30')) {
+          if (err) { err.hidden = false; err.className = 'mfine merr'; err.textContent = 'Workshop registration closed after 3 October.'; }
+          return;
+        }
         var d = new FormData(form);
         var name = (d.get('name') || '').toString().trim();
         var mob  = (d.get('mobile') || '').toString().trim();
+        var email = (d.get('email') || '').toString().trim();
+        var city  = (d.get('city')  || '').toString().trim();
+        var note  = (d.get('note')  || '').toString().trim();
+        var amount = UNIT * qty;
 
         function fail(msg, el) {
-          if (err) { err.hidden = false; err.textContent = msg; }
+          if (err) { err.hidden = false; err.className = 'mfine merr'; err.textContent = msg; }
           if (el) el.focus();
+          if (payBtn) {
+            payBtn.disabled = false;
+            payBtn.textContent = 'Pay & Register · ₹' + amount.toLocaleString('en-IN');
+          }
         }
 
         if (!name) return fail('Please add your name.', form.elements.name);
@@ -632,7 +1394,6 @@
           return fail('Please add a valid mobile number.', form.elements.mobile);
         }
 
-        // every booked place needs a name against it
         var rest = $$('input', names || document.createElement('div'));
         var blank = rest.filter(function (i) { return !i.value.trim(); })[0];
         if (blank) {
@@ -641,31 +1402,129 @@
         if (err) err.hidden = true;
 
         var list = allNames();
-        var lines = [
-          'Garba Workshop registration, 3 October 2026',
-          'Booked by: ' + name,
-          'Mobile: ' + mob,
-          'People: ' + qty,
-          'Total: ₹' + (UNIT * qty)
-        ];
-        if (list.length > 1) {
-          lines.push('Attending:');
-          list.forEach(function (n, i) { lines.push('  ' + (i + 1) + '. ' + n); });
-        }
-        var email = (d.get('email') || '').toString().trim();
-        var city  = (d.get('city')  || '').toString().trim();
-        var note  = (d.get('note')  || '').toString().trim();
-        if (email) lines.push('Email: ' + email);
-        if (city)  lines.push('City: ' + city);
-        if (note)  lines.push('Note: ' + note);
 
-        window.open('https://wa.me/' + WA + '?text=' + encodeURIComponent(lines.join('\n')),
-                    '_blank', 'noopener');
+        if (payBtn) {
+          payBtn.disabled = true;
+          payBtn.textContent = 'Opening Razorpay…';
+        }
+
+        wsPending = {
+          name: name,
+          phone: mob,
+          email: email,
+          city: city,
+          bookingType: 'Workshop',
+          passType: 'One-Day Garba Workshop' + (list.length ? ' · ' + list.join(', ') : ''),
+          quantity: qty,
+          amount: amount
+        };
+        stashPending(wsPending);
+
+        payWithRazorpay({
+          amount: amount,
+          name: name,
+          email: email,
+          mobile: mob,
+          description: 'One-Day Garba Workshop · 3 Oct 2026',
+          notes: {
+            type: 'workshop',
+            people: String(qty),
+            attending: list.join(', ')
+          }
+        }).then(function (response) {
+          wsPaymentId = response.razorpay_payment_id || '';
+          var details = wsPending || readPending();
+          if (!details) {
+            fail(sheetSaveSupportMessage(wsPaymentId));
+            return;
+          }
+          if (payBtn) payBtn.textContent = 'Saving registration…';
+
+          return saveToSheet(bookingRow(details, wsPaymentId)).then(function () {
+            clearPending();
+            $$('#wsMinus, #wsPlus, #wsForm .fld').forEach(function (el) { el.disabled = true; });
+            if (payBtn) {
+              payBtn.disabled = true;
+              payBtn.hidden = true;
+            }
+            if ($('#wsPayId')) $('#wsPayId').textContent = wsPaymentId || '—';
+            if (wsSaveOk) {
+              wsSaveOk.hidden = false;
+              wsSaveOk.textContent = 'Your booking has been registered.';
+            }
+            if (wsSaveErr) wsSaveErr.hidden = true;
+            wsProof.clear();
+            if (wsProofOk) wsProofOk.hidden = true;
+            if (doneStep) {
+              doneStep.hidden = false;
+              doneStep.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+          }).catch(function () {
+            if (payBtn) {
+              payBtn.disabled = true;
+              payBtn.textContent = 'Payment received';
+            }
+            if ($('#wsPayId')) $('#wsPayId').textContent = wsPaymentId || '—';
+            if (doneStep) doneStep.hidden = false;
+            if (wsSaveOk) wsSaveOk.hidden = true;
+            if (wsSaveErr) {
+              wsSaveErr.hidden = false;
+              wsSaveErr.textContent = sheetSaveSupportMessage(wsPaymentId);
+            }
+            if (err) {
+              err.hidden = false;
+              err.className = 'mfine merr';
+              err.textContent = sheetSaveSupportMessage(wsPaymentId);
+            }
+          });
+        }).catch(function (ex) {
+          var msg = (ex && ex.message) || 'Payment could not be completed.';
+          if (msg === 'Payment cancelled') {
+            fail('Payment was cancelled. You can try again when ready.');
+          } else {
+            fail(msg);
+          }
+        });
       });
+
+      var wsProofSubmit = $('#wsProofSubmit');
+      if (wsProofSubmit) {
+        wsProofSubmit.addEventListener('click', function () {
+          var file = wsProof.getFile();
+          if (!file || !wsPaymentId) {
+            wsProof.fail('Choose a screenshot to attach.');
+            return;
+          }
+          wsProofSubmit.disabled = true;
+          wsProofSubmit.textContent = 'Uploading…';
+          if (wsProofOk) wsProofOk.hidden = true;
+
+          readProofAsBase64(file).then(function (proof) {
+            return saveToSheet({
+              action: 'attachProof',
+              paymentId: wsPaymentId,
+              proofBase64: proof.proofBase64,
+              proofName: proof.proofName,
+              proofMime: proof.proofMime
+            });
+          }).then(function () {
+            if (wsProofOk) wsProofOk.hidden = false;
+            wsProofSubmit.disabled = true;
+            wsProofSubmit.textContent = 'Attached';
+          }).catch(function (ex) {
+            wsProof.fail((ex && ex.message) || 'Could not attach screenshot. Try again.');
+            wsProofSubmit.disabled = false;
+            wsProofSubmit.textContent = 'Attach screenshot';
+          });
+        });
+      }
     })();
 
     if (location.hash === '#open'     && passes)   passes.open();
-    if (location.hash === '#workshop-register' && workshop) workshop.open();
+    if (location.hash === '#workshop-register' && workshop) {
+      var stillOpen = Date.now() <= Date.parse('2026-10-03T23:59:59+05:30');
+      if (stillOpen) workshop.open();
+    }
   })();
 
 

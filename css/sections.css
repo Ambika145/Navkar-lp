@@ -1,7 +1,7 @@
 /* ============================================================
-   Navkar N9 — Content sections
+   Navkar Navratri Utsav — Content sections
    Experience grid, legacy band, workshop, passes,
-   venue, promise, final CTA and footer.
+   venue, FAQs, final CTA and footer.
    ============================================================ */
 
 /* ------------------------------------------------------------
@@ -119,6 +119,23 @@
 .c-cream .num{opacity:.4;color:var(--magenta-ink)}
 .c-cream p{color:var(--body);opacity:1}
 
+/* A headline figure inside a card. The amount carries the line; the qualifier
+   trails underneath at body scale so it does not read as a second heading. */
+.cell-figure{
+  margin-top:10px;margin-bottom:13px;
+  font-family:'Outfit',sans-serif;
+  font-size:clamp(12.5px,1.25vw,14.5px);font-weight:700;
+  letter-spacing:.005em;line-height:1.35;
+}
+.cell-figure b{
+  display:block;
+  font-size:clamp(26px,3vw,36px);font-weight:900;
+  letter-spacing:-.035em;line-height:1.02;
+  margin-bottom:2px;
+}
+.c-cream .cell-figure{color:var(--body)}
+.c-cream .cell-figure b{color:var(--magenta-ink)}
+
 /* Photo cells */
 .cell-img{padding:0;min-height:260px;color:#fff}
 .cell-img::after{display:none}
@@ -142,6 +159,13 @@
   background:rgba(42,6,20,.55);border:1px solid var(--cream-18);
   backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
   color:var(--yellow);
+}
+/* A dated, one-night item rather than a category label, so it goes solid to
+   separate it from the glass pills on the other photo cells. */
+.cell-img .tagline-date{
+  background:var(--yellow);border-color:transparent;
+  color:var(--ink);
+  box-shadow:0 4px 18px rgba(42,6,20,.35);
 }
 
 /* Span helpers for the asymmetric rhythm */
@@ -182,25 +206,49 @@
 .legacy h2{margin-bottom:18px;max-width:17ch}
 .legacy .lede{color:var(--cream-70);max-width:60ch}
 
-.stats{
-  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:clamp(16px,2.6vw,34px);
-  margin-top:clamp(40px,5vw,64px);
-  padding-top:clamp(32px,4vw,46px);
-  border-top:1px solid var(--cream-18);
+/* Copy left, figures right. The band is a wide photograph and the copy only
+   ever fills its left half, so the figures take the space that was empty
+   rather than stacking underneath. */
+.legacy-in{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:clamp(36px,5.5vw,84px);
+  align-items:center;
 }
+.legacy-copy{min-width:0}
+
+/* A vertical pair in that right column, split off from the copy by a rule and
+   from each other by a hairline. */
+.stats{
+  display:flex;flex-direction:column;
+  padding-left:clamp(26px,3.4vw,52px);
+  border-left:1px solid var(--cream-18);
+}
+/* The figure sits in front of its label rather than above it, so each one
+   reads as a phrase. */
+.stat{
+  display:flex;align-items:center;
+  gap:clamp(10px,1.2vw,16px);
+  padding:clamp(16px,2vw,24px) 0;
+}
+.stat + .stat{border-top:1px solid var(--cream-18)}
 .stat .n{
+  flex:none;
   font-family:'Outfit',sans-serif;
-  font-size:clamp(42px,6.4vw,82px);font-weight:900;
-  line-height:1;letter-spacing:-.05em;
+  font-size:clamp(46px,5.6vw,74px);font-weight:900;
+  /* The gradient is painted across this box and then clipped to the glyphs,
+     so the box has to be taller than the type. A tight line-height leaves the
+     tail of the 9 outside it with nothing to paint, and it disappears. */
+  line-height:1.2;letter-spacing:-.055em;
   background:var(--gold);
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;color:transparent;
 }
 .stat .l{
+  min-width:0;
   font-family:'Outfit',sans-serif;font-size:11.5px;font-weight:700;
-  letter-spacing:.15em;text-transform:uppercase;
-  color:var(--cream-70);margin-top:9px;
+  letter-spacing:.15em;text-transform:uppercase;line-height:1.5;
+  color:var(--cream-70);
 }
 
 /* ------------------------------------------------------------
@@ -214,7 +262,9 @@
   align-items:center;
 }
 .ws-media{position:relative}
-.ws-media .img-arch{aspect-ratio:3/4}
+/* The frame matches the photograph's own proportions, so a full length
+   figure keeps its head and its hem instead of being cropped at both ends. */
+.ws-media .img-arch{aspect-ratio:1122/1402}
 .ws-float{
   position:absolute;right:-22px;bottom:34px;z-index:3;
   background:#fff;
@@ -233,6 +283,13 @@
   font-family:'Outfit',sans-serif;font-size:10px;font-weight:800;
   letter-spacing:.15em;text-transform:uppercase;color:var(--body);margin-top:5px;
 }
+
+.ws-when{
+  margin:14px 0 0;
+  font-family:'Outfit',sans-serif;font-size:clamp(14px,1.2vw,16px);font-weight:700;
+  letter-spacing:.04em;color:var(--magenta-ink);line-height:1.4;
+}
+.ws-when sup{font-size:.7em;top:-.35em}
 
 .wslist{margin-top:28px;display:grid;gap:12px}
 .wslist > div{display:flex;align-items:flex-start;gap:13px;font-size:15px;line-height:1.6}
@@ -275,7 +332,24 @@
   display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
   gap:clamp(14px,1.8vw,22px);
 }
+.pass-grid.pass-grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
 .pass-grid + .pass-grid{margin-top:clamp(14px,1.8vw,22px)}
+
+.pass-early{
+  margin:18px 0 0;
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:700;
+  letter-spacing:.02em;color:var(--magenta-ink);
+  background:rgba(227,11,84,.08);
+  border:1px solid rgba(227,11,84,.18);
+  border-radius:var(--r-pill);
+  padding:10px 16px;
+}
+.pass-early b{font-weight:900;color:var(--ink)}
+
+@media (max-width:1180px){
+  .pass-grid.pass-grid-4{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
 
 .pass{
   position:relative;
@@ -344,6 +418,26 @@
   margin-bottom:24px;flex:1;
   position:relative;z-index:1;
 }
+.pass-rich .pdesc{margin-bottom:14px;flex:0}
+.plist{
+  list-style:none;margin:0 0 22px;padding:0;
+  display:grid;gap:8px;
+  position:relative;z-index:1;
+  flex:1;
+}
+.plist li{
+  font-size:12.5px;line-height:1.45;color:var(--body);
+  padding-left:14px;position:relative;
+}
+.plist li:before{
+  content:"";position:absolute;left:0;top:.55em;
+  width:6px;height:6px;border-radius:50%;background:var(--gold);
+}
+.plist b{
+  display:block;font-family:'Outfit',sans-serif;font-size:10.5px;font-weight:800;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--magenta-ink);
+  margin-bottom:2px;
+}
 /* every pass button carries the same yellow as the hero CTA */
 .pbtn{
   position:relative;z-index:1;
@@ -357,6 +451,13 @@
 .pbtn:hover{background:#fff;transform:translateY(2px);box-shadow:0 2px 0 #D2AE00}
 .pbtn:active{transform:translateY(4px);box-shadow:0 0 0 #D2AE00}
 .pbtn:focus-visible{outline:3px solid var(--teal);outline-offset:3px}
+.pbtn:disabled,.pbtn.is-closed{
+  opacity:.48;cursor:not-allowed;pointer-events:none;
+  transform:none;box-shadow:none;background:var(--ink-12);color:var(--body);
+}
+.pbtn:disabled:hover,.pbtn.is-closed:hover{
+  transform:none;box-shadow:none;background:var(--ink-12);
+}
 
 .pnote{
   margin-top:26px;font-size:13.5px;color:var(--body);
@@ -507,25 +608,80 @@
 }
 .map-bar .btn{flex:none}
 
-/* Promise list */
-.promise{
-  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:clamp(14px,1.8vw,20px);
+/* ------------------------------------------------------------
+   FAQs : section head on the left, accordion on the right
+   ------------------------------------------------------------ */
+.faq-in{
+  display:grid;
+  grid-template-columns:minmax(0,.72fr) minmax(0,1fr);
+  gap:clamp(30px,5vw,76px);
+  align-items:start;
+  /* lets the answer panels animate to their natural height below */
+  interpolate-size:allow-keywords;
 }
-.pr{
-  display:flex;align-items:flex-start;gap:15px;
-  background:#fff;border-radius:var(--r-md);
-  padding:22px 24px;
-  border:1px solid var(--line);
-  transition:transform var(--t-fast),box-shadow var(--t-fast);
+.faq-head{margin-bottom:0;max-width:30ch}
+
+.faq-list{display:flex;flex-direction:column}
+.faq{border-top:1px solid var(--line)}
+.faq:last-child{border-bottom:1px solid var(--line)}
+
+.faq summary{
+  list-style:none;cursor:pointer;
+  display:flex;align-items:center;gap:20px;
+  padding:clamp(17px,2vw,23px) 0;
+  font-family:'Outfit',sans-serif;
+  font-size:clamp(15.5px,1.45vw,19px);font-weight:700;
+  letter-spacing:-.015em;line-height:1.45;
+  color:var(--ink);
+  transition:color var(--t-fast);
 }
-.pr:hover{transform:translateY(-4px);box-shadow:var(--sh-md)}
-.prd{
-  flex:none;display:grid;place-items:center;
-  width:34px;height:34px;border-radius:50%;
-  color:#fff;font-family:'Outfit',sans-serif;font-weight:900;font-size:15px;
+.faq summary::-webkit-details-marker{display:none}
+.faq summary:hover{color:var(--magenta-ink)}
+.faq summary:focus-visible{outline:3px solid var(--magenta);outline-offset:4px;border-radius:6px}
+
+/* Plus that becomes a minus */
+.faq-i{
+  flex:none;margin-left:auto;position:relative;
+  width:30px;height:30px;border-radius:50%;
+  background:var(--magenta);
+  transition:transform .45s var(--e-out),background var(--t-fast);
 }
-.pr p{font-size:14.5px;line-height:1.62;color:var(--body);padding-top:4px}
+.faq-i::before,.faq-i::after{
+  content:"";position:absolute;left:50%;top:50%;
+  width:12px;height:2px;border-radius:2px;background:#fff;
+  transform:translate(-50%,-50%);
+  transition:transform .45s var(--e-out),opacity .3s var(--e-out);
+}
+.faq-i::after{transform:translate(-50%,-50%) rotate(90deg)}
+.faq[open] .faq-i{transform:rotate(180deg)}
+.faq[open] .faq-i::after{transform:translate(-50%,-50%) rotate(0deg);opacity:0}
+
+.faq-a p{
+  padding:0 50px clamp(18px,2.2vw,25px) 0;
+  margin-top:-4px;
+  font-size:15px;line-height:1.72;color:var(--body);
+  max-width:60ch;
+}
+.faq-a strong{color:var(--ink);font-weight:700}
+.faq-a a{
+  color:var(--magenta-ink);font-weight:600;
+  text-decoration:underline;text-underline-offset:3px;
+  text-decoration-thickness:1.5px;
+}
+.faq-a a:hover{color:var(--magenta)}
+
+/* Animate open/close where the browser can. Elsewhere it simply snaps open,
+   which is a perfectly good accordion. */
+@supports selector(::details-content){
+  .faq::details-content{
+    block-size:0;overflow:hidden;
+    transition:block-size .42s var(--e-out),content-visibility .42s allow-discrete;
+  }
+  .faq[open]::details-content{block-size:auto}
+}
+@media (prefers-reduced-motion:reduce){
+  .faq::details-content,.faq-i,.faq-i::before,.faq-i::after{transition:none}
+}
 
 /* ------------------------------------------------------------
    6 — Final CTA : full-bleed photo
@@ -551,6 +707,13 @@
 .final .glow-1{width:44vw;height:44vw;top:-16%;left:-10%;opacity:.34}
 .final .glow-2{width:36vw;height:36vw;bottom:-18%;right:-8%;opacity:.30}
 .final .wrap{position:relative;z-index:2}
+/* Sits on photography, so it keeps a drop shadow the way the hero mark does.
+   alt is empty because the headline underneath already names the event. */
+.final-logo{
+  display:block;margin:0 auto clamp(22px,2.8vw,34px);
+  width:clamp(190px,26vw,290px);height:auto;
+  filter:drop-shadow(0 10px 30px rgba(27,3,9,.6));
+}
 .final .kicker{justify-content:center}
 .final h2{max-width:20ch;margin:0 auto 18px}
 .final .l2{
@@ -565,13 +728,6 @@
   font-weight:700;letter-spacing:.03em;
   backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
   background:var(--cream-10);
-}
-.final .hash{
-  margin-top:30px;
-  font-family:'Outfit',sans-serif;font-size:clamp(11px,1.3vw,13.5px);
-  font-weight:800;letter-spacing:.17em;text-transform:uppercase;
-  color:var(--marigold);
-  display:flex;flex-wrap:wrap;gap:8px 22px;justify-content:center;
 }
 
 /* ------------------------------------------------------------
@@ -604,8 +760,11 @@ footer{
 }
 .fbrand-copy{min-width:0}
 .fbrand-copy strong{
-  display:block;color:var(--cream);font-weight:600;font-size:14.5px;
+  display:block;color:var(--cream);font-weight:600;font-size:15px;
 }
+/* Same accent the hero billing uses, so the title sponsor reads consistently
+   at both ends of the page. */
+.fbrand-copy strong b{color:var(--marigold);font-weight:900}
 /* The wordmark already states the event name and year, so this is the edition
    marker only. */
 .fbrand-name{
@@ -699,7 +858,8 @@ a.fext:focus-visible{outline:3px solid var(--yellow);outline-offset:3px;border-r
      full-width row leaves a dead gutter on the right. */
   .ws-grid,.venue-grid{grid-template-columns:minmax(0,1fr);gap:clamp(34px,6vw,54px)}
   .ws-grid .ws-media{order:-1;max-width:460px;margin-inline:auto;width:100%}
-  .ws-media .img-arch{aspect-ratio:4/3}
+  /* stays portrait when stacked; a landscape crop would cut the figure off */
+  .ws-media .img-arch{aspect-ratio:1122/1402}
   .venue-media{max-width:620px;margin-inline:auto;width:100%}
 
   /* At two columns a span-2 card can't fit beside a single one, which would
@@ -709,16 +869,29 @@ a.fext:focus-visible{outline:3px solid var(--yellow);outline-offset:3px;border-r
   .exp-grid > :last-child{grid-column:1 / -1}
   .cell-img{min-height:320px}
 
-  .promise{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .stats{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+  .faq-in{grid-template-columns:minmax(0,1fr);gap:clamp(26px,4vw,36px)}
+  .faq-head{max-width:none}
+
+  /* Once the band stacks there is nothing for a side column to sit beside, so
+     the figures go back to a row under the copy. */
+  .legacy-in{grid-template-columns:minmax(0,1fr);gap:clamp(32px,5vw,46px)}
+  .stats{
+    flex-direction:row;
+    max-width:52ch;
+    padding-left:0;border-left:none;
+    padding-top:clamp(26px,3.4vw,38px);
+    border-top:1px solid var(--cream-18);
+  }
+  .stat{flex:1 1 0;min-width:0;padding:0 0 0 clamp(22px,4vw,44px)}
+  .stat:first-child{padding-left:0}
+  .stat + .stat{border-top:none;border-left:1px solid var(--cream-18)}
 
   .fgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .fgrid > :first-child{grid-column:1 / -1}
 }
 
 @media (max-width:760px){
-  .pass-grid{grid-template-columns:minmax(0,1fr)}
-  .stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 16px}
+  .pass-grid,.pass-grid.pass-grid-4{grid-template-columns:minmax(0,1fr)}
   .bulk,.regband{flex-direction:column;align-items:flex-start}
   .bulk .btn,.regband .btn{width:100%}
   .map-bar{flex-direction:column;align-items:stretch;gap:14px}
@@ -735,7 +908,6 @@ a.fext:focus-visible{outline:3px solid var(--yellow);outline-offset:3px;border-r
      caption block grows from the bottom — too short and they collide */
   .tall,.cell-img{min-height:360px}
   .cell-img .tagline{top:16px;left:16px}
-  .promise{grid-template-columns:minmax(0,1fr)}
   .fgrid{grid-template-columns:minmax(0,1fr)}
   .fgrid > :first-child{grid-column:auto}
 
@@ -746,3 +918,49 @@ a.fext:focus-visible{outline:3px solid var(--yellow);outline-offset:3px;border-r
   .flogo{width:180px}
 
 }
+
+/* ------------------------------------------------------------
+   Colour-washed photo cards
+   Same frame as .cell-img, but the scrim takes the card's own
+   colour instead of ink, so the grid keeps its palette rhythm
+   while every card carries a picture. The wash is densest at the
+   foot, which is exactly where the type sits, so the contrast
+   tuned for the flat colours still holds.
+   ------------------------------------------------------------ */
+.cell-tint{min-height:300px}
+.cell-tint::before{
+  content:"";position:absolute;inset:0;z-index:1;
+  background:rgba(var(--scrim),.50);
+}
+.cell-tint .cell-body{
+  background:linear-gradient(to top,
+    rgba(var(--scrim),.97),
+    rgba(var(--scrim),.80) 52%,
+    rgba(var(--scrim),0));
+}
+.cell-tint.c-mag  {--scrim:227,11,84}
+.cell-tint.c-teal {--scrim:196,1,47}
+.cell-tint.c-yel  {--scrim:252,230,10}
+.cell-tint.c-org  {--scrim:238,90,24}
+.cell-tint.c-pur  {--scrim:156,0,67}
+.cell-tint.c-cream{--scrim:255,255,255}
+
+/* .cell-img forces white type; the light washes need ink back */
+.cell-tint.c-yel,.cell-tint.c-org,.cell-tint.c-cream{color:var(--ink)}
+/* .cell-img sets body copy to 70% cream, which is tuned for its near-black
+   ink scrim. Over these mid-tone washes that drops under 4.5:1, so each
+   wash takes the copy colour that clears it. */
+.cell-tint.c-mag p,
+.cell-tint.c-teal p,
+.cell-tint.c-pur p{color:var(--cream);opacity:1}
+.cell-tint.c-org p{color:var(--ink);opacity:.92}
+.cell-tint.c-yel p,
+.cell-tint.c-cream p{color:var(--body)}
+.cell-tint.c-yel .num,
+.cell-tint.c-org .num,
+.cell-tint.c-cream .num{color:var(--ink);opacity:.5}
+.cell-tint.c-cream{box-shadow:var(--sh-img)}
+
+/* the closing statement card leads with the line, not a number */
+.cell-say .cell-body h3{font-size:clamp(22px,2.8vw,32px)}
+.cell-say .cell-body p{margin-top:10px;font-weight:700;letter-spacing:.06em}

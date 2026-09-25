@@ -1,5 +1,5 @@
 /* ============================================================
-   Navkar N9 — Base
+   Navkar Navratri Utsav — Base
    Design tokens, reset, fluid typography, buttons, utilities,
    and the shared scroll-reveal primitives.
    Palette is sampled from the Season 9 key art — see :root below.
@@ -83,7 +83,7 @@
   --t-mid:.5s var(--e-out);
   --t-slow:.9s var(--e-out);
 
-  --nav-h:88px;
+  --nav-h:104px;
 }
 
 *,*::before,*::after{box-sizing:border-box}
@@ -208,6 +208,16 @@ h4,.h4{font-size:clamp(17px,1.6vw,21px)}
 .btn:hover::after{transform:translateX(120%)}
 .btn:active{transform:translateY(6px);box-shadow:0 0 0 var(--magenta-d)}
 .btn:focus-visible{outline:3px solid var(--teal);outline-offset:3px}
+.btn:disabled,.btn.is-closed,
+.pbtn:disabled,.pbtn.is-closed{
+  opacity:.48;cursor:not-allowed;pointer-events:none;
+  transform:none;box-shadow:none;
+}
+.btn:disabled:hover,.btn.is-closed:hover,
+.pbtn:disabled:hover,.pbtn.is-closed:hover{
+  transform:none;box-shadow:none;
+}
+.btn:disabled::after,.btn.is-closed::after{display:none}
 
 .btn-lg{font-size:clamp(15px,1.5vw,18px);padding:21px 42px}
 .btn-sm{font-size:13px;padding:13px 24px;box-shadow:0 4px 0 var(--magenta-d)}

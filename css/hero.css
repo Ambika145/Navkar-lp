@@ -1,5 +1,5 @@
 /* ============================================================
-   Navkar N9 — Hero
+   Navkar Navratri Utsav — Hero
    Cinematic full-bleed photograph, layered scrims, festive
    decor, and a staggered entrance once the image has loaded.
    ============================================================ */
@@ -90,23 +90,12 @@
   transition:opacity .85s var(--e-out),transform .85s var(--e-out);
 }
 .hero.is-ready .hero-content > *{opacity:1;transform:none}
-.hero.is-ready .hero-content > :nth-child(1){transition-delay:.22s}  /* logo */
-.hero.is-ready .hero-content > :nth-child(2){transition-delay:.34s}  /* eyebrow */
-.hero.is-ready .hero-content > :nth-child(3){transition-delay:.42s}  /* h1 */
-.hero.is-ready .hero-content > :nth-child(4){transition-delay:.54s}  /* sub */
-.hero.is-ready .hero-content > :nth-child(5){transition-delay:.66s}  /* facts */
-.hero.is-ready .hero-content > :nth-child(6){transition-delay:.76s}  /* CTAs */
-.hero.is-ready .hero-content > :nth-child(7){transition-delay:.86s}  /* billing */
-
-/* ------------------------------------------------------------
-   Hero logo — full size, where the badge lettering can be read
-   ------------------------------------------------------------ */
-.hero-logo{
-  width:clamp(230px,30vw,340px);
-  height:auto;
-  margin-bottom:clamp(20px,2.6vw,30px);
-  filter:drop-shadow(0 12px 32px rgba(27,3,9,.6));
-}
+.hero.is-ready .hero-content > :nth-child(1){transition-delay:.22s}  /* eyebrow */
+.hero.is-ready .hero-content > :nth-child(2){transition-delay:.32s}  /* h1 */
+.hero.is-ready .hero-content > :nth-child(3){transition-delay:.44s}  /* sub */
+.hero.is-ready .hero-content > :nth-child(4){transition-delay:.56s}  /* facts */
+.hero.is-ready .hero-content > :nth-child(5){transition-delay:.66s}  /* CTAs */
+.hero.is-ready .hero-content > :nth-child(6){transition-delay:.76s}  /* billing */
 
 /* ------------------------------------------------------------
    Eyebrow — edition seal + presenter billing as one lockup
@@ -134,6 +123,11 @@
   line-height:.86;
   letter-spacing:-.06em;
   color:var(--marigold);
+  /* The gold below is painted across this box and then clipped to the glyphs,
+     so the box has to clear the tail of the 9. Padding grows the painted area;
+     the negative margin keeps the label underneath where it was. */
+  padding-bottom:.26em;
+  margin-bottom:-.26em;
 }
 @supports ((-webkit-background-clip:text) or (background-clip:text)){
   .season-n{
@@ -162,14 +156,24 @@
 .eb-credit{
   display:block;
   font-family:'Outfit',sans-serif;
-  font-size:clamp(13px,1.35vw,16px);font-weight:600;
+  font-size:clamp(13.5px,1.45vw,17px);font-weight:600;
   letter-spacing:-.005em;
-  color:var(--cream-70);
+  color:rgba(255,249,220,.95);
   line-height:1.35;
+  text-shadow:0 1px 16px rgba(42,6,20,.55);
 }
+/* The title sponsor's name carries the billing, so the accent sits on it
+   rather than shouting the whole line. */
 .eb-credit b{
-  color:#fff;font-weight:800;
+  position:relative;
+  color:var(--marigold);font-weight:900;
   white-space:nowrap;
+  text-shadow:0 0 24px rgba(251,197,27,.5);
+}
+.eb-credit b::after{
+  content:"";position:absolute;left:0;right:0;bottom:-3px;height:2px;
+  border-radius:2px;
+  background:linear-gradient(90deg,var(--marigold),rgba(251,197,27,0));
 }
 
 /* Headline — the words carry the entrance, so the block itself stays visible */

@@ -3,15 +3,14 @@
 Static, festive landing page for Navkar Navratri Utsav Season 9 — 11–19 October 2026,
 Jalvihar, Necklace Road, Hyderabad.
 
-No build step and no dependencies. Open `html/index.html` in a browser, or serve the
+No build step and no dependencies. Open `index.html` in a browser, or serve the
 project root with any static server.
 
 ## Structure
 
 ```
 navkar lp/
-├─ html/
-│  └─ index.html          Markup only
+├─ index.html            Markup only
 ├─ css/
 │  ├─ base.css            Design tokens (:root), reset, fluid type, buttons, reveal primitives
 │  ├─ decor.css           Navratri motifs: mandalas, dandiya marks, particles, glows, marquee
@@ -70,16 +69,26 @@ Keep that order — everything downstream relies on the tokens defined in `base.
   the top of `index.html`. Style symbols with presentation **attributes**, not CSS classes —
   a `<use>` clones into a shadow tree that outside class selectors cannot reach.
 
+## Payments & registrations (no backend)
+
+1. Put your Razorpay **Key Id** and Google Apps Script web-app URL in `js/config.js`.
+2. Create a Google Sheet tab named `Bookings`, paste `sheets/Code.gs` into Apps Script, deploy as a Web app (Anyone).
+3. Passes and workshop open Razorpay Checkout; on success the registration is
+   saved to the sheet automatically (`Payment Received` / `Pending Review`).
+   Screenshot upload is optional and can be attached after success.
+   Duplicate Razorpay Payment IDs are ignored by Apps Script.
+
+Never put the Razorpay **key_secret** in frontend files.
+
 ## Interaction (`js/main.js`)
 
 Dependency-free, organised as numbered IIFEs: hero entrance, nav stuck/auto-hide/scrollspy,
 mobile drawer, sticky CTA bar, scroll reveal + counters, parallax, particles, FAQ accordion,
 gallery drag + lightbox, registration modal, anchor scrolling.
 
-- Any element with `data-cta` opens the registration modal. Optional `data-pass`,
-  `data-amt` (a plain number) and `data-night` preselect and lock the relevant fields.
-- The modal computes its own total (`unit × quantity`); a pass carrying a fixed
-  `data-night` disables the night picker.
+- Any element with `data-cta` opens the pass booking modal.
+- Any element with `data-ws-cta` opens the workshop modal (disabled after 3 Oct 2026).
+- Checkout uses Razorpay; submissions are stored via the Apps Script endpoint in `js/config.js`.
 - `data-reveal` marks an element for scroll reveal; `data-stagger="90"` on a parent
   cascades its children. `data-parallax="0.12"` sets parallax strength.
 - `data-count="40"` animates a number up from zero when it scrolls into view.
@@ -125,7 +134,7 @@ media layer — the loader picks up every element carrying that attribute.
 
 ```bash
 # from the project root
-python -m http.server 8000     # then visit http://localhost:8000/html/
+python -m http.server 8000     # then visit http://localhost:8000/
 ```
 
 ## Outstanding

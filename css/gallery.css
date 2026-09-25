@@ -1,5 +1,5 @@
 /* ============================================================
-   Navkar N9 — Gallery
+   Navkar Navratri Utsav — Gallery
    Drag / snap horizontal film-strip with a full-screen lightbox.
    ============================================================ */
 
@@ -252,3 +252,26 @@
   .gal-item{opacity:1 !important;transform:none !important;transition:none}
   .gal-item img{transform:none !important}
 }
+
+/* ------------------------------------------------------------
+   Instagram reel tiles
+   These are cross-origin iframes: nothing inside them can be
+   styled, so the tile just supplies the frame and the sizing.
+   Instagram's own card has a min-width of 326px, so going
+   narrower than that clips its layout rather than scaling it.
+   ------------------------------------------------------------ */
+.gal-reel{
+  aspect-ratio:auto;
+  width:clamp(326px,84vw,352px);
+  height:clamp(560px,74vw,660px);
+  background:#fff;
+  cursor:default;
+}
+.gal-reel iframe{
+  display:block;
+  width:100%;height:100%;
+  border:0;
+}
+/* the strip still drags, but not across a frame — the iframe swallows the
+   pointer so Instagram's own controls keep working */
+.gal-track-reels{cursor:default}

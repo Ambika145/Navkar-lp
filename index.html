@@ -4,25 +4,25 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#20123B">
-<link rel="icon" href="../assets/img/logo-128.png" type="image/png">
-<link rel="apple-touch-icon" href="../assets/img/logo-320.png">
+<link rel="icon" href="assets/img/logo-128.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/img/logo-320.png">
 <title>Navkar Navratri Utsav 2026 · Garba at Jalvihar, Hyderabad</title>
 <meta name="description" content="Navkar Navratri Utsav Season 9. Nine nights of Garba and Dandiya at Jalvihar, Necklace Road, Hyderabad. 11–19 October 2026. Live band all nine nights. Passes from ₹299.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="../assets/img/festive-attire-1800.jpg"
-      imagesrcset="../assets/img/festive-attire-650.jpg 650w, ../assets/img/festive-attire-1100.jpg 1100w, ../assets/img/festive-attire-1800.jpg 1800w"
+<link rel="preload" as="image" href="assets/img/festive-attire-1800.jpg"
+      imagesrcset="assets/img/festive-attire-650.jpg 650w, assets/img/festive-attire-1100.jpg 1100w, assets/img/festive-attire-1800.jpg 1800w"
       imagesizes="100vw">
 
-<link rel="stylesheet" href="../css/base.css">
-<link rel="stylesheet" href="../css/decor.css">
-<link rel="stylesheet" href="../css/nav.css">
-<link rel="stylesheet" href="../css/hero.css">
-<link rel="stylesheet" href="../css/sections.css">
-<link rel="stylesheet" href="../css/gallery.css">
-<link rel="stylesheet" href="../css/modal.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/decor.css">
+<link rel="stylesheet" href="css/nav.css">
+<link rel="stylesheet" href="css/hero.css">
+<link rel="stylesheet" href="css/sections.css">
+<link rel="stylesheet" href="css/gallery.css">
+<link rel="stylesheet" href="css/modal.css">
 </head>
 <body>
 
@@ -86,11 +86,14 @@
 <header class="nav">
   <div class="nav-in">
     <a class="brand" href="#home" aria-label="Navkar Navratri Utsav, home">
-      <!-- Nav crop of the wordmark: the "2026" line is dropped so the two
-           remaining lines can sit big enough to read inside the compact bar. -->
-      <img class="blogo" src="../assets/img/wordmark-nav-220.png"
-           srcset="../assets/img/wordmark-nav-220.png 220w, ../assets/img/wordmark-nav-440.png 440w"
-           sizes="200px" width="220" height="57" alt="" decoding="async">
+      <!-- The brand mark lives here, visible from the moment the page loads.
+           The bar is sized around it rather than the other way round, because
+           the bulb lettering needs real width to stay readable. -->
+      <img class="blogo" src="assets/img/wordmark-420.png"
+           srcset="assets/img/wordmark-420.png 420w, assets/img/wordmark-640.png 640w"
+           sizes="(max-width:640px) 52vw, 250px"
+           width="420" height="159" fetchpriority="high" decoding="async"
+           alt="Navkar Navratri Utsav 2026">
     </a>
 
     <nav class="nav-links" aria-label="Primary">
@@ -137,10 +140,10 @@
 <section class="hero" id="home" data-parallax-root>
   <div class="hero-media">
     <img class="hero-img" data-parallax="0.14"
-         src="../assets/img/festive-attire-1800.jpg"
-         srcset="../assets/img/festive-attire-650.jpg 650w,
-                 ../assets/img/festive-attire-1100.jpg 1100w,
-                 ../assets/img/festive-attire-1800.jpg 1800w"
+         src="assets/img/festive-attire-1800.jpg"
+         srcset="assets/img/festive-attire-650.jpg 650w,
+                 assets/img/festive-attire-1100.jpg 1100w,
+                 assets/img/festive-attire-1800.jpg 1800w"
          sizes="100vw"
          fetchpriority="high" decoding="async"
          alt="Revellers in full traditional Gujarati attire laughing together on the Navkar floor under coloured stage beams">
@@ -159,14 +162,8 @@
 
   <div class="hero-in">
     <div class="hero-content">
-      <!-- The badge carries fine lettering, so it needs real size to read.
-           It lives here at full size; the nav only shows its small copy once
-           you have scrolled past, so the two are never on screen together. -->
-      <img class="hero-logo" src="../assets/img/wordmark-640.png"
-           srcset="../assets/img/wordmark-420.png 420w, ../assets/img/wordmark-640.png 640w, ../assets/img/wordmark-960.png 960w"
-           sizes="(max-width:640px) 78vw, 340px"
-           width="640" height="242" fetchpriority="high" decoding="async"
-           alt="Navkar Navratri Utsav 2026">
+      <!-- The brand mark sits in the header above, where it stays for the whole
+           page, so the hero opens straight into the billing and the headline. -->
 
       <!-- One lockup instead of two stacked lines of small caps:
            edition seal + presenter billing, read left to right. -->
@@ -226,7 +223,7 @@
         <svg class="bill-sep" aria-hidden="true"><use href="#dandiya"/></svg>
         <p class="bill">
           <span class="bill-k">03 Oct</span>
-          <b>Garba pre-workshop</b>, ₹300
+          <b>One-Day Garba Workshop</b>, 11 AM–2 PM · ₹300
         </p>
       </div>
     </div>
@@ -238,12 +235,12 @@
 <div class="marquee" aria-hidden="true">
   <div class="marquee-track">
     <div class="marquee-group">
-      <span>Nine Nights of Garba</span><span>#N9OnRepeat</span><span>Bamboo Beats Live</span>
+      <span>Nine Nights of Garba</span><span>#NavkarNavratriUtsav</span><span>Bamboo Beats Live</span>
       <span>Jalvihar, Necklace Road</span><span>Maha Aarti</span><span>Best-Dressed Prizes</span>
       <span>11–19 October 2026</span>
     </div>
     <div class="marquee-group">
-      <span>Nine Nights of Garba</span><span>#N9OnRepeat</span><span>Bamboo Beats Live</span>
+      <span>Nine Nights of Garba</span><span>#NavkarNavratriUtsav</span><span>Bamboo Beats Live</span>
       <span>Jalvihar, Necklace Road</span><span>Maha Aarti</span><span>Best-Dressed Prizes</span>
       <span>11–19 October 2026</span>
     </div>
@@ -258,19 +255,26 @@
   <div class="wrap">
     <div class="sec-head">
       <p class="kicker k-org" data-reveal>The Navkar Navratri Utsav Experience</p>
-      <h2 data-reveal>Nine nights of Garba, and everything around them.</h2>
+      <h2 data-reveal>Come for the Garba. Stay for everything around it.</h2>
     </div>
 
     <div class="exp-grid" data-stagger="70">
-      <article class="cell c-mag" data-reveal>
-        <span class="num">01</span>
-        <h3>9 Nights of Garba &amp; Dandiya</h3>
-        <p>Celebrate every night with traditional rhythm, high-energy circles and the spirit of Navratri.</p>
+      <article class="cell cell-img cell-tint c-mag" data-reveal>
+        <img src="assets/img/hero-garba-650.jpg"
+             srcset="assets/img/hero-garba-650.jpg 650w, assets/img/hero-garba-1100.jpg 1100w"
+             sizes="(max-width:620px) 92vw, (max-width:1040px) 46vw, 30vw"
+             loading="lazy" decoding="async"
+             alt="A line of dancers mid-Dandiya, sticks raised">
+        <div class="cell-body">
+          <span class="num">01</span>
+          <h3>9 Nights of Garba &amp; Dandiya</h3>
+          <p>Celebrate every night with traditional rhythm, high-energy circles and the spirit of Navratri.</p>
+        </div>
       </article>
 
       <article class="cell cell-img sp-2 tall" data-reveal>
-        <img src="../assets/img/live-stage-1100.jpg"
-             srcset="../assets/img/live-stage-650.jpg 650w, ../assets/img/live-stage-1100.jpg 1100w, ../assets/img/live-stage-1800.jpg 1800w"
+        <img src="assets/img/live-stage-1100.jpg"
+             srcset="assets/img/live-stage-650.jpg 650w, assets/img/live-stage-1100.jpg 1100w, assets/img/live-stage-1800.jpg 1800w"
              sizes="(max-width:620px) 92vw, (max-width:1040px) 92vw, 62vw"
              loading="lazy" decoding="async"
              alt="Green stage beams sweeping the Garba floor as the live band plays">
@@ -282,53 +286,96 @@
         </div>
       </article>
 
-      <article class="cell c-teal" data-reveal>
-        <span class="num">03</span>
-        <h3>In the Heart of Hyderabad</h3>
-        <p>Celebrate at Jalvihar, Necklace Road, one of Hyderabad’s most iconic festive locations.</p>
-      </article>
-
-      <article class="cell c-yel" data-reveal>
-        <span class="num">04</span>
-        <h3>Open-Air + AC Arena</h3>
-        <p>Dance under the stars, step into the air-conditioned arena, or move to the covered arena if it rains. The Garba does not stop.</p>
-      </article>
-
-      <article class="cell c-org" data-reveal>
-        <span class="num">05</span>
-        <h3>Food Court</h3>
-        <p>Refuel between the beats with a range of festive food options.</p>
-      </article>
-
-      <article class="cell cell-img sp-2 tall" data-reveal>
-        <img src="../assets/img/festive-smile-1100.jpg"
-             srcset="../assets/img/festive-smile-650.jpg 650w, ../assets/img/festive-smile-1100.jpg 1100w, ../assets/img/festive-smile-1800.jpg 1800w"
-             sizes="(max-width:620px) 92vw, (max-width:1040px) 92vw, 62vw"
+      <article class="cell cell-img cell-tint c-teal" data-reveal>
+        <img src="assets/img/crowd-night-650.jpg"
+             srcset="assets/img/crowd-night-650.jpg 650w, assets/img/crowd-night-1100.jpg 1100w"
+             sizes="(max-width:620px) 92vw, (max-width:1040px) 46vw, 30vw"
              loading="lazy" decoding="async"
-             alt="A smiling reveller in festive white and magenta beneath strings of warm festival lights">
-        <span class="tagline">Devotion</span>
+             alt="A packed dance floor of families and friends lit by coloured lights">
         <div class="cell-body">
-          <span class="num">06</span>
-          <h3>Maha Aarti &amp; Festive Moments</h3>
-          <p>Experience the devotion, warmth and togetherness that make Navratri truly special.</p>
+          <span class="num">03</span>
+          <h3>In the Heart of Hyderabad</h3>
+          <p>Celebrate at Jalvihar, Necklace Road, one of Hyderabad&#8217;s most iconic festive locations.</p>
         </div>
       </article>
 
-      <article class="cell c-cream" data-reveal>
-        <span class="num">07</span>
-        <h3>Prizes &amp; Best-Dressed</h3>
-        <p>Bring your festive style, own the circle and stand a chance to win. Every night has its own theme competition, judged on the floor.</p>
+      <article class="cell cell-img cell-tint c-yel" data-reveal>
+        <img src="assets/img/garba-circle-650.jpg"
+             srcset="assets/img/garba-circle-650.jpg 650w, assets/img/garba-circle-1100.jpg 1100w"
+             sizes="(max-width:620px) 92vw, (max-width:1040px) 46vw, 30vw"
+             loading="lazy" decoding="async"
+             alt="A dancer turning through a Garba round under stage light">
+        <div class="cell-body">
+          <span class="num">04</span>
+          <h3>Open-Air + AC Arena</h3>
+          <p>Dance under the stars, step into the air-conditioned arena, or move to the covered arena if it rains. The Garba does not stop.</p>
+        </div>
       </article>
 
-      <article class="cell c-pur" data-reveal>
-        <span class="num">08</span>
-        <h3>Ample Parking <span class="tag">Confirm</span></h3>
-        <p>Arrive easy, celebrate freely and enjoy the night.</p>
+      <article class="cell cell-img cell-tint c-org" data-reveal>
+        <img src="assets/img/festive-attire-650.jpg"
+             srcset="assets/img/festive-attire-650.jpg 650w, assets/img/festive-attire-1100.jpg 1100w"
+             sizes="(max-width:620px) 92vw, (max-width:1040px) 46vw, 30vw"
+             loading="lazy" decoding="async"
+             alt="A group in full traditional Gujarati attire under the festival lights">
+        <div class="cell-body">
+          <span class="num">05</span>
+          <h3>Food Court</h3>
+          <p>Refuel between the beats with a range of festive food options.</p>
+        </div>
       </article>
 
-      <article class="cell c-mag sp-2" data-reveal style="justify-content:center">
-        <h3 style="margin-top:0;font-size:clamp(22px,2.8vw,32px)">Nine nights. One rhythm. No skipping.</h3>
-        <p style="margin-top:10px;font-weight:700;letter-spacing:.06em">#N9OnRepeat</p>
+      <article class="cell cell-img sp-2 tall" data-reveal>
+        <img src="assets/img/festive-smile-1100.jpg"
+             srcset="assets/img/festive-smile-650.jpg 650w, assets/img/festive-smile-1100.jpg 1100w, assets/img/festive-smile-1800.jpg 1800w"
+             sizes="(max-width:620px) 92vw, (max-width:1040px) 92vw, 62vw"
+             loading="lazy" decoding="async"
+             alt="A smiling reveller in festive white and magenta beneath strings of warm festival lights">
+        <span class="tagline tagline-date">18 October</span>
+        <div class="cell-body">
+          <span class="num">06</span>
+          <h3>Exclusive Maha Aarti</h3>
+          <p>Be part of a special Maha Aarti at Jalvihar and celebrate the spirit of Navratri together.</p>
+        </div>
+      </article>
+
+      <article class="cell cell-img cell-tint c-cream" data-reveal>
+        <img src="assets/img/dandiya-raas-650.jpg"
+             srcset="assets/img/dandiya-raas-650.jpg 650w, assets/img/dandiya-raas-1100.jpg 1100w"
+             sizes="(max-width:620px) 92vw, (max-width:1040px) 46vw, 30vw"
+             loading="lazy" decoding="async"
+             alt="A dancer in blue mirror-work chaniya choli raising her dandiya stick">
+        <div class="cell-body">
+          <span class="num">07</span>
+          <h3>Everyday Prizes</h3>
+          <p class="cell-figure"><b>&#8377;75 Lakhs</b> Worth of Gifts, Altogether</p>
+          <p>Exciting prizes every day, with the total value of all gifts combined worth &#8377;75 Lakhs.</p>
+        </div>
+      </article>
+
+      <article class="cell cell-img cell-tint c-pur" data-reveal>
+        <img src="assets/img/dandiya-sticks-650.jpg"
+             srcset="assets/img/dandiya-sticks-650.jpg 650w, assets/img/dandiya-sticks-1100.jpg 1100w"
+             sizes="(max-width:620px) 92vw, (max-width:1040px) 46vw, 30vw"
+             loading="lazy" decoding="async"
+             alt="A dancer striking dandiya sticks during a raas round">
+        <div class="cell-body">
+          <span class="num">08</span>
+          <h3>Ample Parking <span class="tag">Confirm</span></h3>
+          <p>Arrive easy, celebrate freely and enjoy the night.</p>
+        </div>
+      </article>
+
+      <article class="cell cell-img cell-tint c-mag sp-2 cell-say" data-reveal>
+        <img src="assets/img/hero-garba-1100.jpg"
+             srcset="assets/img/hero-garba-650.jpg 650w, assets/img/hero-garba-1100.jpg 1100w, assets/img/hero-garba-1800.jpg 1800w"
+             sizes="(max-width:620px) 92vw, (max-width:1040px) 92vw, 62vw"
+             loading="lazy" decoding="async"
+             alt="Dancers caught mid-turn across the Garba floor">
+        <div class="cell-body">
+          <h3>Nine nights. One rhythm. No skipping.</h3>
+          <p>#NavkarNavratriUtsav</p>
+        </div>
       </article>
     </div>
   </div>
@@ -344,30 +391,30 @@
          a blocked autoplay, reduced-motion or a data-saver connection all
          simply leave the photograph in place. -->
     <img data-parallax="0.10"
-         src="../assets/img/crowd-night-1800.jpg"
-         srcset="../assets/img/crowd-night-650.jpg 650w, ../assets/img/crowd-night-1100.jpg 1100w, ../assets/img/crowd-night-1800.jpg 1800w"
+         src="assets/img/crowd-night-1800.jpg"
+         srcset="assets/img/crowd-night-650.jpg 650w, assets/img/crowd-night-1100.jpg 1100w, assets/img/crowd-night-1800.jpg 1800w"
          sizes="100vw" loading="lazy" decoding="async"
          alt="A packed Navkar dance floor lit by green lasers, families and friends mid-Garba">
     <video class="bg-video" data-bg-video data-parallax="0.10"
            muted loop playsinline preload="none" tabindex="-1" aria-hidden="true"
-           poster="../assets/img/crowd-night-1100.jpg">
-      <source data-src="../assets/video/legacy.webm" type="video/webm">
-      <source data-src="../assets/video/legacy.mp4"  type="video/mp4">
+           poster="assets/img/crowd-night-1100.jpg">
+      <source data-src="assets/video/legacy.webm" type="video/webm">
+      <source data-src="assets/video/legacy.mp4"  type="video/mp4">
     </video>
   </div>
   <div class="glow glow-1 glow-mag glow-breathe" aria-hidden="true"></div>
   <div class="particles" data-count-particles="14" aria-hidden="true"></div>
 
-  <div class="wrap">
-    <p class="kicker k-yel" data-reveal>Season 9 Legacy</p>
-    <h2 data-reveal>Navkar is back. Nine seasons. One unstoppable celebration.</h2>
-    <p class="lede" data-reveal>From the first dhol beat to the final Garba round, Navkar has become a festive tradition for Hyderabad. A place where friends reunite, families celebrate, first-timers find their rhythm and every night turns into a story worth remembering.</p>
+  <div class="wrap legacy-in">
+    <div class="legacy-copy">
+      <p class="kicker k-yel" data-reveal>Season 9 Legacy</p>
+      <h2 data-reveal>Navkar is back. Nine seasons. One unstoppable celebration.</h2>
+      <p class="lede" data-reveal>From the first dhol beat to the final Garba round, Navkar has become a festive tradition for Hyderabad. A place where friends reunite, families celebrate, first-timers find their rhythm and every night turns into a story worth remembering.</p>
+    </div>
 
     <div class="stats" data-stagger="110">
       <div class="stat" data-reveal><div class="n" data-count="9">0</div><div class="l">Seasons</div></div>
-      <div class="stat" data-reveal><div class="n" data-count="9">0</div><div class="l">Nights this year</div></div>
-      <div class="stat" data-reveal><div class="n" data-count="2">0</div><div class="l">Sundays</div></div>
-      <div class="stat" data-reveal><div class="n" data-count="40">0</div><div class="l">Partner brands</div></div>
+      <div class="stat" data-reveal><div class="n" data-count="9">0</div><div class="l">Nights of Garba</div></div>
     </div>
   </div>
 </section>
@@ -380,12 +427,12 @@
     <div class="ws-grid">
       <div class="ws-media" data-reveal="left">
         <div class="img-frame img-arch img-keyline">
-          <img src="../assets/img/dandiya-sticks-1100.jpg"
-               srcset="../assets/img/dandiya-sticks-650.jpg 650w, ../assets/img/dandiya-sticks-1100.jpg 1100w"
+          <img src="assets/img/workshop-1100.jpg"
+               srcset="assets/img/workshop-650.jpg 650w, assets/img/workshop-1100.jpg 1100w"
                sizes="(max-width:1040px) 86vw, 38vw"
                loading="lazy" decoding="async"
-               alt="A dancer in a black kurta striking dandiya sticks during a raas round">
-          <span class="img-cap">Learn the steps</span>
+               alt="A dancer in a black kediyu swinging dandiya sticks mid-step, the floor full of dancers behind him">
+          <span class="img-cap">One-Day Workshop</span>
         </div>
         <div class="ws-float">
           <div class="n">03</div>
@@ -395,8 +442,9 @@
 
       <div class="ws-copy" data-stagger="100">
         <p class="kicker k-teal" data-reveal>Navkar Navratri Utsav Head Start</p>
-        <h2 data-reveal>Learn the steps before the first night.</h2>
-        <p class="lede" data-reveal>A two-hour Garba workshop on 3 October, one day only. Learn the basic steps, get comfortable in the circle and walk into Night 1 already knowing what you are doing.</p>
+        <h2 data-reveal>One-Day Garba Workshop</h2>
+        <p class="ws-when" data-reveal>3 October · 11 AM–2 PM<sup>*</sup></p>
+        <p class="lede" data-reveal>Learn the steps before the celebration begins. Get comfortable in the circle and walk into Night 1 already knowing what you are doing.</p>
 
         <div class="wslist" data-reveal>
           <div><span class="tick">✓</span><span>Learn the core Garba and Dandiya steps</span></div>
@@ -407,9 +455,9 @@
 
         <div class="wsgrid" data-reveal>
           <div class="wsbox"><div class="k">Date</div><div class="v">3 October</div><div class="s">Saturday, 2026</div></div>
-          <div class="wsbox"><div class="k">Duration</div><div class="v">2 hours</div><div class="s">One day only</div></div>
+          <div class="wsbox"><div class="k">Time</div><div class="v">11 AM–2 PM<sup>*</sup></div><div class="s">3 hours · one day only</div></div>
           <div class="wsbox"><div class="k">Fee</div><div class="v">₹300</div><div class="s">Per person</div></div>
-          <div class="wsbox"><div class="k">Time &amp; venue</div><div class="v" style="font-size:19px"><span class="tag">Confirm</span></div><div class="s">Awaiting client</div></div>
+          <div class="wsbox"><div class="k">Venue</div><div class="v">Jalvihar</div><div class="s">Necklace Road, Hyderabad</div></div>
         </div>
 
         <p style="margin-top:30px" data-reveal>
@@ -430,14 +478,38 @@
       <p class="kicker k-mag" data-reveal>Passes</p>
       <h2 data-reveal>Choose your Navkar Navratri Utsav <span class="underline">pass.</span></h2>
       <p class="lede" data-reveal>Whether you are joining for one night or dancing through all nine, there is a Navkar pass for you.</p>
+      <p class="pass-early" data-reveal>Early bird passes end by <b>3 October</b>.</p>
     </div>
 
     <div class="pass-grid" data-stagger="90">
       <article class="pass ws" data-reveal>
-        <h3 class="pname">Garba Workshop</h3>
+        <h3 class="pname">One-Day Garba Workshop</h3>
         <div class="price">₹300</div>
-        <p class="pdesc">Two-hour Garba workshop on 3 October. One day only, beginners welcome.</p>
+        <p class="pdesc">3 October · 11 AM–2 PM. Learn the steps before the celebration begins. Beginners welcome.</p>
         <button class="pbtn" data-ws-cta>Register for the Workshop</button>
+      </article>
+
+      <article class="pass" data-reveal>
+        <h3 class="pname">Kids 3–5 Years</h3>
+        <div class="price">₹299</div>
+        <p class="pdesc">Single-night entry for children aged 3 to 5 years.</p>
+        <button class="pbtn" data-cta data-pass="Kids 3–5 Years" data-amt="299">Select Kids Pass</button>
+      </article>
+
+      <article class="pass" data-reveal>
+        <h3 class="pname">Single Night</h3>
+        <div class="price">₹499</div>
+        <p class="pdesc">Single-night entry, valid for the night of your choice.</p>
+        <button class="pbtn" data-cta data-pass="Single Night" data-amt="499">Select Single Night</button>
+      </article>
+    </div>
+
+    <div class="pass-grid pass-grid-4" data-stagger="90">
+      <article class="pass" data-reveal>
+        <h3 class="pname">Group of 4</h3>
+        <div class="price">₹1,800 <span>₹450 each</span></div>
+        <p class="pdesc">Four people, one night.</p>
+        <button class="pbtn" data-cta data-pass="Group of 4" data-amt="1800">Select Group of 4</button>
       </article>
 
       <article class="pass feat" data-reveal>
@@ -449,19 +521,11 @@
       </article>
 
       <article class="pass" data-reveal>
-        <h3 class="pname">Single Night</h3>
-        <div class="price">₹499</div>
-        <p class="pdesc">Single-night entry, valid for the night of your choice.</p>
-        <button class="pbtn" data-cta data-pass="Single Night" data-amt="499">Select Single Night</button>
-      </article>
-    </div>
-
-    <div class="pass-grid" data-stagger="90">
-      <article class="pass" data-reveal>
-        <h3 class="pname">Group of 4</h3>
-        <div class="price">₹1,800 <span>₹450 each</span></div>
-        <p class="pdesc">Four people, one night.</p>
-        <button class="pbtn" data-cta data-pass="Group of 4" data-amt="1800">Select Group of 4</button>
+        <span class="ribbon">Includes buffet</span>
+        <h3 class="pname">9-Day Navratri Pass</h3>
+        <div class="price">₹2,500</div>
+        <p class="pdesc">Full entry for all 9 nights of Navkar Navratri Utsav. Buffet included for first 5 days 7:00 PM–9:00 PM.</p>
+        <button class="pbtn" data-cta data-pass="9-Day Navratri Pass" data-amt="2500" data-night="All 9 Nights · Buffet 11–15 Oct 7–9 PM">Select Navratri Pass</button>
       </article>
 
       <article class="pass" data-reveal>
@@ -470,16 +534,8 @@
         <p class="pdesc">Ten people, one night.</p>
         <button class="pbtn" data-cta data-pass="Group of 10" data-amt="4800">Select Group of 10</button>
       </article>
-
-      <article class="pass" data-reveal>
-        <h3 class="pname">Kids Below 4</h3>
-        <div class="price">₹299</div>
-        <p class="pdesc">Single-night entry for children under four.</p>
-        <button class="pbtn" data-cta data-pass="Kids Below 4" data-amt="299">Select Kids Pass</button>
-      </article>
     </div>
 
-    <p class="pnote">Pass availability, inclusions and prices are subject to change. <span class="tag">Confirm</span> Is there a Group of 6 tier? Is the ₹999 VIP any-day pass on sale?</p>
 
     <div class="bulk" data-reveal>
       <div>
@@ -498,9 +554,9 @@
 
     <div class="regband" data-reveal>
       <div>
-        <h3>Your spot in the circle is four steps away.</h3>
-        <p>Choose your pass, share your details, pick your night and confirm. Takes under a minute and opens right here on the page.</p>
-        <div class="steps"><span>01 Pass</span><span>02 Details</span><span>03 Night</span><span>04 Confirm</span></div>
+        <h3>Your spot in the circle is three steps away.</h3>
+        <p>Pick your night, choose your passes, pay on Razorpay. The Navkar team verifies each booking manually.</p>
+        <div class="steps"><span>01 Date &amp; time</span><span>02 Tickets</span><span>03 Pay on Razorpay</span></div>
       </div>
       <button class="btn btn-lg btn-yellow" data-cta>Book Your Passes</button>
     </div>
@@ -530,85 +586,91 @@
     </div>
   </div>
 
-  <div class="gal-track" role="list">
-    <figure class="gal-item" role="listitem" tabindex="0"
-            data-full="../assets/img/hero-garba-1800.jpg" data-title="Raas Line" data-sub="Dandiya, night three">
-      <img src="../assets/img/hero-garba-650.jpg" loading="lazy" decoding="async" alt="A line of dancers mid-Dandiya, sticks raised, caught in motion blur">
-      <span class="gal-zoom"><svg><use href="#i-expand"/></svg></span>
-      <figcaption class="gal-cap"><span class="t">Dandiya</span><span class="b">Raas Line</span></figcaption>
-    </figure>
-
-    <figure class="gal-item" role="listitem" tabindex="0"
-            data-full="../assets/img/festive-attire-1800.jpg" data-title="Festive Best" data-sub="Kediyu and chaniya choli">
-      <img src="../assets/img/festive-attire-650.jpg" loading="lazy" decoding="async" alt="A group in full traditional Gujarati attire posing under the stage lights">
-      <span class="gal-zoom"><svg><use href="#i-expand"/></svg></span>
-      <figcaption class="gal-cap"><span class="t">Best-Dressed</span><span class="b">Festive Best</span></figcaption>
-    </figure>
-
-    <figure class="gal-item" role="listitem" tabindex="0"
-            data-full="../assets/img/dandiya-raas-1800.jpg" data-title="Mirror Work" data-sub="Blue chaniya choli">
-      <img src="../assets/img/dandiya-raas-650.jpg" loading="lazy" decoding="async" alt="A dancer in blue mirror-work chaniya choli raising her dandiya stick">
-      <span class="gal-zoom"><svg><use href="#i-expand"/></svg></span>
-      <figcaption class="gal-cap"><span class="t">The Circle</span><span class="b">Mirror Work</span></figcaption>
-    </figure>
-
-    <figure class="gal-item" role="listitem" tabindex="0"
-            data-full="../assets/img/live-stage-1800.jpg" data-title="Stage Lights" data-sub="Bamboo Beats, live">
-      <img src="../assets/img/live-stage-650.jpg" loading="lazy" decoding="async" alt="Green laser beams sweeping across the dance floor during the live set">
-      <span class="gal-zoom"><svg><use href="#i-expand"/></svg></span>
-      <figcaption class="gal-cap"><span class="t">Live Music</span><span class="b">Stage Lights</span></figcaption>
-    </figure>
-
-    <figure class="gal-item" role="listitem" tabindex="0"
-            data-full="../assets/img/crowd-night-1800.jpg" data-title="Full House" data-sub="Every night, all nine">
-      <img src="../assets/img/crowd-night-650.jpg" loading="lazy" decoding="async" alt="A packed dance floor of families and friends lit by coloured lights">
-      <span class="gal-zoom"><svg><use href="#i-expand"/></svg></span>
-      <figcaption class="gal-cap"><span class="t">The Crowd</span><span class="b">Full House</span></figcaption>
-    </figure>
-
-    <figure class="gal-item" role="listitem" tabindex="0"
-            data-full="../assets/img/garba-circle-1800.jpg" data-title="Mid-Turn" data-sub="The Garba round">
-      <img src="../assets/img/garba-circle-650.jpg" loading="lazy" decoding="async" alt="A dancer turning through a Garba round under magenta light">
-      <span class="gal-zoom"><svg><use href="#i-expand"/></svg></span>
-      <figcaption class="gal-cap"><span class="t">Garba</span><span class="b">Mid-Turn</span></figcaption>
-    </figure>
-
-    <figure class="gal-item" role="listitem" tabindex="0"
-            data-full="../assets/img/festive-smile-1800.jpg" data-title="Warm Lights" data-sub="Between the rounds">
-      <img src="../assets/img/festive-smile-650.jpg" loading="lazy" decoding="async" alt="A smiling reveller beneath strings of warm festival lights">
-      <span class="gal-zoom"><svg><use href="#i-expand"/></svg></span>
-      <figcaption class="gal-cap"><span class="t">The Mood</span><span class="b">Warm Lights</span></figcaption>
-    </figure>
-
-    <figure class="gal-item" role="listitem" tabindex="0"
-            data-full="../assets/img/dandiya-sticks-1800.jpg" data-title="On the Beat" data-sub="Sticks up, night five">
-      <img src="../assets/img/dandiya-sticks-650.jpg" loading="lazy" decoding="async" alt="A dancer in a black kurta striking dandiya sticks on the beat">
-      <span class="gal-zoom"><svg><use href="#i-expand"/></svg></span>
-      <figcaption class="gal-cap"><span class="t">Dandiya</span><span class="b">On the Beat</span></figcaption>
-    </figure>
+  <!-- Instagram reels. Each is a cross-origin embed, so the tile only sets the
+       frame; everything inside it is Instagram's own player. Lazy so six of
+       them do not load until the strip is near the viewport. -->
+  <div class="gal-track gal-track-reels" role="list">
+    <div class="gal-item gal-reel" role="listitem">
+      <iframe src="https://www.instagram.com/reel/DdjSO78M8Cv/embed/" title="Navkar Navratri Utsav on Instagram"
+              loading="lazy" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    </div>
+    <div class="gal-item gal-reel" role="listitem">
+      <iframe src="https://www.instagram.com/reel/DPa7rYGDgpH/embed/" title="Navkar Navratri Utsav on Instagram"
+              loading="lazy" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    </div>
+    <div class="gal-item gal-reel" role="listitem">
+      <iframe src="https://www.instagram.com/reel/DPTiHdDjvzJ/embed/" title="Navkar Navratri Utsav on Instagram"
+              loading="lazy" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    </div>
+    <div class="gal-item gal-reel" role="listitem">
+      <iframe src="https://www.instagram.com/reel/DPQRfImiUxq/embed/" title="Navkar Navratri Utsav on Instagram"
+              loading="lazy" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    </div>
+    <div class="gal-item gal-reel" role="listitem">
+      <iframe src="https://www.instagram.com/reel/DPQT0OyjuqL/embed/" title="Navkar Navratri Utsav on Instagram"
+              loading="lazy" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    </div>
+    <div class="gal-item gal-reel" role="listitem">
+      <iframe src="https://www.instagram.com/reel/DPBNamgEkUs/embed/" title="Navkar Navratri Utsav on Instagram"
+              loading="lazy" scrolling="no" frameborder="0" allowfullscreen></iframe>
+    </div>
   </div>
 
   <div class="gal-foot">
     <div class="gal-bar" role="presentation"><span id="galBar"></span></div>
-    <p class="gal-hint">Drag, scroll or tap a photo to enlarge</p>
+    <p class="gal-hint">Drag or scroll the strip · tap a reel to play</p>
   </div>
 </section>
 
 <!-- ============================================================
-     FESTIVAL PROMISE
+     FAQs
+     Native <details>, so it stays keyboard and screen reader
+     friendly with no script. The shared name makes them a true
+     accordion in browsers that support it.
      ============================================================ -->
-<section class="sec sec-alt promise-sec">
-  <div class="wrap">
-    <div class="sec-head">
-      <p class="kicker k-teal" data-reveal>Festival Promise</p>
-      <h2 data-reveal>Celebrate freely. Celebrate together.</h2>
+<section class="sec sec-alt faq-sec" id="faqs">
+  <div class="wrap faq-in">
+    <div class="sec-head faq-head">
+      <p class="kicker k-teal" data-reveal>FAQs</p>
+      <h2 data-reveal>Before you book.</h2>
+      <p class="lede" data-reveal>The questions we are asked most, answered.</p>
     </div>
-    <div class="promise" data-stagger="70">
-      <div class="pr" data-reveal><span class="prd" style="background:var(--magenta)">1</span><p>Strictly alcohol-free premises</p></div>
-      <div class="pr" data-reveal><span class="prd" style="background:var(--purple)">2</span><p>Professional security across all nine nights</p></div>
-      <div class="pr" data-reveal><span class="prd" style="background:var(--orange)">3</span><p>Covered arena and AC arena, so the Garba goes on, rain or shine</p></div>
-      <div class="pr" data-reveal><span class="prd" style="background:var(--marigold)">4</span><p>Dedicated parking support <span class="tag">Confirm</span></p></div>
-      <div class="pr" data-reveal><span class="prd" style="background:var(--ink)">5</span><p>A welcoming atmosphere for families, friends and dance lovers</p></div>
+
+    <div class="faq-list" data-stagger="60">
+      <details class="faq" name="faq" data-reveal>
+        <summary><span>When and where is Navkar Navratri Utsav 2026?</span><i class="faq-i" aria-hidden="true"></i></summary>
+        <div class="faq-a">
+          <p>Nine nights, 11 to 19 October 2026, at Jalvihar, Necklace Road, Hyderabad. Gates open at 7:00 PM every night.</p>
+        </div>
+      </details>
+
+      <details class="faq" name="faq" data-reveal>
+        <summary><span>How do I book my passes?</span><i class="faq-i" aria-hidden="true"></i></summary>
+        <div class="faq-a">
+          <p>Tap <strong>Book Your Passes</strong>, pick your night and tickets, then pay on Razorpay. The Navkar team verifies every payment manually. Single night entry is ₹499, children aged 3 to 5 are ₹299, and a Season Pass covering all nine nights is ₹2,000.</p>
+        </div>
+      </details>
+
+      <details class="faq" name="faq" data-reveal>
+        <summary><span>I have never done Garba. Can I still join?</span><i class="faq-i" aria-hidden="true"></i></summary>
+        <div class="faq-a">
+          <p>Yes, and plenty of people arrive exactly that way. Every night is beginner friendly. If you would rather walk in already knowing the steps, the <a href="#workshop">One-Day Garba Workshop</a> on 3 October covers the core Garba and Dandiya moves for ₹300.</p>
+        </div>
+      </details>
+
+      <details class="faq" name="faq" data-reveal>
+        <summary><span>Is there food, and are the premises alcohol-free?</span><i class="faq-i" aria-hidden="true"></i></summary>
+        <div class="faq-a">
+          <p>There is a food court on site with a range of festive options to refuel between rounds. The premises are strictly alcohol-free, with professional security across all nine nights, so families and first-timers are as comfortable as the regulars.</p>
+        </div>
+      </details>
+
+      <details class="faq" name="faq" data-reveal>
+        <summary><span>Can I book for a large group or a family?</span><i class="faq-i" aria-hidden="true"></i></summary>
+        <div class="faq-a">
+          <p>Yes. There are ready-made Group of 4 and Group of 10 passes, and for anything larger the bulk desk will sort it out with you directly on <a href="https://wa.me/919885051524?text=Hi!%20I'd%20like%20to%20book%20a%20group%20of%20passes%20for%20Navkar%20Navratri%20Utsav%202026.%20Please%20share%20the%20details." target="_blank" rel="noopener noreferrer">WhatsApp</a>.</p>
+        </div>
+      </details>
     </div>
   </div>
 </section>
@@ -619,8 +681,8 @@
 <section class="final" data-parallax-root>
   <div class="final-media">
     <img data-parallax="0.09"
-         src="../assets/img/hero-garba-1800.jpg"
-         srcset="../assets/img/hero-garba-650.jpg 650w, ../assets/img/hero-garba-1100.jpg 1100w, ../assets/img/hero-garba-1800.jpg 1800w"
+         src="assets/img/hero-garba-1800.jpg"
+         srcset="assets/img/hero-garba-650.jpg 650w, assets/img/hero-garba-1100.jpg 1100w, assets/img/hero-garba-1800.jpg 1800w"
          sizes="100vw" loading="lazy" decoding="async"
          alt="A line of dancers mid-Dandiya, sticks raised, caught in motion blur">
   </div>
@@ -629,14 +691,17 @@
   <div class="particles" data-count-particles="20" aria-hidden="true"></div>
 
   <div class="wrap">
-    <p class="kicker k-yel" data-reveal>Final call</p>
+    <img class="final-logo" src="assets/img/wordmark-420.png"
+         srcset="assets/img/wordmark-420.png 420w, assets/img/wordmark-640.png 640w"
+         sizes="(max-width:640px) 66vw, 290px"
+         width="420" height="159"
+         loading="lazy" decoding="async" alt="" data-reveal>
     <h2 data-reveal>Hyderabad, let’s put Navkar Navratri Utsav on repeat.</h2>
     <p class="l2" data-reveal>Navkar Navratri Utsav | Season 9. Nine nights of Garba, Dandiya, music, culture and full-power festive energy.</p>
     <p class="dt" data-reveal>11–19 October 2026 &nbsp;|&nbsp; Jalvihar, Hyderabad</p>
     <p style="margin-top:34px" data-reveal>
       <button class="btn btn-lg btn-yellow" data-cta>Book Your Passes</button>
     </p>
-    <p class="hash" data-reveal><span>#NavkarN9</span><span>#N9OnRepeat</span><span>#NineNightsOneLegacy</span></p>
   </div>
 </section>
 
@@ -655,7 +720,6 @@
           <div class="vrow"><span class="k">Dates</span><span>11–19 October 2026</span></div>
           <div class="vrow"><span class="k">Gates open</span><span>7:00 PM</span></div>
           <div class="vrow"><span class="k">Venue</span><span>Jalvihar, Necklace Road</span></div>
-          <div class="vrow"><span class="k">Parking</span><span><span class="tag">Confirm</span></span></div>
         </div>
 
       </div>
@@ -699,12 +763,12 @@
     <div class="fgrid">
 
       <div class="fbrand">
-        <img class="flogo" src="../assets/img/wordmark-420.png"
-             srcset="../assets/img/wordmark-420.png 420w, ../assets/img/wordmark-640.png 640w"
+        <img class="flogo" src="assets/img/wordmark-420.png"
+             srcset="assets/img/wordmark-420.png 420w, assets/img/wordmark-640.png 640w"
              sizes="210px" width="420" height="159"
              loading="lazy" decoding="async" alt="Navkar Navratri Utsav 2026">
         <div class="fbrand-copy">
-          <strong>Manepally Jewellers presents Anvita</strong>
+          <strong>Manepally Jewellers presents <b>Anvita</b></strong>
           <span class="fbrand-name">Season 9</span>
           <p class="forg">
             Organised by Navkar Entertainments &amp; Ido Events<br>
@@ -718,11 +782,6 @@
         <ul class="flist">
           <li><a href="tel:+918142111145">+91 81421 11145</a></li>
           <li><a href="tel:+918019161198">+91 80191 61198</a></li>
-        </ul>
-        <div class="fh fh-sub">Tickets</div>
-        <ul class="flist">
-          <li><a class="fext" href="https://in.bookmyshow.com/activities/navkar-navratri-utsav-2026-jalavihar/ET00516255" target="_blank" rel="noopener noreferrer">BookMyShow<svg aria-hidden="true"><use href="#i-out"/></svg></a></li>
-          <li><a class="fext" href="https://link.district.in/DSTRKT/u24rmchg" target="_blank" rel="noopener noreferrer">District<svg aria-hidden="true"><use href="#i-out"/></svg></a></li>
         </ul>
       </div>
 
@@ -779,42 +838,229 @@
 <!-- ============================================================
      REGISTRATION MODAL
      ============================================================ -->
-<!-- ============ PASSES : hands off to the ticketing partners ============ -->
+<!-- ============ PASSES : multi-step booking flow ============ -->
 <div class="overlay" id="ov" role="dialog" aria-modal="true" aria-labelledby="mTitle" aria-hidden="true">
-  <div class="modal">
-    <div class="mhead">
-      <div class="motif motif-tr motif-spin" aria-hidden="true"><svg><use href="#mandala"/></svg></div>
-      <button class="mclose" id="mx" aria-label="Close">&times;</button>
-      <div class="k">Navkar Navratri Utsav · Season 9</div>
-      <h3 id="mTitle">Book Your Passes</h3>
-      <p>Nine nights of Garba at Jalvihar, 11–19 October 2026.</p>
+  <div class="modal book-modal">
+    <div class="book-chrome">
+      <button type="button" class="book-back" id="bkBack" aria-label="Go back" hidden>
+        <svg aria-hidden="true"><use href="#i-left"/></svg>
+      </button>
+      <div class="book-chrome-txt">
+        <p class="book-kicker">Navkar Navratri Utsav · Season 9</p>
+        <h3 id="mTitle">Book Your Passes</h3>
+      </div>
+      <button class="mclose book-x" id="mx" aria-label="Close">&times;</button>
     </div>
 
-    <div class="mbody">
-      <div class="mstep">
-        <div class="mlab">Passes</div>
-        <h4>What's on sale</h4>
-        <ul class="mprices">
-          <li><span>Season Pass</span><b>₹2,000</b><i>All nine nights</i></li>
-          <li><span>Single Night</span><b>₹499</b><i>Any one night</i></li>
-          <li><span>Group of 4</span><b>₹1,800</b><i>₹450 each, one night</i></li>
-          <li><span>Group of 10</span><b>₹4,800</b><i>₹480 each, one night</i></li>
-          <li><span>Kids Below 4</span><b>₹299</b><i>One night</i></li>
-        </ul>
-      </div>
+    <nav class="book-stepper" id="bkStepper" aria-label="Booking steps" hidden>
+      <ol>
+        <li class="is-active" data-step-dot="1"><span>1</span>Date &amp; Time</li>
+        <li data-step-dot="2"><span>2</span>Tickets</li>
+        <li data-step-dot="3"><span>3</span>Pay</li>
+      </ol>
+    </nav>
+    <p class="book-venue" id="bkVenueBar">Grand Lawn, Jalvihar · Hyderabad</p>
 
-      <div class="mstep">
-        <div class="mlab">Checkout</div>
-        <h4>Choose where to book</h4>
-        <p class="mnote">Pick your pass, night and quantity on either platform. Both sell the same inventory.</p>
-        <div class="mbook">
-          <a class="btn mcta btn-yellow" href="https://link.district.in/DSTRKT/u24rmchg"
-             target="_blank" rel="noopener noreferrer">Book on District</a>
-          <a class="btn mcta btn-yellow" href="https://in.bookmyshow.com/activities/navkar-navratri-utsav-2026-jalavihar/ET00516255"
-             target="_blank" rel="noopener noreferrer">Book on BookMyShow</a>
+    <!-- 0 · Event card -->
+    <div class="book-pane is-on" id="bkIntro" data-pane="0">
+      <div class="ev-card">
+        <ul class="ev-meta">
+          <li>
+            <span class="ev-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+            </span>
+            <span>Sun 11 Oct 2026 – Mon 19 Oct 2026</span>
+          </li>
+          <li>
+            <span class="ev-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            </span>
+            <span>7:00 PM</span>
+          </li>
+          <li>
+            <span class="ev-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v6l4 2"/><path d="M6.5 20h11"/><path d="M8 20c0-4 1.8-7 4-7s4 3 4 7"/></svg>
+            </span>
+            <span>About 5 hours</span>
+          </li>
+          <li>
+            <span class="ev-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="8" r="3"/><circle cx="16" cy="9" r="2.5"/><path d="M2 19c0-3 3-5 7-5s7 2 7 5"/><path d="M15 14c2.5.3 5 1.6 5 5"/></svg>
+            </span>
+            <span>All age groups</span>
+          </li>
+          <li>
+            <span class="ev-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 8h6M8 8v10M14 8h5l-1.5 4H14.5L14 8zM14.5 12l1.5 6"/></svg>
+            </span>
+            <span>Hindi, Gujarati, Telugu</span>
+          </li>
+          <li>
+            <span class="ev-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            </span>
+            <span>Grand Lawn, Jalvihar · Hyderabad</span>
+          </li>
+        </ul>
+        <div class="ev-foot">
+          <div>
+            <div class="ev-price">₹299 <span>onwards</span></div>
+            <div class="ev-avail">Available</div>
+          </div>
+          <button type="button" class="btn btn-yellow" id="bkStart">Book Now</button>
         </div>
-        <p class="mfine">🔒 Ticketing is handled by District and BookMyShow.<br>
-          Looking for the <button type="button" class="mlink" data-ws-cta>3 October Garba workshop</button>? That books here.</p>
+      </div>
+    </div>
+
+    <!-- 1 · Date & Time -->
+    <div class="book-pane" id="bkStep1" data-pane="1" hidden>
+      <div class="book-card">
+        <div class="cal-legend">
+          <span><i class="dot av"></i>Available</span>
+          <span><i class="dot ff"></i>Fast filling</span>
+          <span><i class="dot so"></i>Sold out</span>
+        </div>
+        <h4 class="book-h">Select date</h4>
+        <div class="cal" id="bkCal" aria-label="October 2026 calendar">
+          <div class="cal-head">October 2026</div>
+          <div class="cal-dow" aria-hidden="true">
+            <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+          </div>
+          <div class="cal-grid" id="bkCalGrid"></div>
+        </div>
+        <p class="cal-picked" id="bkDateLabel" hidden>Date: —</p>
+
+        <h4 class="book-h">Select time</h4>
+        <div class="time-opts" id="bkTimes">
+          <button type="button" class="time-opt is-on" data-time="7:00 PM">7:00 PM</button>
+        </div>
+      </div>
+      <div class="book-actions">
+        <button type="button" class="btn btn-yellow book-next" id="bkToTickets" disabled>Continue</button>
+      </div>
+    </div>
+
+    <!-- 2 · Tickets -->
+    <div class="book-pane" id="bkStep2" data-pane="2" hidden>
+      <div class="book-card">
+        <h4 class="book-h">Select tickets</h4>
+        <p class="book-sub">You can add up to <b>10</b> tickets only.</p>
+        <ul class="tk-list" id="bkTickets">
+          <li class="tk" data-id="kids" data-price="299" data-admits="1" data-kind="night">
+            <div class="tk-info">
+              <div class="tk-name">Kids 3–5 Years</div>
+              <div class="tk-price">₹299</div>
+              <div class="tk-note">Single-night entry</div>
+            </div>
+            <div class="tk-act" data-act></div>
+          </li>
+          <li class="tk" data-id="single" data-price="499" data-admits="1" data-kind="night">
+            <div class="tk-info">
+              <div class="tk-name">Single Night</div>
+              <div class="tk-price">₹499</div>
+              <div class="tk-note">Admits 1 · one night</div>
+            </div>
+            <div class="tk-act" data-act></div>
+          </li>
+          <li class="tk" data-id="g4" data-price="1800" data-admits="4" data-kind="night">
+            <div class="tk-info">
+              <div class="tk-name">Group of 4</div>
+              <div class="tk-price">₹1,800</div>
+              <div class="tk-note">₹450 each · one night</div>
+            </div>
+            <div class="tk-act" data-act></div>
+          </li>
+          <li class="tk" data-id="season" data-price="2000" data-admits="1" data-kind="season">
+            <div class="tk-info">
+              <div class="tk-name">Season Pass</div>
+              <div class="tk-price">₹2,000</div>
+              <div class="tk-note">All 9 nights · card + QR</div>
+            </div>
+            <div class="tk-act" data-act></div>
+          </li>
+          <li class="tk" data-id="nav9" data-price="2500" data-admits="1" data-kind="season">
+            <div class="tk-info">
+              <div class="tk-name">9-Day Navratri Pass</div>
+              <div class="tk-price">₹2,500</div>
+              <div class="tk-note">All 9 nights · buffet first 5 days</div>
+            </div>
+            <div class="tk-act" data-act></div>
+          </li>
+          <li class="tk" data-id="g10" data-price="4800" data-admits="10" data-kind="night">
+            <div class="tk-info">
+              <div class="tk-name">Group of 10</div>
+              <div class="tk-price">₹4,800</div>
+              <div class="tk-note">₹480 each · one night</div>
+            </div>
+            <div class="tk-act" data-act></div>
+          </li>
+        </ul>
+        <p class="mfine merr" id="bkTkErr" hidden></p>
+      </div>
+      <div class="book-actions book-actions-split">
+        <div class="book-total">
+          <span class="k">Total</span>
+          <strong id="bkSubTotal">₹0</strong>
+        </div>
+        <button type="button" class="btn btn-yellow book-next" id="bkToReview" disabled>Continue</button>
+      </div>
+    </div>
+
+    <!-- 3 · Review, info & pay -->
+    <div class="book-pane" id="bkStep3" data-pane="3" hidden>
+      <form class="book-card" id="bkForm" novalidate>
+        <h4 class="book-h">Review your booking</h4>
+        <div class="msum bk-sum" id="bkSummary"></div>
+
+        <h4 class="book-h">Your details</h4>
+        <div class="fields">
+          <input class="fld" type="text" name="name" placeholder="Full Name" autocomplete="name" required>
+          <input class="fld" type="tel" name="mobile" placeholder="Mobile Number" autocomplete="tel" required
+                 inputmode="numeric" pattern="[0-9 +]{10,15}">
+          <input class="fld" type="email" name="email" placeholder="Email Address" autocomplete="email" required>
+          <input class="fld" type="text" name="city" placeholder="City" autocomplete="address-level2">
+        </div>
+
+        <p class="mfine merr" id="bkPayErr" hidden></p>
+        <button class="btn btn-yellow mcta" type="submit" id="bkPayBtn">Pay with Razorpay</button>
+        <p class="mfine">Complete payment on Razorpay. Your registration is saved automatically after a successful payment.</p>
+      </form>
+    </div>
+
+    <!-- Success -->
+    <div class="book-pane" id="bkDone" data-pane="4" hidden>
+      <div class="book-card book-success">
+        <div class="ok-badge" aria-hidden="true">✓</div>
+        <h4 class="book-h">Payment received successfully</h4>
+        <p class="book-sub">
+          Your registration has been received.<br>
+          Your booking has been registered.<br>
+          Thank you for registering for Navkar Navratri Utsav.
+        </p>
+        <div class="bk-id-box">
+          <span class="k">Payment Reference ID</span>
+          <strong id="bkPayId">—</strong>
+        </div>
+        <div class="msum bk-sum" id="bkDoneSum"></div>
+
+        <div class="proof-optional">
+          <p class="book-sub" style="margin-bottom:10px">Optional: add a payment screenshot for our records.</p>
+          <label class="proof-drop" for="bkProofFile">
+            <input type="file" id="bkProofFile" accept="image/png,image/jpeg,image/jpg,image/webp" hidden>
+            <span class="proof-drop-ico" aria-hidden="true">↑</span>
+            <span class="proof-drop-t">Upload screenshot (optional)</span>
+            <span class="proof-drop-s">PNG, JPG or WEBP · max 5 MB</span>
+          </label>
+          <div class="proof-preview" id="bkProofPreview" hidden>
+            <img id="bkProofImg" alt="Payment screenshot preview">
+            <button type="button" class="proof-change" id="bkProofChange">Change photo</button>
+          </div>
+          <p class="mfine merr" id="bkProofErr" hidden></p>
+          <p class="mfine mok" id="bkProofOk" hidden>Screenshot attached to your registration.</p>
+          <button type="button" class="btn btn-yellow mcta" id="bkProofSubmit" disabled>Attach screenshot</button>
+        </div>
+
+        <button type="button" class="btn btn-yellow mcta" id="bkDoneClose" style="margin-top:12px">Done</button>
       </div>
     </div>
   </div>
@@ -826,9 +1072,9 @@
     <div class="mhead">
       <div class="motif motif-tr motif-spin" aria-hidden="true"><svg><use href="#mandala"/></svg></div>
       <button class="mclose" id="wsx" aria-label="Close">&times;</button>
-      <div class="k">3 October 2026 · One day only</div>
-      <h3 id="wsTitle">Garba Workshop</h3>
-      <p>Two hours, beginner friendly, ₹300 per person.</p>
+      <div class="k">3 October 2026 · 11 AM–2 PM</div>
+      <h3 id="wsTitle">One-Day Garba Workshop</h3>
+      <p>Learn the steps before the celebration begins. Beginner friendly, ₹300 per person.</p>
     </div>
 
     <form class="mbody" id="wsForm" novalidate>
@@ -865,13 +1111,47 @@
       <div class="mstep">
         <div class="mlab">Step 3</div><h4>Confirm</h4>
         <div class="msum">
-          <div><div class="k">Workshop</div><div class="v">3 October 2026</div></div>
+          <div><div class="k">Workshop</div><div class="v">3 October · 11 AM–2 PM</div></div>
           <div><div class="k">People</div><div class="v" id="wsQtyOut">1</div></div>
           <div class="msum-names" id="wsNameOut" hidden><div class="k">Attending</div><div class="v"></div></div>
           <div class="tot"><div class="k">Total amount</div><div class="v" id="wsAmt">₹300</div></div>
         </div>
-        <button class="btn mcta btn-yellow" type="submit">Send Workshop Registration</button>
-        <p class="mfine">Sends your details to the Navkar team on WhatsApp, who confirm your slot and payment.</p>
+        <button class="btn mcta btn-yellow" type="submit" id="wsPayBtn">Pay &amp; Register · ₹300</button>
+        <p class="mfine">Complete payment on Razorpay. Your registration is saved automatically after a successful payment.</p>
+      </div>
+
+      <!-- Shown after successful payment + sheet save -->
+      <div class="mstep ws-done" id="wsDoneStep" hidden>
+        <div class="ok-badge ok-badge-sm" aria-hidden="true">✓</div>
+        <h4>Payment received successfully</h4>
+        <p class="book-sub">
+          Your registration has been received.<br>
+          Your booking has been registered.<br>
+          Thank you for registering for Navkar Navratri Utsav.
+        </p>
+        <div class="bk-id-box">
+          <span class="k">Payment Reference ID</span>
+          <strong id="wsPayId">—</strong>
+        </div>
+        <p class="mfine mok" id="wsSaveOk" hidden></p>
+        <p class="mfine merr" id="wsSaveErr" hidden></p>
+
+        <div class="proof-optional" id="wsProofStep">
+          <p class="book-sub" style="margin:14px 0 10px">Optional: add a payment screenshot for our records.</p>
+          <label class="proof-drop" for="wsProofFile">
+            <input type="file" id="wsProofFile" accept="image/png,image/jpeg,image/jpg,image/webp" hidden>
+            <span class="proof-drop-ico" aria-hidden="true">↑</span>
+            <span class="proof-drop-t">Upload screenshot (optional)</span>
+            <span class="proof-drop-s">PNG, JPG or WEBP · max 5 MB</span>
+          </label>
+          <div class="proof-preview" id="wsProofPreview" hidden>
+            <img id="wsProofImg" alt="Payment screenshot preview">
+            <button type="button" class="proof-change" id="wsProofChange">Change photo</button>
+          </div>
+          <p class="mfine merr" id="wsProofErr" hidden></p>
+          <p class="mfine mok" id="wsProofOk" hidden>Screenshot attached to your registration.</p>
+          <button type="button" class="btn mcta btn-yellow" id="wsProofSubmit" disabled>Attach screenshot</button>
+        </div>
       </div>
     </form>
   </div>
@@ -890,7 +1170,9 @@
   <button class="lb-arrow lb-next" aria-label="Next photo"><svg><use href="#i-right"/></svg></button>
 </div>
 
-<script src="../js/main.js" defer></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
+<script src="js/config.js" defer></script>
+<script src="js/main.js" defer></script>
 
 </body>
 </html>

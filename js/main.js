@@ -809,6 +809,7 @@
         'Kids 3–5 Years': 'kids',
         'Single Night': 'single',
         'Group of 4': 'g4',
+        'Kids Season Pass': 'kidsSeason',
         'Season Pass': 'season',
         '9-Day Navratri Pass': 'nav9',
         'Group of 10': 'g10'

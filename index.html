@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -86,9 +86,12 @@
 <header class="nav">
   <div class="nav-in">
     <a class="brand" href="#home" aria-label="Navkar Navratri Utsav, home">
-      <!-- The brand mark lives here, visible from the moment the page loads.
-           The bar is sized around it rather than the other way round, because
-           the bulb lettering needs real width to stay readable. -->
+      <span class="presents-logos" aria-label="Presented by Manepally Jewellers and Anvita">
+        <img class="presents-logo presents-logo-m" src="assets/img/manepally-presents.png"
+             width="220" height="60" decoding="async" alt="Manepally Jewellers">
+        <img class="presents-logo presents-logo-a" src="assets/img/anvita-presents.png"
+             width="120" height="120" decoding="async" alt="Anvita">
+      </span>
       <img class="blogo" src="assets/img/wordmark-420.png"
            srcset="assets/img/wordmark-420.png 420w, assets/img/wordmark-640.png 640w"
            sizes="(max-width:640px) 52vw, 250px"
@@ -101,6 +104,7 @@
       <a href="#workshop">Workshop</a>
       <a href="#passes">Passes</a>
       <a href="#gallery">Gallery</a>
+      <a href="#sponsors">Sponsors</a>
       <a href="#venue">Venue</a>
     </nav>
 
@@ -120,7 +124,8 @@
     <a class="dl" href="#workshop"   style="--i:1"><span class="idx">02</span>Workshop</a>
     <a class="dl" href="#passes"     style="--i:2"><span class="idx">03</span>Passes</a>
     <a class="dl" href="#gallery"    style="--i:3"><span class="idx">04</span>Gallery</a>
-    <a class="dl" href="#venue"      style="--i:4"><span class="idx">05</span>Venue</a>
+    <a class="dl" href="#sponsors"   style="--i:4"><span class="idx">05</span>Sponsors</a>
+    <a class="dl" href="#venue"      style="--i:5"><span class="idx">06</span>Venue</a>
     <div class="drawer-foot">
       <button class="btn btn-yellow btn-lg" data-cta>Book Your Passes</button>
       <p class="drawer-meta">
@@ -481,12 +486,12 @@
       <p class="pass-early" data-reveal>Early bird passes end by <b>3 October</b>.</p>
     </div>
 
-    <div class="pass-grid" data-stagger="90">
+    <div class="pass-grid pass-grid-4" data-stagger="90">
       <article class="pass ws" data-reveal>
         <h3 class="pname">One-Day Garba Workshop</h3>
         <div class="price">₹300</div>
         <p class="pdesc">3 October · 11 AM–2 PM. Learn the steps before the celebration begins. Beginners welcome.</p>
-        <button class="pbtn" data-ws-cta>Register for the Workshop</button>
+        <button class="pbtn" data-ws-cta>Register</button>
       </article>
 
       <article class="pass" data-reveal>
@@ -502,14 +507,21 @@
         <p class="pdesc">Single-night entry, valid for the night of your choice.</p>
         <button class="pbtn" data-cta data-pass="Single Night" data-amt="499">Select Single Night</button>
       </article>
-    </div>
 
-    <div class="pass-grid pass-grid-4" data-stagger="90">
       <article class="pass" data-reveal>
         <h3 class="pname">Group of 4</h3>
         <div class="price">₹1,800 <span>₹450 each</span></div>
         <p class="pdesc">Four people, one night.</p>
         <button class="pbtn" data-cta data-pass="Group of 4" data-amt="1800">Select Group of 4</button>
+      </article>
+    </div>
+
+    <div class="pass-grid pass-grid-4" data-stagger="90">
+      <article class="pass" data-reveal>
+        <h3 class="pname">Kids Season Pass</h3>
+        <div class="price">₹1,500</div>
+        <p class="pdesc">Ages 3–5 · All 9 days · Food not included.</p>
+        <button class="pbtn" data-cta data-pass="Kids Season Pass" data-amt="1500" data-night="All 9 Nights">Select Kids Season</button>
       </article>
 
       <article class="pass feat" data-reveal>
@@ -647,7 +659,7 @@
       <details class="faq" name="faq" data-reveal>
         <summary><span>How do I book my passes?</span><i class="faq-i" aria-hidden="true"></i></summary>
         <div class="faq-a">
-          <p>Tap <strong>Book Your Passes</strong>, pick your night and tickets, then pay on Razorpay. The Navkar team verifies every payment manually. Single night entry is ₹499, children aged 3 to 5 are ₹299, and a Season Pass covering all nine nights is ₹2,000.</p>
+          <p>Tap <strong>Book Your Passes</strong>, pick your night and tickets, then pay on Razorpay. The Navkar team verifies every payment manually. Single night entry is ₹499, children aged 3 to 5 are ₹299 for one night or ₹1,500 for a Kids Season Pass (all nine days, food not included), and a Season Pass covering all nine nights is ₹2,000.</p>
         </div>
       </details>
 
@@ -676,6 +688,94 @@
 </section>
 
 <!-- ============================================================
+     PARTNERS / SPONSORS — slow left logo scroller
+     ============================================================ -->
+<section class="sec sponsors-sec" id="sponsors">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kicker k-mag" data-reveal>Sponsors</p>
+      <h2 data-reveal>Our <span class="underline">Sponsors</span></h2>
+      <p class="lede" data-reveal>Navkar Navratri Utsav is proud to be backed by brands that believe in culture, community and unforgettable experiences.</p>
+    </div>
+  </div>
+
+  <div class="sponsor-marquee" aria-label="Our sponsors">
+    <div class="sponsor-track" style="--speed:96s">
+      <div class="sponsor-group">
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/finecab.jpeg" alt="Finecab" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/aegis.png" alt="Aegis Automation" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-bleed"><img src="assets/img/sponsors/kulture.png" alt="Kulture" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-tight"><img src="assets/img/sponsors/labdhi.jpg" alt="Labdhi" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-tight"><img src="assets/img/sponsors/autofin.png" alt="Autofin" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-tight"><img src="assets/img/sponsors/moha.jpg" alt="Moha India" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-bleed"><img src="assets/img/sponsors/navkar-gold-world.jpeg" alt="Navkar Gold World" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-bleed"><img src="assets/img/sponsors/himalaya.png" alt="Himalaya Crockery World" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-tight"><img src="assets/img/sponsors/kathiawar.jpg" alt="Kathiawar Stores" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/mohini.jpg" alt="Mohini Collection" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/narshing.jpg" alt="Narsing Chat Bhandar" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/balaji-infra.jpg" alt="Balaji Infra" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/bsi.jpg" alt="BSI Pvt Ltd" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/by-the-nature.jpg" alt="By The Nature" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/daeshan-telecom.jpg" alt="Daeshan Telecom" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/fast-fir.jpeg" alt="Fast Fir" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/ganivs.jpg" alt="Ganivs" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/gavins.png" alt="Gavins" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/god.jpg" alt="GOD" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-tight"><img src="assets/img/sponsors/holiday-bazar.png" alt="Holiday Bazar" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/kanishk.jpg" alt="Kanishk" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/kuberakshi.jpg" alt="Kuberakshi" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/ltika.jpg" alt="Ltika" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-tight"><img src="assets/img/sponsors/mezbaan.png" alt="Mezbaan" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/niyanshi.jpg" alt="Niyanshi" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-tight"><img src="assets/img/sponsors/ido.jpg" alt="Ido Events" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-bleed"><img src="assets/img/sponsors/desi-event.png" alt="Desi Event" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-bleed"><img src="assets/img/sponsors/eventsutra.png" alt="Eventsutra" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/mera-events.jpg" alt="Mera Events" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-bleed"><img src="assets/img/sponsors/click-magik.webp" alt="Click Magik" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-bleed"><img src="assets/img/sponsors/deccan-media.jpg" alt="Deccan Media" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-bleed"><img src="assets/img/sponsors/mc-krupa-patel.png" alt="MC Krupa Patel" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-bleed"><img src="assets/img/sponsors/djt.jpeg" alt="DJT" width="160" height="80" loading="lazy" decoding="async"></figure>
+      </div>
+      <div class="sponsor-group" aria-hidden="true">
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/finecab.jpeg" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/aegis.png" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-bleed"><img src="assets/img/sponsors/kulture.png" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-tight"><img src="assets/img/sponsors/labdhi.jpg" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-tight"><img src="assets/img/sponsors/autofin.png" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-tight"><img src="assets/img/sponsors/moha.jpg" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-bleed"><img src="assets/img/sponsors/navkar-gold-world.jpeg" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-bleed"><img src="assets/img/sponsors/himalaya.png" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-tight"><img src="assets/img/sponsors/kathiawar.jpg" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/mohini.jpg" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/narshing.jpg" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/balaji-infra.jpg" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/bsi.jpg" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/by-the-nature.jpg" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/daeshan-telecom.jpg" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/fast-fir.jpeg" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/ganivs.jpg" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/gavins.png" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/god.jpg" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-tight"><img src="assets/img/sponsors/holiday-bazar.png" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/kanishk.jpg" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/kuberakshi.jpg" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/ltika.jpg" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-tight"><img src="assets/img/sponsors/mezbaan.png" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/niyanshi.jpg" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-tight"><img src="assets/img/sponsors/ido.jpg" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-bleed"><img src="assets/img/sponsors/desi-event.png" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-bleed"><img src="assets/img/sponsors/eventsutra.png" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo"><img src="assets/img/sponsors/mera-events.jpg" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-bleed"><img src="assets/img/sponsors/click-magik.webp" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-bleed"><img src="assets/img/sponsors/deccan-media.jpg" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-bleed"><img src="assets/img/sponsors/mc-krupa-patel.png" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+        <figure class="sponsor-logo is-bleed"><img src="assets/img/sponsors/djt.jpeg" alt="" width="160" height="80" loading="lazy" decoding="async"></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
      FINAL CTA
      ============================================================ -->
 <section class="final" data-parallax-root>
@@ -691,11 +791,23 @@
   <div class="particles" data-count-particles="20" aria-hidden="true"></div>
 
   <div class="wrap">
+    <div class="final-presents" data-reveal aria-label="Presented by Manepally Jewellers and Anvita">
+      <img class="presents-logo presents-logo-m" src="assets/img/manepally-presents.png"
+           width="220" height="60" loading="lazy" decoding="async" alt="Manepally Jewellers">
+      <img class="presents-logo presents-logo-a" src="assets/img/anvita-presents.png"
+           width="120" height="120" loading="lazy" decoding="async" alt="Anvita">
+    </div>
     <img class="final-logo" src="assets/img/wordmark-420.png"
          srcset="assets/img/wordmark-420.png 420w, assets/img/wordmark-640.png 640w"
          sizes="(max-width:640px) 66vw, 290px"
          width="420" height="159"
          loading="lazy" decoding="async" alt="" data-reveal>
+    <div class="final-org" data-reveal>
+      <span class="final-org-k">Organised by</span>
+      <img class="org-logo" src="assets/img/navkar-entertainment.png"
+           width="200" height="200" loading="lazy" decoding="async"
+           alt="Navkar Entertainment">
+    </div>
     <h2 data-reveal>Hyderabad, let’s put Navkar Navratri Utsav on repeat.</h2>
     <p class="l2" data-reveal>Navkar Navratri Utsav | Season 9. Nine nights of Garba, Dandiya, music, culture and full-power festive energy.</p>
     <p class="dt" data-reveal>11–19 October 2026 &nbsp;|&nbsp; Jalvihar, Hyderabad</p>
@@ -763,17 +875,28 @@
     <div class="fgrid">
 
       <div class="fbrand">
+        <div class="presents-logos f-presents" aria-label="Presented by Manepally Jewellers and Anvita">
+          <img class="presents-logo presents-logo-m" src="assets/img/manepally-presents.png"
+               width="220" height="60" loading="lazy" decoding="async" alt="Manepally Jewellers">
+          <img class="presents-logo presents-logo-a" src="assets/img/anvita-presents.png"
+               width="120" height="120" loading="lazy" decoding="async" alt="Anvita">
+        </div>
         <img class="flogo" src="assets/img/wordmark-420.png"
              srcset="assets/img/wordmark-420.png 420w, assets/img/wordmark-640.png 640w"
              sizes="210px" width="420" height="159"
              loading="lazy" decoding="async" alt="Navkar Navratri Utsav 2026">
         <div class="fbrand-copy">
-          <strong>Manepally Jewellers presents <b>Anvita</b></strong>
           <span class="fbrand-name">Season 9</span>
-          <p class="forg">
-            Organised by Navkar Entertainments &amp; Ido Events<br>
-            Supported by Jignesh Doshi, President, Gujarati Social Welfare Society
-          </p>
+          <div class="forg-block">
+            <span class="forg-k">Organised by</span>
+            <img class="org-logo org-logo-foot" src="assets/img/navkar-entertainment.png"
+                 width="200" height="200" loading="lazy" decoding="async"
+                 alt="Navkar Entertainment">
+            <p class="forg">
+              Navkar Entertainments &amp; Ido Events<br>
+              Supported by Jignesh Doshi, President, Gujarati Social Welfare Society
+            </p>
+          </div>
         </div>
       </div>
 
@@ -967,6 +1090,14 @@
               <div class="tk-name">Group of 4</div>
               <div class="tk-price">₹1,800</div>
               <div class="tk-note">₹450 each · one night</div>
+            </div>
+            <div class="tk-act" data-act></div>
+          </li>
+          <li class="tk" data-id="kidsSeason" data-price="1500" data-admits="1" data-kind="season">
+            <div class="tk-info">
+              <div class="tk-name">Kids Season Pass</div>
+              <div class="tk-price">₹1,500</div>
+              <div class="tk-note">Ages 3–5 · all 9 days · food not included</div>
             </div>
             <div class="tk-act" data-act></div>
           </li>

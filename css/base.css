@@ -83,7 +83,7 @@
   --t-mid:.5s var(--e-out);
   --t-slow:.9s var(--e-out);
 
-  --nav-h:104px;
+  --nav-h:136px;
 }
 
 *,*::before,*::after{box-sizing:border-box}
@@ -164,7 +164,7 @@ h4,.h4{font-size:clamp(17px,1.6vw,21px)}
 /* Magenta, not yellow — the page base is now yellow, so a yellow bar would
    vanish into it. Pink-on-yellow is the key art's own move. */
 .underline::after{
-  content:"";position:absolute;left:-2%;right:-2%;bottom:.04em;height:.30em;
+  content:"";position:absolute;left:-1%;right:-1%;bottom:.015em;height:.20em;
   background:var(--magenta);border-radius:.15em;z-index:-1;
   transform:scaleX(0);transform-origin:left center;
   transition:transform .8s var(--e-out) .15s;

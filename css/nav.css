@@ -28,7 +28,7 @@
   border-bottom-color:var(--ink-12);
   box-shadow:0 6px 30px rgba(59,10,31,.09);
 }
-.nav.is-stuck .nav-in{height:88px}
+.nav.is-stuck .nav-in{height:110px}
 
 /* Hide on scroll-down, show on scroll-up */
 .nav.is-hidden{transform:translateY(-102%)}
@@ -36,7 +36,20 @@
 /* ------------------------------------------------------------
    Brand
    ------------------------------------------------------------ */
-.brand{display:flex;align-items:center;gap:12px;flex:none}
+.brand{
+  display:flex;flex-direction:column;align-items:flex-start;gap:6px;
+  flex:none;min-width:0;
+}
+.presents-logos{
+  display:flex;align-items:center;justify-content:flex-start;gap:10px;
+  max-width:100%;
+}
+.presents-logo{
+  display:block;height:auto;object-fit:contain;
+  background:#fff;border-radius:6px;padding:3px 6px;
+}
+.presents-logo-m{width:clamp(110px,12vw,148px)}
+.presents-logo-a{width:clamp(42px,5vw,56px);padding:2px}
 /* The wordmark already carries the event name, so the nav does not repeat it
    as text. Its lettering is bulb-lit and fine, so it needs real width to stay
    readable — the bar heights above are sized to fit it, not the reverse. */
@@ -54,6 +67,9 @@
   width:clamp(170px,16vw,200px);
   filter:none;
 }
+.nav.is-stuck .presents-logo-m{width:clamp(92px,10vw,120px)}
+.nav.is-stuck .presents-logo-a{width:clamp(36px,4vw,46px)}
+.nav.is-stuck .presents-logos{gap:8px}
 
 
 /* ------------------------------------------------------------
@@ -226,9 +242,13 @@ body.menu-open .drawer-foot{opacity:1;transform:none;transition-delay:520ms}
   body{padding-bottom:78px}
 }
 @media (max-width:640px){
-  :root{--nav-h:92px}
-  .nav.is-stuck .nav-in{height:78px}
-  .blogo{width:clamp(168px,46vw,196px)}
-  .nav.is-stuck .blogo{width:clamp(150px,41vw,176px)}
+  :root{--nav-h:126px}
+  .nav.is-stuck .nav-in{height:108px}
+  .blogo{width:clamp(150px,42vw,180px)}
+  .nav.is-stuck .blogo{width:clamp(136px,38vw,160px)}
+  .presents-logo-m{width:clamp(96px,26vw,120px)}
+  .presents-logo-a{width:clamp(38px,10vw,48px)}
+  .nav.is-stuck .presents-logo-m{width:clamp(84px,23vw,108px)}
+  .nav.is-stuck .presents-logo-a{width:clamp(34px,9vw,42px)}
   body{padding-bottom:74px}
 }

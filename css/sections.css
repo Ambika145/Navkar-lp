@@ -333,11 +333,14 @@
   gap:clamp(14px,1.8vw,22px);
 }
 .pass-grid.pass-grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.pass-grid.pass-grid-5{grid-template-columns:repeat(5,minmax(0,1fr))}
 .pass-grid + .pass-grid{margin-top:clamp(14px,1.8vw,22px)}
 
+/* inline-block, not inline-flex: a flex container turns the trailing full
+   stop into its own item and the gap pushes it away from the date */
 .pass-early{
   margin:18px 0 0;
-  display:inline-flex;align-items:center;gap:8px;
+  display:inline-block;
   font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:700;
   letter-spacing:.02em;color:var(--magenta-ink);
   background:rgba(227,11,84,.08);
@@ -347,8 +350,15 @@
 }
 .pass-early b{font-weight:900;color:var(--ink)}
 
+/* Four across needs roughly 1180px. Step down through three before two,
+   otherwise tablets get two very wide, very empty cards. */
 @media (max-width:1180px){
-  .pass-grid.pass-grid-4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pass-grid.pass-grid-4,
+  .pass-grid.pass-grid-5{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (max-width:880px){
+  .pass-grid.pass-grid-4,
+  .pass-grid.pass-grid-5{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
 .pass{
@@ -390,8 +400,8 @@
 .ribbon{
   align-self:flex-start;
   font-family:'Outfit',sans-serif;font-size:10px;font-weight:900;
-  letter-spacing:.16em;text-transform:uppercase;
-  padding:6px 14px;border-radius:var(--r-pill);
+  letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;
+  padding:6px 12px;border-radius:var(--r-pill);
   background:var(--gold);color:var(--ink);
   margin-bottom:16px;
   position:relative;z-index:1;
@@ -403,7 +413,9 @@
 }
 .price{
   font-family:'Outfit',sans-serif;
-  font-size:clamp(34px,4.4vw,52px);font-weight:900;
+  /* four across, so this is capped to what a quarter-width card can hold:
+     at 52px a five figure price overflowed its own card */
+  font-size:clamp(30px,3.1vw,42px);font-weight:900;
   letter-spacing:-.045em;line-height:1;
   margin:12px 0 14px;
   position:relative;z-index:1;
@@ -442,8 +454,9 @@
 .pbtn{
   position:relative;z-index:1;
   width:100%;
-  font-family:'Outfit',sans-serif;font-weight:800;font-size:14.5px;
-  padding:15px 20px;border-radius:var(--r-pill);
+  font-family:'Outfit',sans-serif;font-weight:800;font-size:13.5px;
+  letter-spacing:-.005em;
+  padding:15px 12px;border-radius:var(--r-pill);
   background:var(--yellow);color:var(--ink);
   box-shadow:0 4px 0 #D2AE00;
   transition:background var(--t-fast),transform var(--t-fast),box-shadow var(--t-fast);
@@ -670,6 +683,83 @@
 }
 .faq-a a:hover{color:var(--magenta)}
 
+/* ------------------------------------------------------------
+   Partners — slow left logo scroller
+   ------------------------------------------------------------ */
+.sponsors-sec{
+  position:relative;
+  overflow:hidden;
+  padding-bottom:clamp(48px,6vw,72px);
+  background:
+    radial-gradient(ellipse 70% 50% at 10% 0%, rgba(227,11,84,.06), transparent 55%),
+    radial-gradient(ellipse 60% 45% at 90% 100%, rgba(201,162,39,.08), transparent 50%),
+    var(--cream);
+}
+.sponsors-sec .sec-head{margin-bottom:clamp(28px,4vw,44px)}
+.sponsor-marquee{
+  position:relative;
+  overflow:hidden;
+  margin-top:8px;
+  mask-image:linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+  -webkit-mask-image:linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+}
+.sponsor-track{
+  display:flex;
+  width:max-content;
+  gap:0;
+  animation:sponsor-marquee var(--speed,96s) linear infinite;
+  will-change:transform;
+}
+.sponsor-marquee:hover .sponsor-track{animation-play-state:paused}
+.sponsor-group{
+  display:flex;
+  align-items:center;
+  flex:none;
+  gap:clamp(16px,2vw,24px);
+  padding-right:clamp(16px,2vw,24px);
+}
+.sponsor-logo{
+  margin:0;
+  flex:none;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:clamp(168px,19vw,228px);
+  height:clamp(104px,12.5vw,132px);
+  padding:14px 18px;
+  background:#fff;
+  border:1px solid rgba(32,18,59,.1);
+  border-radius:16px;
+  box-shadow:0 8px 22px rgba(32,18,59,.06);
+  overflow:hidden;
+}
+.sponsor-logo img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center;
+}
+/* Soft inset so black-plate logos don’t read as harsh black blocks */
+.sponsor-logo.is-bleed{
+  padding:10px;
+  background:#fff;
+}
+.sponsor-logo.is-bleed img{
+  border-radius:10px;
+  background:#111;
+}
+/* Logos with lots of empty padding in the file — zoom so the mark reads */
+.sponsor-logo.is-tight img{transform:scale(1.28);transform-origin:center}
+@keyframes sponsor-marquee{to{transform:translate3d(-50%,0,0)}}
+
+@media (prefers-reduced-motion:reduce){
+  .sponsor-track{animation:none;transform:none;flex-wrap:wrap;width:100%;justify-content:center;padding:0 clamp(16px,4vw,40px);gap:14px}
+  .sponsor-group{flex-wrap:wrap;justify-content:center;padding-right:0;gap:14px}
+  .sponsor-group[aria-hidden="true"]{display:none}
+  .sponsor-marquee{mask-image:none;-webkit-mask-image:none}
+}
+
 /* Animate open/close where the browser can. Elsewhere it simply snaps open,
    which is a perfectly good accordion. */
 @supports selector(::details-content){
@@ -714,6 +804,30 @@
   width:clamp(190px,26vw,290px);height:auto;
   filter:drop-shadow(0 10px 30px rgba(27,3,9,.6));
 }
+.final-presents{
+  display:flex;align-items:center;justify-content:center;gap:14px;
+  margin:0 auto clamp(14px,2vw,22px);
+}
+.final-presents .presents-logo{
+  background:rgba(255,255,255,.96);
+  border-radius:8px;padding:6px 10px;
+  box-shadow:0 8px 24px rgba(0,0,0,.28);
+}
+.final-presents .presents-logo-m{width:clamp(148px,22vw,200px)}
+.final-presents .presents-logo-a{width:clamp(58px,8.5vw,76px);padding:4px}
+.final-org{
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  margin:0 auto clamp(22px,3vw,34px);
+}
+.final-org-k{
+  font-family:'Outfit',sans-serif;font-size:10px;font-weight:800;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--cream-70);
+}
+.org-logo{
+  display:block;width:clamp(88px,12vw,112px);height:auto;
+  background:rgba(255,255,255,.96);border-radius:14px;padding:8px;
+  box-shadow:0 8px 24px rgba(0,0,0,.28);
+}
 .final .kicker{justify-content:center}
 .final h2{max-width:20ch;margin:0 auto 18px}
 .final .l2{
@@ -753,7 +867,15 @@ footer{
 /* ---- brand block ---- */
 /* Stacked, not side by side: the wordmark needs its full width to stay legible
    and the copy beside it was wrapping to two words a line. */
-.fbrand{display:flex;flex-direction:column;align-items:flex-start;gap:18px}
+.fbrand{display:flex;flex-direction:column;align-items:flex-start;gap:14px}
+.f-presents{
+  gap:12px;
+}
+.f-presents .presents-logo{
+  background:#fff;border-radius:8px;padding:5px 8px;
+}
+.f-presents .presents-logo-m{width:clamp(132px,20vw,178px)}
+.f-presents .presents-logo-a{width:clamp(52px,8vw,68px);padding:3px}
 .flogo{
   flex:none;width:210px;height:auto;
   filter:drop-shadow(0 6px 20px rgba(0,0,0,.45));
@@ -772,7 +894,17 @@ footer{
   font-family:'Outfit',sans-serif;font-size:clamp(17px,1.8vw,21px);
   font-weight:900;letter-spacing:-.025em;color:#fff;
 }
-.forg{margin-top:12px;font-size:13px;color:var(--cream-45);line-height:1.7}
+.forg-block{margin-top:14px}
+.forg-k{
+  display:block;margin-bottom:8px;
+  font-family:'Outfit',sans-serif;font-size:10px;font-weight:800;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--cream-45);
+}
+.org-logo-foot{
+  display:block;width:clamp(72px,14vw,92px);height:auto;
+  background:#fff;border-radius:12px;padding:6px;margin-bottom:10px;
+}
+.forg{margin-top:0;font-size:13px;color:var(--cream-45);line-height:1.7}
 
 /* ---- link columns ---- */
 .fcol{min-width:0}
@@ -891,7 +1023,7 @@ a.fext:focus-visible{outline:3px solid var(--yellow);outline-offset:3px;border-r
 }
 
 @media (max-width:760px){
-  .pass-grid,.pass-grid.pass-grid-4{grid-template-columns:minmax(0,1fr)}
+  .pass-grid,.pass-grid.pass-grid-4,.pass-grid.pass-grid-5{grid-template-columns:minmax(0,1fr)}
   .bulk,.regband{flex-direction:column;align-items:flex-start}
   .bulk .btn,.regband .btn{width:100%}
   .map-bar{flex-direction:column;align-items:stretch;gap:14px}

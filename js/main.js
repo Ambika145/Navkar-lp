@@ -891,7 +891,7 @@
         var html = '';
         html += '<div><div class="k">Night</div><div class="v">' +
           (state.date ? state.date.label + ' · ' + state.time : '—') + '</div></div>';
-        html += '<div><div class="k">Venue</div><div class="v">Jalvihar, Hyderabad</div></div>';
+        html += '<div><div class="k">Venue</div><div class="v">Jalavihar, Hyderabad</div></div>';
         lines.forEach(function (l) {
           html += '<div><div class="k">' + l.name + ' × ' + l.qty + '</div><div class="v">' +
             inr(l.price * l.qty) + '</div></div>';
@@ -904,12 +904,12 @@
       function updateVenueBar() {
         if (!venueBar) return;
         if (state.step === 0) {
-          venueBar.textContent = 'Grand Lawn, Jalvihar · Hyderabad';
+          venueBar.textContent = 'Grand Lawn, Jalavihar · Hyderabad';
         } else if (state.date) {
-          venueBar.textContent = 'Grand Lawn, Jalvihar · Hyderabad  ·  ' +
+          venueBar.textContent = 'Grand Lawn, Jalavihar · Hyderabad  ·  ' +
             state.date.label + ' | ' + state.time;
         } else {
-          venueBar.textContent = 'Grand Lawn, Jalvihar · Hyderabad';
+          venueBar.textContent = 'Grand Lawn, Jalavihar · Hyderabad';
         }
       }
 
@@ -1451,7 +1451,7 @@
             if ($('#wsPayId')) $('#wsPayId').textContent = wsPaymentId || '—';
             if (wsSaveOk) {
               wsSaveOk.hidden = false;
-              wsSaveOk.textContent = 'Your booking has been registered.';
+              wsSaveOk.textContent = 'Your booking has been registered. Check your email for confirmation.';
             }
             if (wsSaveErr) wsSaveErr.hidden = true;
             wsProof.clear();

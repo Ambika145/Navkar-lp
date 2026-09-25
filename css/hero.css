@@ -9,8 +9,8 @@
   min-height:100vh;
   min-height:100svh;
   display:flex;flex-direction:column;justify-content:flex-end;
-  padding-top:calc(var(--nav-h) + 40px);
-  padding-bottom:clamp(30px,5vw,60px);
+  padding-top:calc(var(--nav-h) + 28px);
+  padding-bottom:clamp(22px,3.5vw,40px);
   overflow:hidden;
   background:var(--ink-900);
   isolation:isolate;
@@ -103,7 +103,7 @@
 .eyebrow{
   display:flex;align-items:center;
   gap:clamp(14px,1.5vw,20px);
-  margin-bottom:clamp(20px,2.4vw,28px);
+  margin-bottom:clamp(12px,1.8vw,20px);
 }
 
 /* Typographic, NOT a badge. A gold disc here would echo the circular logo
@@ -114,20 +114,20 @@
   flex:none;
   padding-right:clamp(16px,1.8vw,24px);
   border-right:1px solid var(--cream-18);
+  overflow:visible;
 }
 .season-n{
   display:block;
   font-family:'Outfit',sans-serif;
-  font-size:clamp(36px,3.8vw,50px);
+  font-size:clamp(34px,3.6vw,48px);
   font-weight:900;
-  line-height:.86;
-  letter-spacing:-.06em;
+  /* Keep the full glyph (tail of the 9) inside the paint box — a tight
+     line-height + background-clip:text was cutting the bottom of the 9. */
+  line-height:1.12;
+  letter-spacing:-.04em;
   color:var(--marigold);
-  /* The gold below is painted across this box and then clipped to the glyphs,
-     so the box has to clear the tail of the 9. Padding grows the painted area;
-     the negative margin keeps the label underneath where it was. */
-  padding-bottom:.26em;
-  margin-bottom:-.26em;
+  padding:.06em 0 .08em;
+  overflow:visible;
 }
 @supports ((-webkit-background-clip:text) or (background-clip:text)){
   .season-n{
@@ -137,10 +137,10 @@
   }
 }
 .season-l{
-  display:block;margin-top:6px;
+  display:block;margin-top:2px;
   font-family:'Outfit',sans-serif;
   font-size:clamp(8px,.82vw,9.5px);font-weight:800;
-  letter-spacing:.3em;text-transform:uppercase;
+  letter-spacing:.28em;text-transform:uppercase;
   color:var(--marigold);
 }
 
@@ -177,7 +177,7 @@
 }
 
 /* Headline — the words carry the entrance, so the block itself stays visible */
-.hero h1{color:#fff;margin-bottom:20px;text-shadow:0 2px 34px rgba(42,6,20,.45)}
+.hero h1{color:#fff;margin-bottom:14px;text-shadow:0 2px 34px rgba(42,6,20,.45)}
 .hero .hero-content > h1{opacity:1;transform:none}
 .hero.is-ready h1 .w > span{transform:translateY(0)}
 .hero h1 .w > span{transition-delay:calc(.42s + var(--i,0) * 80ms)}
@@ -196,8 +196,8 @@
   font-size:clamp(15.5px,1.55vw,20px);
   color:var(--cream-70);
   max-width:56ch;
-  line-height:1.65;
-  margin-bottom:30px;
+  line-height:1.55;
+  margin-bottom:22px;
 }
 
 /* ------------------------------------------------------------
@@ -214,7 +214,7 @@
      the row ragged. Content-sized columns keep each value on one line. */
   grid-template-columns:repeat(4,auto);
   justify-content:start;
-  margin-bottom:34px;
+  margin-bottom:24px;
 }
 .hero-meta > div{padding:0 clamp(15px,1.8vw,26px)}
 .hero-meta > div:first-child{padding-left:0}
@@ -245,7 +245,7 @@
   display:flex;align-items:center;
   gap:clamp(18px,2.4vw,32px);
   flex-wrap:wrap;
-  margin-bottom:30px;
+  margin-bottom:20px;
 }
 
 /* The single primary action. Bigger than any .btn elsewhere on the page,
@@ -325,32 +325,38 @@
    ------------------------------------------------------------ */
 .hero-billing{
   display:flex;align-items:center;flex-wrap:wrap;
-  gap:clamp(14px,1.8vw,26px);
-  padding-top:clamp(16px,1.8vw,22px);
+  gap:clamp(10px,1.4vw,18px) clamp(12px,1.6vw,22px);
+  max-width:100%;
+  padding-top:clamp(12px,1.4vw,16px);
   border-top:1px solid var(--cream-18);
 }
 .bill{
-  font-size:clamp(12.5px,1.25vw,14.5px);
+  flex:1 1 auto;
+  min-width:0;
+  max-width:100%;
+  font-size:clamp(12px,1.15vw,13.5px);
   color:var(--cream-70);
-  line-height:1.5;
+  line-height:1.4;
+  overflow-wrap:anywhere;
 }
 .bill b{color:#fff;font-weight:700}
 /* small keyed label that sets each item apart without a pill */
 .bill-k{
   display:inline-block;
   font-family:'Outfit',sans-serif;
-  font-size:9.5px;font-weight:900;
-  letter-spacing:.17em;text-transform:uppercase;
+  font-size:9px;font-weight:900;
+  letter-spacing:.14em;text-transform:uppercase;
   color:var(--ink);
   background:var(--marigold);
-  padding:3px 8px;
+  padding:2px 7px;
   border-radius:5px;
-  margin-right:9px;
-  vertical-align:.09em;
+  margin-right:8px;
+  vertical-align:.08em;
+  white-space:nowrap;
 }
 /* crossed dandiya sticks as the divider — the key art uses the same mark */
 .bill-sep{
-  width:clamp(20px,2vw,26px);height:clamp(20px,2vw,26px);
+  width:clamp(18px,1.8vw,22px);height:clamp(18px,1.8vw,22px);
   flex:none;
   color:var(--marigold);opacity:.6;
   fill:none;stroke:currentColor;
@@ -371,8 +377,8 @@
 @media (max-width:860px){
   .hero{
     justify-content:flex-end;
-    padding-top:calc(var(--nav-h) + 70px);
-    min-height:92vh;min-height:92svh;
+    padding-top:calc(var(--nav-h) + 48px);
+    min-height:100vh;min-height:100svh;
   }
   /* A narrow box crops hard HORIZONTALLY (the reverse of desktop), so this
      value picks which subject survives — here, the smiling dancer in white. */
@@ -382,35 +388,35 @@
 }
 
 @media (max-width:640px){
-  .hero{padding-bottom:26px}
+  .hero{padding-bottom:20px}
   .hero-content{max-width:100%}
-  .hero h1{text-shadow:0 2px 26px rgba(42,6,20,.6)}
-  .hero .sub{margin-bottom:24px}
-  .eyebrow{gap:13px;margin-bottom:20px}
+  .hero h1{text-shadow:0 2px 26px rgba(42,6,20,.6);margin-bottom:12px}
+  .hero .sub{margin-bottom:16px}
+  .eyebrow{gap:13px;margin-bottom:14px}
 
   /* Fact row becomes a 2-up grid; the vertical hairlines would leave stray
      rules mid-row once items wrap, so they become horizontal ones instead. */
   .hero-meta{
     display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:16px 18px;margin-bottom:28px;
+    gap:12px 16px;margin-bottom:18px;
   }
   .hero-meta > div,
   .hero-meta > div + div{
     padding:0;border-left:none;
   }
-  .hero-meta > div{padding-top:13px;border-top:1px solid var(--cream-18)}
+  .hero-meta > div{padding-top:10px;border-top:1px solid var(--cream-18)}
   .hero-meta dd{font-size:13.5px;overflow-wrap:anywhere}
 
-  .cta-row{gap:16px;margin-bottom:26px}
+  .cta-row{gap:12px;margin-bottom:16px}
   .cta-row .btn-hero,
   .cta-row .btn-hero-alt{width:100%}
   .cta-text{width:100%;justify-content:center}
 
   /* stack, and swap the dandiya divider for a hairline */
-  .hero-billing{flex-direction:column;align-items:flex-start;gap:12px}
+  .hero-billing{flex-direction:column;align-items:stretch;gap:8px}
   .bill-sep{display:none}
-  .bill{font-size:13px}
-  .bill + .bill-sep + .bill{padding-top:12px;border-top:1px solid var(--cream-18);width:100%}
+  .bill{font-size:12.5px}
+  .bill + .bill-sep + .bill{padding-top:8px;border-top:1px solid var(--cream-18);width:100%}
 }
 
 @media (max-width:420px){
@@ -423,10 +429,31 @@
   .hero-meta{grid-template-columns:1fr}
 }
 
+/* Keep the billing strip inside the first viewport on short screens */
+@media (max-height:820px){
+  .hero{padding-top:calc(var(--nav-h) + 18px);padding-bottom:18px}
+  .eyebrow{margin-bottom:12px}
+  .hero h1{margin-bottom:10px}
+  .hero .sub{margin-bottom:14px;line-height:1.45}
+  .hero-meta{margin-bottom:16px}
+  .cta-row{margin-bottom:14px}
+  .hero-billing{padding-top:10px;gap:8px 14px}
+  .btn-hero{padding:14px 28px;font-size:15px}
+  .btn-hero-alt{padding:14px 22px;font-size:14px}
+}
+
+@media (max-height:700px){
+  .hero .sub{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .hero-meta{margin-bottom:12px}
+  .hero-meta dt{margin-bottom:4px}
+  .cta-row{margin-bottom:10px}
+}
+
 /* Short landscape phones — let the hero shrink rather than crop the CTA */
 @media (max-height:560px) and (orientation:landscape){
-  .hero{min-height:auto;padding-top:calc(var(--nav-h) + 30px);padding-bottom:30px}
-  .hero-billing{display:none}
+  .hero{min-height:auto;padding-top:calc(var(--nav-h) + 24px);padding-bottom:20px}
+  .hero-meta{display:none}
+  .hero-billing{display:flex}
 }
 
 @media (prefers-reduced-motion:reduce){

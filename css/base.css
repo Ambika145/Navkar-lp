@@ -83,7 +83,7 @@
   --t-mid:.5s var(--e-out);
   --t-slow:.9s var(--e-out);
 
-  --nav-h:136px;
+  --nav-h:88px;
 }
 
 *,*::before,*::after{box-sizing:border-box}
@@ -170,14 +170,6 @@ h4,.h4{font-size:clamp(17px,1.6vw,21px)}
   transition:transform .8s var(--e-out) .15s;
 }
 .is-in .underline::after,.underline.is-in::after{transform:scaleX(1)}
-
-.tag{
-  display:inline-block;font-family:'Outfit',sans-serif;
-  font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
-  color:#fff;background:var(--confirm);
-  padding:4px 9px;border-radius:var(--r-pill);
-  vertical-align:middle;
-}
 
 /* ------------------------------------------------------------
    Buttons — pill silhouette with the signature hard offset shadow

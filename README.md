@@ -1,7 +1,7 @@
 # Navkar Navratri Utsav 2026 (Season 9) — Landing Page
 
 Static, festive landing page for Navkar Navratri Utsav Season 9 — 11–19 October 2026,
-Jalvihar, Necklace Road, Hyderabad.
+Jalavihar, Necklace Road, Hyderabad.
 
 No build step and no dependencies. Open `index.html` in a browser, or serve the
 project root with any static server.

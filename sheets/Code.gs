@@ -9,6 +9,9 @@
  *    - Who has access: Anyone
  * 4. Copy the Web app URL into js/config.js → sheetsEndpoint
  *
+ * Flow: Razorpay success → Sheet row → Confirmation email → (frontend success UI)
+ * Email is best-effort: sheet write success is never blocked by mail failure.
+ *
  * Duplicate prevention: Razorpay Payment ID must be unique.
  * Optional screenshots go to Drive folder "Navkar Payment Proofs".
  *
@@ -19,6 +22,12 @@ var SHEET_NAME = 'Bookings';
 var PROOF_FOLDER = 'Navkar Payment Proofs';
 var COL_PAYMENT_ID = 10; // Razorpay Payment ID
 var COL_PROOF = 13;      // Payment Proof
+
+var EVENT_NAME = 'Navkar Navratri Utsav 2026 · Season 9';
+var EVENT_DATES = '11–19 October 2026';
+var EVENT_VENUE = 'Jalavihar, Necklace Road, Hyderabad';
+var EVENT_GATES = 'Gates open 7:00 PM';
+var SUPPORT_PHONE = '+91 81421 11145 / +91 80191 61198';
 
 var HEADERS = [
   'Timestamp',
@@ -65,7 +74,7 @@ function doPost(e) {
       return json_({ ok: true, updated: true, proofUrl: attachedUrl || '' });
     }
 
-    /* Duplicate Payment ID — do not create another booking row */
+    /* Duplicate Payment ID — do not create another booking row (or re-mail) */
     if (paymentId && existingRow > 0) {
       var extraProof = '';
       if (data.proofBase64) {
@@ -93,7 +102,16 @@ function doPost(e) {
       proofUrl || ''
     ]);
 
-    return json_({ ok: true, proofUrl: proofUrl || '' });
+    /* Best-effort confirmation — never fail the booking if mail errors */
+    var emailSent = false;
+    try {
+      emailSent = sendConfirmationEmail_(data);
+    } catch (mailErr) {
+      Logger.log('Confirmation email failed: ' + mailErr);
+      emailSent = false;
+    }
+
+    return json_({ ok: true, proofUrl: proofUrl || '', emailSent: emailSent });
   } catch (err) {
     return json_({ ok: false, error: String(err) });
   }
@@ -124,6 +142,95 @@ function saveProof_(data) {
   var file = folder.createFile(blob);
   file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
   return file.getUrl();
+}
+
+/**
+ * Sends booking confirmation to the customer email from the form.
+ * Returns true if MailApp accepted the send; false if skipped/failed.
+ * Callers must catch errors — this function may still throw.
+ */
+function sendConfirmationEmail_(data) {
+  var to = data && data.email ? String(data.email).trim() : '';
+  if (!to || to.indexOf('@') < 1) return false;
+
+  var name = data.name ? String(data.name).trim() : 'Guest';
+  var bookingType = data.bookingType ? String(data.bookingType).trim() : 'Booking';
+  var passType = data.passType ? String(data.passType).trim() : '—';
+  var qty = data.quantity != null && data.quantity !== '' ? String(data.quantity) : '—';
+  var paymentId = data.paymentId ? String(data.paymentId) : '—';
+  var amountText = formatInr_(data.amount);
+
+  var subject = 'Booking confirmed — ' + EVENT_NAME;
+
+  var plain =
+    'Hi ' + name + ',\n\n' +
+    'Thank you for booking with Navkar Navratri Utsav. Your payment was received and your registration is confirmed.\n\n' +
+    'Booking type: ' + bookingType + '\n' +
+    'Details: ' + passType + '\n' +
+    'Quantity: ' + qty + '\n' +
+    'Amount paid: ' + amountText + '\n' +
+    'Razorpay Payment ID: ' + paymentId + '\n\n' +
+    'Event: ' + EVENT_NAME + '\n' +
+    'Dates: ' + EVENT_DATES + '\n' +
+    'Venue: ' + EVENT_VENUE + '\n' +
+    EVENT_GATES + '\n\n' +
+    'Our team verifies each payment manually. Please keep this email and your Razorpay Payment ID for entry support.\n\n' +
+    'Questions? WhatsApp / call Bookings: ' + SUPPORT_PHONE + '\n\n' +
+    'See you in the circle,\n' +
+    'Navkar Entertainment';
+
+  var html =
+    '<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.55;color:#1b0310;max-width:560px;margin:0 auto;">' +
+      '<p style="margin:0 0 16px;">Hi <strong>' + esc_(name) + '</strong>,</p>' +
+      '<p style="margin:0 0 20px;">Thank you for booking with <strong>Navkar Navratri Utsav</strong>. Your payment was received and your registration is confirmed.</p>' +
+      '<table style="width:100%;border-collapse:collapse;margin:0 0 20px;font-size:14px;">' +
+        rowHtml_('Booking type', bookingType) +
+        rowHtml_('Details', passType) +
+        rowHtml_('Quantity', qty) +
+        rowHtml_('Amount paid', amountText) +
+        rowHtml_('Razorpay Payment ID', paymentId) +
+      '</table>' +
+      '<div style="background:#fff9dc;border:1px solid #e8d9a0;border-radius:10px;padding:14px 16px;margin:0 0 20px;">' +
+        '<p style="margin:0 0 6px;font-weight:700;">' + esc_(EVENT_NAME) + '</p>' +
+        '<p style="margin:0;color:#444;">' + esc_(EVENT_DATES) + '<br>' +
+          esc_(EVENT_VENUE) + '<br>' + esc_(EVENT_GATES) + '</p>' +
+      '</div>' +
+      '<p style="margin:0 0 12px;">Our team verifies each payment manually. Please keep this email and your Razorpay Payment ID for entry support.</p>' +
+      '<p style="margin:0 0 20px;color:#555;font-size:13px;">Questions? WhatsApp / call Bookings: ' + esc_(SUPPORT_PHONE) + '</p>' +
+      '<p style="margin:0;">See you in the circle,<br><strong>Navkar Entertainment</strong></p>' +
+    '</div>';
+
+  MailApp.sendEmail({
+    to: to,
+    subject: subject,
+    body: plain,
+    htmlBody: html,
+    name: 'Navkar Navratri Utsav'
+  });
+
+  return true;
+}
+
+function formatInr_(amount) {
+  if (amount == null || amount === '') return '—';
+  var n = Number(amount);
+  if (isNaN(n)) return String(amount);
+  return '₹' + n.toLocaleString('en-IN');
+}
+
+function rowHtml_(label, value) {
+  return '<tr>' +
+    '<td style="padding:8px 12px 8px 0;color:#666;vertical-align:top;width:38%;">' + esc_(label) + '</td>' +
+    '<td style="padding:8px 0;font-weight:600;vertical-align:top;">' + esc_(value) + '</td>' +
+    '</tr>';
+}
+
+function esc_(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
 function json_(obj) {

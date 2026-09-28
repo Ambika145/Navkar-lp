@@ -8,9 +8,10 @@
   position:relative;
   min-height:100vh;
   min-height:100svh;
-  display:flex;flex-direction:column;justify-content:flex-end;
-  padding-top:calc(var(--nav-h) + 28px);
-  padding-bottom:clamp(22px,3.5vw,40px);
+  display:flex;flex-direction:column;justify-content:flex-start;
+  /* Sit the copy under the nav logo — not pinned to the bottom with a void */
+  padding-top:calc(var(--nav-h) + clamp(20px,3.5vh,36px));
+  padding-bottom:clamp(28px,4.5vw,48px);
   overflow:hidden;
   background:var(--ink-900);
   isolation:isolate;
@@ -82,7 +83,10 @@
   margin:0 auto;
   padding:0 var(--gut);
 }
-.hero-content{max-width:840px}
+.hero-content{
+  max-width:840px;
+  --hero-gap:clamp(28px,3.2vw,40px);
+}
 
 /* Staggered entrance */
 .hero-content > *{
@@ -90,94 +94,54 @@
   transition:opacity .85s var(--e-out),transform .85s var(--e-out);
 }
 .hero.is-ready .hero-content > *{opacity:1;transform:none}
-.hero.is-ready .hero-content > :nth-child(1){transition-delay:.22s}  /* eyebrow */
-.hero.is-ready .hero-content > :nth-child(2){transition-delay:.32s}  /* h1 */
-.hero.is-ready .hero-content > :nth-child(3){transition-delay:.44s}  /* sub */
-.hero.is-ready .hero-content > :nth-child(4){transition-delay:.56s}  /* facts */
-.hero.is-ready .hero-content > :nth-child(5){transition-delay:.66s}  /* CTAs */
-.hero.is-ready .hero-content > :nth-child(6){transition-delay:.76s}  /* billing */
+.hero.is-ready .hero-content > :nth-child(1){transition-delay:.18s}  /* brand */
+.hero.is-ready .hero-content > :nth-child(2){transition-delay:.30s}  /* h1 */
+.hero.is-ready .hero-content > :nth-child(3){transition-delay:.42s}  /* sub */
+.hero.is-ready .hero-content > :nth-child(4){transition-delay:.54s}  /* facts */
+.hero.is-ready .hero-content > :nth-child(5){transition-delay:.64s}  /* CTAs */
+.hero.is-ready .hero-content > :nth-child(6){transition-delay:.74s}  /* billing */
 
 /* ------------------------------------------------------------
-   Eyebrow — edition seal + presenter billing as one lockup
+   Brand lockup — event logo + 9th Season seal, one aligned row
    ------------------------------------------------------------ */
-.eyebrow{
-  display:flex;align-items:center;
-  gap:clamp(14px,1.5vw,20px);
-  margin-bottom:clamp(12px,1.8vw,20px);
+.hero-brand{
+  display:flex;
+  align-items:center;
+  margin:0 0 var(--hero-gap);
 }
-
-/* Typographic, NOT a badge. A gold disc here would echo the circular logo
-   sitting directly above it and read as a duplicate mark — so the edition
-   number is set as an editorial numeral against the same hairline rule the
-   fact row below uses. */
 .season{
   flex:none;
-  padding-right:clamp(16px,1.8vw,24px);
-  border-right:1px solid var(--cream-18);
+  display:inline-flex;
+  flex-direction:row;
+  align-items:baseline;
+  gap:.35em;
   overflow:visible;
 }
 .season-n{
-  display:block;
+  display:inline-block;
   font-family:'Outfit',sans-serif;
-  font-size:clamp(34px,3.6vw,48px);
+  font-size:clamp(28px,3.2vw,40px);
   font-weight:900;
-  /* Keep the full glyph (tail of the 9) inside the paint box — a tight
-     line-height + background-clip:text was cutting the bottom of the 9. */
-  line-height:1.12;
-  letter-spacing:-.04em;
-  color:var(--marigold);
-  padding:.06em 0 .08em;
+  line-height:1.15;
+  letter-spacing:-.02em;
+  /* Solid fill — background-clip:text crops Outfit’s heavy 9 */
+  color:var(--yellow);
+  -webkit-text-fill-color:var(--yellow);
+  background:none;
+  padding:0;
   overflow:visible;
 }
-@supports ((-webkit-background-clip:text) or (background-clip:text)){
-  .season-n{
-    background:var(--gold);
-    -webkit-background-clip:text;background-clip:text;
-    -webkit-text-fill-color:transparent;
-  }
-}
 .season-l{
-  display:block;margin-top:2px;
+  display:inline;
+  margin-top:0;
   font-family:'Outfit',sans-serif;
-  font-size:clamp(8px,.82vw,9.5px);font-weight:800;
-  letter-spacing:.28em;text-transform:uppercase;
+  font-size:clamp(14px,1.5vw,18px);font-weight:800;
+  letter-spacing:.18em;text-transform:uppercase;
   color:var(--marigold);
-}
-
-.eyebrow-copy{display:block;min-width:0}
-.eb-tag{
-  display:block;
-  font-family:'Outfit',sans-serif;
-  font-size:clamp(9.5px,1vw,11px);font-weight:900;
-  letter-spacing:.26em;text-transform:uppercase;
-  color:var(--yellow);
-  margin-bottom:5px;
-}
-.eb-credit{
-  display:block;
-  font-family:'Outfit',sans-serif;
-  font-size:clamp(13.5px,1.45vw,17px);font-weight:600;
-  letter-spacing:-.005em;
-  color:rgba(255,249,220,.95);
-  line-height:1.35;
-  text-shadow:0 1px 16px rgba(42,6,20,.55);
-}
-/* The title sponsor's name carries the billing, so the accent sits on it
-   rather than shouting the whole line. */
-.eb-credit b{
-  position:relative;
-  color:var(--marigold);font-weight:900;
-  white-space:nowrap;
-  text-shadow:0 0 24px rgba(251,197,27,.5);
-}
-.eb-credit b::after{
-  content:"";position:absolute;left:0;right:0;bottom:-3px;height:2px;
-  border-radius:2px;
-  background:linear-gradient(90deg,var(--marigold),rgba(251,197,27,0));
 }
 
 /* Headline — the words carry the entrance, so the block itself stays visible */
-.hero h1{color:#fff;margin-bottom:14px;text-shadow:0 2px 34px rgba(42,6,20,.45)}
+.hero h1{color:#fff;margin:0 0 var(--hero-gap);text-shadow:0 2px 34px rgba(42,6,20,.45)}
 .hero .hero-content > h1{opacity:1;transform:none}
 .hero.is-ready h1 .w > span{transform:translateY(0)}
 .hero h1 .w > span{transition-delay:calc(.42s + var(--i,0) * 80ms)}
@@ -193,11 +157,11 @@
 }
 
 .hero .sub{
-  font-size:clamp(15.5px,1.55vw,20px);
+  font-size:clamp(15.5px,1.55vw,19px);
   color:var(--cream-70);
-  max-width:56ch;
-  line-height:1.55;
-  margin-bottom:22px;
+  max-width:48ch;
+  line-height:1.6;
+  margin:0 0 var(--hero-gap);
 }
 
 /* ------------------------------------------------------------
@@ -214,7 +178,7 @@
      the row ragged. Content-sized columns keep each value on one line. */
   grid-template-columns:repeat(4,auto);
   justify-content:start;
-  margin-bottom:24px;
+  margin:0 0 var(--hero-gap);
 }
 .hero-meta > div{padding:0 clamp(15px,1.8vw,26px)}
 .hero-meta > div:first-child{padding-left:0}
@@ -222,17 +186,17 @@
 .hero-meta > div + div{border-left:1px solid var(--cream-45)}
 .hero-meta dt{
   font-family:'Outfit',sans-serif;
-  font-size:clamp(10px,.85vw,11px);font-weight:800;
+  font-size:clamp(11px,.95vw,12.5px);font-weight:800;
   letter-spacing:.16em;text-transform:uppercase;
   color:var(--marigold);
-  margin-bottom:7px;
+  margin-bottom:8px;
 }
 .hero-meta dd{
   font-family:'Outfit',sans-serif;
   /* these are the page's key facts, so they should not sit below the
      body copy in size; the shadow keeps them legible over any frame
      of the photograph behind them */
-  font-size:clamp(15px,1.5vw,19px);
+  font-size:clamp(17px,1.7vw,22px);
   font-weight:800;color:#fff;letter-spacing:-.02em;line-height:1.3;
   text-shadow:0 1px 12px rgba(27,3,9,.75);
 }
@@ -245,14 +209,14 @@
   display:flex;align-items:center;
   gap:clamp(18px,2.4vw,32px);
   flex-wrap:wrap;
-  margin-bottom:20px;
+  margin:0 0 var(--hero-gap);
 }
 
 /* The single primary action. Bigger than any .btn elsewhere on the page,
    with a warm halo so it separates from the photograph behind it. */
 .btn-hero{
-  font-size:clamp(16px,1.6vw,19px);
-  padding:clamp(19px,2vw,24px) clamp(34px,3.4vw,50px);
+  font-size:clamp(18px,1.85vw,22px);
+  padding:clamp(22px,2.3vw,28px) clamp(40px,4vw,58px);
   background:var(--yellow);
   color:var(--ink);
   box-shadow:
@@ -269,7 +233,7 @@
 }
 .btn-hero:active{transform:translateY(7px);box-shadow:0 0 0 #D2AE00}
 .cta-arrow{
-  width:17px;height:17px;flex:none;
+  width:20px;height:20px;flex:none;
   stroke:currentColor;stroke-width:2.6;fill:none;
   stroke-linecap:round;stroke-linejoin:round;
   transition:transform var(--t-fast);
@@ -285,23 +249,23 @@
 /* Secondary button: clearly clickable, but deliberately lighter than the
    primary so the festival passes still lead. */
 .btn-hero-alt{
-  font-size:clamp(14.5px,1.4vw,16.5px);
-  padding:clamp(16px,1.7vw,20px) clamp(24px,2.4vw,32px);
+  font-size:clamp(16.5px,1.6vw,19px);
+  padding:clamp(20px,2vw,26px) clamp(30px,3vw,42px);
 }
 .btn-hero-alt span{opacity:.72;font-weight:700}
 
 /* Tertiary action is a link, not a button */
 .cta-text{
-  display:inline-flex;align-items:center;gap:9px;
+  display:inline-flex;align-items:center;gap:10px;
   font-family:'Outfit',sans-serif;
-  font-size:clamp(14px,1.4vw,16px);font-weight:700;letter-spacing:.02em;
+  font-size:clamp(15.5px,1.55vw,18px);font-weight:700;letter-spacing:.02em;
   color:#fff;
   padding-bottom:3px;
   position:relative;
   transition:color var(--t-fast);
 }
 .cta-text svg{
-  width:15px;height:15px;
+  width:17px;height:17px;
   stroke:currentColor;stroke-width:2.6;fill:none;
   stroke-linecap:round;stroke-linejoin:round;
   transition:transform var(--t-fast);
@@ -325,18 +289,18 @@
    ------------------------------------------------------------ */
 .hero-billing{
   display:flex;align-items:center;flex-wrap:wrap;
-  gap:clamp(10px,1.4vw,18px) clamp(12px,1.6vw,22px);
+  gap:clamp(12px,1.6vw,20px) clamp(14px,1.8vw,24px);
   max-width:100%;
-  padding-top:clamp(12px,1.4vw,16px);
+  padding-top:var(--hero-gap);
   border-top:1px solid var(--cream-18);
 }
 .bill{
   flex:1 1 auto;
   min-width:0;
   max-width:100%;
-  font-size:clamp(12px,1.15vw,13.5px);
+  font-size:clamp(12.5px,1.2vw,14px);
   color:var(--cream-70);
-  line-height:1.4;
+  line-height:1.5;
   overflow-wrap:anywhere;
 }
 .bill b{color:#fff;font-weight:700}
@@ -376,8 +340,8 @@
 
 @media (max-width:860px){
   .hero{
-    justify-content:flex-end;
-    padding-top:calc(var(--nav-h) + 48px);
+    justify-content:flex-start;
+    padding-top:calc(var(--nav-h) + clamp(18px,3vh,28px));
     min-height:100vh;min-height:100svh;
   }
   /* A narrow box crops hard HORIZONTALLY (the reverse of desktop), so this
@@ -388,42 +352,45 @@
 }
 
 @media (max-width:640px){
-  .hero{padding-bottom:20px}
-  .hero-content{max-width:100%}
-  .hero h1{text-shadow:0 2px 26px rgba(42,6,20,.6);margin-bottom:12px}
-  .hero .sub{margin-bottom:16px}
-  .eyebrow{gap:13px;margin-bottom:14px}
+  .hero{padding-bottom:24px}
+  .hero-content{
+    max-width:100%;
+    --hero-gap:24px;
+  }
+  .season-n{font-size:28px}
+  .season-l{font-size:14px;letter-spacing:.16em}
+  .hero h1{text-shadow:0 2px 26px rgba(42,6,20,.6)}
+  .hero .sub{max-width:38ch}
 
   /* Fact row becomes a 2-up grid; the vertical hairlines would leave stray
      rules mid-row once items wrap, so they become horizontal ones instead. */
   .hero-meta{
     display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:12px 16px;margin-bottom:18px;
+    gap:14px 18px;
   }
   .hero-meta > div,
   .hero-meta > div + div{
     padding:0;border-left:none;
   }
-  .hero-meta > div{padding-top:10px;border-top:1px solid var(--cream-18)}
-  .hero-meta dd{font-size:13.5px;overflow-wrap:anywhere}
+  .hero-meta > div{padding-top:12px;border-top:1px solid var(--cream-18)}
+  .hero-meta dd{font-size:15px;overflow-wrap:anywhere}
 
-  .cta-row{gap:12px;margin-bottom:16px}
+  .cta-row{gap:14px}
   .cta-row .btn-hero,
   .cta-row .btn-hero-alt{width:100%}
   .cta-text{width:100%;justify-content:center}
 
   /* stack, and swap the dandiya divider for a hairline */
-  .hero-billing{flex-direction:column;align-items:stretch;gap:8px}
+  .hero-billing{flex-direction:column;align-items:stretch;gap:10px}
   .bill-sep{display:none}
-  .bill{font-size:12.5px}
-  .bill + .bill-sep + .bill{padding-top:8px;border-top:1px solid var(--cream-18);width:100%}
+  .bill{font-size:13px}
+  .bill + .bill-sep + .bill{padding-top:10px;border-top:1px solid var(--cream-18);width:100%}
 }
 
 @media (max-width:420px){
-  .eb-tag{letter-spacing:.2em}
   .hero-meta{gap:13px 16px}
-  .hero-meta dt{font-size:9px;letter-spacing:.14em}
-  .hero-meta dd{font-size:13px;line-height:1.3}
+  .hero-meta dt{font-size:10px;letter-spacing:.14em}
+  .hero-meta dd{font-size:14.5px;line-height:1.3}
 }
 @media (max-width:339px){
   .hero-meta{grid-template-columns:1fr}
@@ -431,22 +398,19 @@
 
 /* Keep the billing strip inside the first viewport on short screens */
 @media (max-height:820px){
-  .hero{padding-top:calc(var(--nav-h) + 18px);padding-bottom:18px}
-  .eyebrow{margin-bottom:12px}
-  .hero h1{margin-bottom:10px}
-  .hero .sub{margin-bottom:14px;line-height:1.45}
-  .hero-meta{margin-bottom:16px}
-  .cta-row{margin-bottom:14px}
-  .hero-billing{padding-top:10px;gap:8px 14px}
-  .btn-hero{padding:14px 28px;font-size:15px}
-  .btn-hero-alt{padding:14px 22px;font-size:14px}
+  .hero{padding-top:calc(var(--nav-h) + 16px);padding-bottom:22px}
+  .hero-content{--hero-gap:22px}
+  .season-n{font-size:clamp(26px,3vw,34px)}
+  .season-l{font-size:clamp(13px,1.3vw,16px)}
+  .hero .sub{line-height:1.5}
+  .hero-billing{gap:10px 16px}
+  .btn-hero{padding:18px 36px;font-size:17px}
+  .btn-hero-alt{padding:17px 30px;font-size:16px}
 }
 
 @media (max-height:700px){
-  .hero .sub{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  .hero-meta{margin-bottom:12px}
-  .hero-meta dt{margin-bottom:4px}
-  .cta-row{margin-bottom:10px}
+  .hero-content{--hero-gap:18px}
+  .hero-meta dt{margin-bottom:5px}
 }
 
 /* Short landscape phones — let the hero shrink rather than crop the CTA */

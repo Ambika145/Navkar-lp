@@ -4,30 +4,37 @@
  * Setup:
  * 1. Create a Google Sheet with a tab named "Bookings".
  * 2. Extensions → Apps Script → paste this file → Save.
- * 3. Deploy → New deployment → Type: Web app
+ * 3. Run testConfirmationEmail() once → Allow Gmail permissions.
+ * 4. Deploy → New deployment → Type: Web app
  *    - Execute as: Me
  *    - Who has access: Anyone
- * 4. Copy the Web app URL into js/config.js → sheetsEndpoint
+ * 5. Copy the Web app URL into js/config.js → sheetsEndpoint
  *
- * Flow: Razorpay success → Sheet row → Confirmation email → (frontend success UI)
- * Email is best-effort: sheet write success is never blocked by mail failure.
+ * After ANY script change (including email fixes):
+ * Deploy → Manage deployments → ✎ → Version: New version → Deploy.
+ * Saving Code.gs alone does NOT update the live booking endpoint.
  *
- * Duplicate prevention: Razorpay Payment ID must be unique.
- * Optional screenshots go to Drive folder "Navkar Payment Proofs".
- *
- * Redeploy the Web app after every script change.
+ * Frontend email field: `email` (js/main.js → bookingRow)
+ * Flow: Razorpay success → Sheet row → Confirmation email
+ * Email is best-effort: sheet write is never blocked by mail failure.
  */
 
 var SHEET_NAME = 'Bookings';
 var PROOF_FOLDER = 'Navkar Payment Proofs';
-var COL_PAYMENT_ID = 10; // Razorpay Payment ID
-var COL_PROOF = 13;      // Payment Proof
+var COL_PAYMENT_ID = 10;
+var COL_PROOF = 13;
 
 var EVENT_NAME = 'Navkar Navratri Utsav 2026 · Season 9';
 var EVENT_DATES = '11–19 October 2026';
 var EVENT_VENUE = 'Jalavihar, Necklace Road, Hyderabad';
 var EVENT_GATES = 'Gates open 7:00 PM';
 var SUPPORT_PHONE = '+91 81421 11145 / +91 80191 61198';
+
+var TEST_EMAIL = 'methreeambika@gmail.com';
+
+/* Bump this whenever you deploy so you can verify the live web app is updated.
+   Open your /exec URL in a browser — doGet must show this same version. */
+var SCRIPT_VERSION = 'mail-v3-2026-09-28';
 
 var HEADERS = [
   'Timestamp',
@@ -45,10 +52,20 @@ var HEADERS = [
   'Payment Proof'
 ];
 
+/* ============================================================
+   WEB APP — booking save + confirmation email
+   ============================================================ */
+
 function doPost(e) {
   try {
     var raw = (e && e.postData && e.postData.contents) ? e.postData.contents : '{}';
     var data = JSON.parse(raw);
+
+    Logger.log('[BOOKING] incoming data: ' + JSON.stringify(redactPayload_(data)));
+
+    var customerEmail = resolveCustomerEmail_(data);
+    Logger.log('[BOOKING] customer email resolved: ' + customerEmail);
+
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var sheet = ss.getSheetByName(SHEET_NAME) || ss.insertSheet(SHEET_NAME);
 
@@ -59,7 +76,6 @@ function doPost(e) {
     var paymentId = data.paymentId ? String(data.paymentId) : '';
     var existingRow = findPaymentRow_(sheet, paymentId);
 
-    /* Optional: attach screenshot to an existing registration */
     if (data.action === 'attachProof') {
       if (!paymentId) {
         return json_({ ok: false, error: 'Missing payment ID' });
@@ -74,23 +90,24 @@ function doPost(e) {
       return json_({ ok: true, updated: true, proofUrl: attachedUrl || '' });
     }
 
-    /* Duplicate Payment ID — do not create another booking row (or re-mail) */
+    /* Duplicate — do not create another row or re-send email */
     if (paymentId && existingRow > 0) {
       var extraProof = '';
       if (data.proofBase64) {
         extraProof = saveProof_(data);
         if (extraProof) sheet.getRange(existingRow, COL_PROOF).setValue(extraProof);
       }
+      Logger.log('[BOOKING] duplicate paymentId — email not re-sent: ' + paymentId);
       return json_({ ok: true, duplicate: true, proofUrl: extraProof || '' });
     }
 
-    var proofUrl = saveProof_(data);
-
+    /* 1) Save sheet row first */
+    var proofUrl = saveProof_(data) || '';
     sheet.appendRow([
       new Date(),
       data.name || '',
       data.phone || '',
-      data.email || '',
+      customerEmail || '',
       data.city || '',
       data.bookingType || '',
       data.passType || '',
@@ -99,59 +116,203 @@ function doPost(e) {
       paymentId,
       data.paymentStatus || 'Payment Received',
       data.verificationStatus || 'Pending Review',
-      proofUrl || ''
+      proofUrl
     ]);
+    Logger.log('[BOOKING] sheet row written for paymentId=' + paymentId);
 
-    /* Best-effort confirmation — never fail the booking if mail errors */
-    var emailSent = false;
+    /* 2) Then send confirmation to the resolved customer email */
+    var mailResult = { sent: false, error: '', to: customerEmail };
     try {
-      emailSent = sendConfirmationEmail_(data);
+      mailResult = sendConfirmationEmail_(customerEmail, data);
     } catch (mailErr) {
-      Logger.log('Confirmation email failed: ' + mailErr);
-      emailSent = false;
+      mailResult = {
+        sent: false,
+        error: String(mailErr && mailErr.stack ? mailErr.stack : mailErr),
+        to: customerEmail
+      };
+      Logger.log('[MAIL] BOOKING CONFIRMATION FAILED: ' + mailResult.error);
+      console.error('[MAIL] BOOKING CONFIRMATION FAILED: ' + mailResult.error);
     }
 
-    return json_({ ok: true, proofUrl: proofUrl || '', emailSent: emailSent });
+    return json_({
+      ok: true,
+      version: SCRIPT_VERSION,
+      proofUrl: proofUrl,
+      emailSent: !!mailResult.sent,
+      emailError: mailResult.error || '',
+      emailTo: mailResult.to || ''
+    });
   } catch (err) {
-    return json_({ ok: false, error: String(err) });
+    Logger.log('[BOOKING] doPost error: ' + err);
+    console.error('[BOOKING] doPost error: ' + err);
+    return json_({ ok: false, error: String(err), version: SCRIPT_VERSION });
   }
 }
 
-function findPaymentRow_(sheet, paymentId) {
-  if (!paymentId) return -1;
-  var last = sheet.getLastRow();
-  if (last < 2) return -1;
-  var values = sheet.getRange(2, COL_PAYMENT_ID, last, COL_PAYMENT_ID).getValues();
-  for (var i = 0; i < values.length; i++) {
-    if (String(values[i][0]) === String(paymentId)) return i + 2;
-  }
-  return -1;
-}
-
-function saveProof_(data) {
-  if (!data || !data.proofBase64) return '';
-
-  var folders = DriveApp.getFoldersByName(PROOF_FOLDER);
-  var folder = folders.hasNext() ? folders.next() : DriveApp.createFolder(PROOF_FOLDER);
-
-  var b64 = String(data.proofBase64).replace(/^data:[^;]+;base64,/, '');
-  var bytes = Utilities.base64Decode(b64);
-  var mime = data.proofMime || 'image/jpeg';
-  var name = data.proofName || ('proof-' + (data.paymentId || Date.now()) + '.jpg');
-  var blob = Utilities.newBlob(bytes, mime, name);
-  var file = folder.createFile(blob);
-  file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-  return file.getUrl();
+function doGet() {
+  return json_({
+    ok: true,
+    service: 'navkar-bookings',
+    version: SCRIPT_VERSION,
+    hint: 'If version is missing or old, redeploy: Manage deployments → Edit → New version → Deploy'
+  });
 }
 
 /**
- * Sends booking confirmation to the customer email from the form.
- * Returns true if MailApp accepted the send; false if skipped/failed.
- * Callers must catch errors — this function may still throw.
+ * Website sends `email` (js/main.js bookingRow).
+ * Also accept common aliases.
+ * Never uses Session.getEffectiveUser().
  */
-function sendConfirmationEmail_(data) {
-  var to = data && data.email ? String(data.email).trim() : '';
-  if (!to || to.indexOf('@') < 1) return false;
+function resolveCustomerEmail_(data) {
+  if (!data || typeof data !== 'object') return '';
+
+  var candidates = [
+    data.email,
+    data.customerEmail,
+    data.customer_email,
+    data.Email,
+    data.userEmail,
+    data.user_email
+  ];
+
+  if (data.booking && typeof data.booking === 'object') {
+    candidates.push(data.booking.email);
+    candidates.push(data.booking.customerEmail);
+  }
+
+  for (var i = 0; i < candidates.length; i++) {
+    if (candidates[i] == null) continue;
+    var s = String(candidates[i]).trim();
+    if (s) return s;
+  }
+  return '';
+}
+
+function redactPayload_(data) {
+  if (!data || typeof data !== 'object') return data;
+  var out = {};
+  var keys = Object.keys(data);
+  for (var i = 0; i < keys.length; i++) {
+    var k = keys[i];
+    if (k === 'proofBase64') {
+      out[k] = '[omitted len=' + String(data[k] || '').length + ']';
+    } else {
+      out[k] = data[k];
+    }
+  }
+  return out;
+}
+
+function emailFieldSnapshot_(data) {
+  if (!data || typeof data !== 'object') return { keys: [] };
+  return {
+    email: data.email,
+    customerEmail: data.customerEmail,
+    customer_email: data.customer_email,
+    Email: data.Email,
+    userEmail: data.userEmail,
+    keys: Object.keys(data)
+  };
+}
+
+/* ============================================================
+   STANDALONE MAIL TEST
+   ============================================================ */
+
+function testConfirmationEmail() {
+  var TEST_TO = 'methreeambika@gmail.com';
+
+  if (!TEST_TO || TEST_TO.indexOf('@') < 1) {
+    throw new Error('TEST_TO is blank.');
+  }
+
+  Logger.log('[TEST MAIL] Sending to: ' + TEST_TO);
+
+  var quota = MailApp.getRemainingDailyQuota();
+  Logger.log('[TEST MAIL] Quota remaining: ' + quota);
+  if (quota <= 0) {
+    throw new Error('Mail quota is 0 — cannot send today.');
+  }
+
+  var subject = 'Navkar Apps Script mail test';
+  var body =
+    'Standalone test from Navkar Apps Script.\n\n' +
+    'If you got this, Google can send email from this project.\n' +
+    'Time: ' + new Date().toString();
+
+  try {
+    GmailApp.sendEmail(TEST_TO, subject, body);
+    Logger.log('[TEST MAIL] GmailApp.sendEmail OK → ' + TEST_TO);
+  } catch (gmailErr) {
+    Logger.log('[TEST MAIL] GmailApp failed: ' + gmailErr + ' — trying MailApp…');
+    try {
+      MailApp.sendEmail(TEST_TO, subject, body);
+      Logger.log('[TEST MAIL] MailApp.sendEmail OK → ' + TEST_TO);
+    } catch (mailErr) {
+      throw new Error('[TEST MAIL] BOTH FAILED. GmailApp: ' + gmailErr + ' | MailApp: ' + mailErr);
+    }
+  }
+
+  Logger.log('[TEST MAIL] DONE — check Inbox + Spam for ' + TEST_TO);
+}
+
+/**
+ * Simulates the booking email path (same as doPost after sheet save).
+ * Run this from the editor AFTER testConfirmationEmail works.
+ * Does NOT write to the sheet. Does NOT need the website.
+ */
+function testBookingFlowEmail() {
+  var mockBooking = {
+    name: 'Test User',
+    phone: '9611775629',
+    email: 'methreeambika@gmail.com',
+    city: 'Hyderabad',
+    bookingType: 'Pass',
+    passType: 'Single Night · test',
+    quantity: 1,
+    amount: 499,
+    paymentId: 'pay_test_flow_' + Date.now()
+  };
+
+  var customerEmail = resolveCustomerEmail_(mockBooking);
+  Logger.log('[BOOKING-TEST] customer email resolved: ' + customerEmail);
+
+  var result = sendConfirmationEmail_(customerEmail, mockBooking);
+  Logger.log('[BOOKING-TEST] result: ' + JSON.stringify(result));
+
+  if (!result.sent) {
+    throw new Error('Booking-flow email did not send: ' + (result.error || 'unknown'));
+  }
+}
+
+/* ============================================================
+   BOOKING CONFIRMATION EMAIL
+   ============================================================ */
+
+/**
+ * @param {string} customerEmail  Explicit recipient from doPost
+ * @param {Object} bookingData    Full booking payload (name, passType, etc.)
+ */
+function sendConfirmationEmail_(customerEmail, bookingData) {
+  var data = bookingData || {};
+  var to = customerEmail ? String(customerEmail).trim() : '';
+
+  Logger.log('[MAIL] sendConfirmationEmail_ to="' + to + '" name="' + (data.name || '') + '"');
+
+  if (!isValidEmail_(to)) {
+    Logger.log('[MAIL] SKIPPED - customer email missing');
+    Logger.log('[MAIL] email-related fields present: ' + JSON.stringify(emailFieldSnapshot_(data)));
+    return {
+      sent: false,
+      error: 'skipped: missing or invalid customer email',
+      to: to
+    };
+  }
+
+  var quota = safeQuota_();
+  if (quota !== null && quota <= 0) {
+    throw new Error('MailApp daily quota is 0');
+  }
 
   var name = data.name ? String(data.name).trim() : 'Guest';
   var bookingType = data.bookingType ? String(data.bookingType).trim() : 'Booking';
@@ -159,7 +320,6 @@ function sendConfirmationEmail_(data) {
   var qty = data.quantity != null && data.quantity !== '' ? String(data.quantity) : '—';
   var paymentId = data.paymentId ? String(data.paymentId) : '—';
   var amountText = formatInr_(data.amount);
-
   var subject = 'Booking confirmed — ' + EVENT_NAME;
 
   var plain =
@@ -200,22 +360,113 @@ function sendConfirmationEmail_(data) {
       '<p style="margin:0;">See you in the circle,<br><strong>Navkar Entertainment</strong></p>' +
     '</div>';
 
-  MailApp.sendEmail({
-    to: to,
-    subject: subject,
-    body: plain,
-    htmlBody: html,
-    name: 'Navkar Navratri Utsav'
-  });
+  Logger.log('[MAIL] About to send booking confirmation → ' + to);
+  sendRawEmail_(to, subject, plain, html);
+  Logger.log('[MAIL] BOOKING CONFIRMATION SENT → ' + to);
 
-  return true;
+  return { sent: true, error: '', to: to };
+}
+
+function sendRawEmail_(to, subject, plainBody, htmlBody) {
+  if (!isValidEmail_(to)) {
+    throw new Error('sendRawEmail_: invalid recipient "' + to + '"');
+  }
+
+  var gmailErr = null;
+
+  try {
+    Logger.log('[MAIL] GmailApp.sendEmail → ' + to);
+    if (htmlBody) {
+      GmailApp.sendEmail(to, subject, plainBody, { htmlBody: htmlBody });
+    } else {
+      GmailApp.sendEmail(to, subject, plainBody);
+    }
+    Logger.log('[MAIL] GmailApp OK');
+    return;
+  } catch (e1) {
+    gmailErr = e1;
+    Logger.log('[MAIL] GmailApp failed: ' + String(e1));
+    console.error('[MAIL] GmailApp failed: ' + String(e1));
+  }
+
+  try {
+    Logger.log('[MAIL] MailApp.sendEmail fallback → ' + to);
+    if (htmlBody) {
+      MailApp.sendEmail({
+        to: to,
+        subject: subject,
+        body: plainBody,
+        htmlBody: htmlBody
+      });
+    } else {
+      MailApp.sendEmail(to, subject, plainBody);
+    }
+    Logger.log('[MAIL] MailApp OK');
+    return;
+  } catch (e2) {
+    Logger.log('[MAIL] MailApp failed: ' + String(e2));
+    console.error('[MAIL] MailApp failed: ' + String(e2));
+    throw new Error(
+      'Both GmailApp and MailApp failed. GmailApp: ' + String(gmailErr) + ' | MailApp: ' + String(e2)
+    );
+  }
+}
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+
+function findPaymentRow_(sheet, paymentId) {
+  if (!paymentId) return -1;
+  var last = sheet.getLastRow();
+  if (last < 2) return -1;
+  var values = sheet.getRange(2, COL_PAYMENT_ID, last, COL_PAYMENT_ID).getValues();
+  for (var i = 0; i < values.length; i++) {
+    if (String(values[i][0]) === String(paymentId)) return i + 2;
+  }
+  return -1;
+}
+
+function saveProof_(data) {
+  if (!data || !data.proofBase64) return '';
+
+  var folders = DriveApp.getFoldersByName(PROOF_FOLDER);
+  var folder = folders.hasNext() ? folders.next() : DriveApp.createFolder(PROOF_FOLDER);
+
+  var b64 = String(data.proofBase64).replace(/^data:[^;]+;base64,/, '');
+  var bytes = Utilities.base64Decode(b64);
+  var mime = data.proofMime || 'image/jpeg';
+  var name = data.proofName || ('proof-' + (data.paymentId || Date.now()) + '.jpg');
+  var blob = Utilities.newBlob(bytes, mime, name);
+  var file = folder.createFile(blob);
+  file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+  return file.getUrl();
+}
+
+function isValidEmail_(email) {
+  if (!email) return false;
+  var s = String(email).trim();
+  if (s.length < 5) return false;
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
+}
+
+function safeQuota_() {
+  try {
+    return MailApp.getRemainingDailyQuota();
+  } catch (e) {
+    return null;
+  }
 }
 
 function formatInr_(amount) {
   if (amount == null || amount === '') return '—';
   var n = Number(amount);
   if (isNaN(n)) return String(amount);
-  return '₹' + n.toLocaleString('en-IN');
+  try {
+    return '₹' + n.toLocaleString('en-IN');
+  } catch (e) {
+    return '₹' + String(n);
+  }
 }
 
 function rowHtml_(label, value) {
@@ -237,8 +488,4 @@ function json_(obj) {
   return ContentService
     .createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
-}
-
-function doGet() {
-  return json_({ ok: true, service: 'navkar-bookings' });
 }

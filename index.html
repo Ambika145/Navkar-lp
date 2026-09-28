@@ -161,19 +161,10 @@
 
   <div class="hero-in">
     <div class="hero-content">
-      <!-- The brand mark sits in the header above, where it stays for the whole
-           page, so the hero opens straight into the billing and the headline. -->
-
-      <!-- One lockup instead of two stacked lines of small caps:
-           edition seal + presenter billing, read left to right. -->
-      <div class="eyebrow">
-        <span class="season" aria-hidden="true">
+      <div class="hero-brand">
+        <span class="season" aria-label="9th Season">
           <span class="season-n">9th</span>
           <span class="season-l">Season</span>
-        </span>
-        <span class="eyebrow-copy">
-          <span class="eb-tag">Navkar is back<span class="sr-only">, 9th Season</span></span>
-          <span class="eb-credit">Manepally Jewellers presents <b>Anvita</b></span>
         </span>
       </div>
 
@@ -253,7 +244,6 @@
   <div class="motif motif-bl motif-spin-rev" aria-hidden="true"><svg><use href="#mandala"/></svg></div>
   <div class="wrap">
     <div class="sec-head">
-      <p class="kicker k-org" data-reveal>The Navkar Navratri Utsav Experience</p>
       <h2 data-reveal>Come for the Garba. Stay for everything around it.</h2>
     </div>
 
@@ -406,13 +396,12 @@
 
   <div class="wrap legacy-in">
     <div class="legacy-copy">
-      <p class="kicker k-yel" data-reveal>Season 9 Legacy</p>
       <h2 data-reveal>Navkar is back. Nine seasons. One unstoppable celebration.</h2>
       <p class="lede" data-reveal>From the first dhol beat to the final Garba round, Navkar has become a festive tradition for Hyderabad. A place where friends reunite, families celebrate, first-timers find their rhythm and every night turns into a story worth remembering.</p>
     </div>
 
     <div class="stats" data-stagger="110">
-      <div class="stat" data-reveal><div class="n" data-count="9">0</div><div class="l">Seasons</div></div>
+      <div class="stat" data-reveal><div class="n">9th</div><div class="l">Season</div></div>
       <div class="stat" data-reveal><div class="n" data-count="9">0</div><div class="l">Nights of Garba</div></div>
     </div>
   </div>
@@ -440,15 +429,14 @@
       </div>
 
       <div class="ws-copy" data-stagger="100">
-        <p class="kicker k-teal" data-reveal>Navkar Navratri Utsav Head Start</p>
         <h2 data-reveal>One-Day Garba Workshop</h2>
         <p class="ws-when" data-reveal>3 October · 11 AM–2 PM<sup>*</sup></p>
-        <p class="lede" data-reveal>Learn the steps before the celebration begins. Get comfortable in the circle and walk into Night 1 already knowing what you are doing.</p>
+        <p class="lede" data-reveal>Learn the steps before Night 1. Beginner-friendly Garba and Dandiya — walk into the circle already knowing what you are doing.</p>
 
         <div class="wslist" data-reveal>
-          <div><span class="tick">✓</span><span>Learn the core Garba and Dandiya steps</span></div>
+          <div><span class="tick">✓</span><span>Core Garba and Dandiya steps</span></div>
           <div><span class="tick">✓</span><span>Beginner-friendly, no experience needed</span></div>
-          <div><span class="tick">✓</span><span>Meet fellow Navkar revellers before the festival</span></div>
+          <div><span class="tick">✓</span><span>Meet fellow Navkar revellers early</span></div>
           <div><span class="tick">✓</span><span>Collect your pass at the Pass Lounge</span></div>
         </div>
 
@@ -459,7 +447,7 @@
           <div class="wsbox"><div class="k">Venue</div><div class="v">Jalavihar</div><div class="s">Necklace Road, Hyderabad</div></div>
         </div>
 
-        <p style="margin-top:30px" data-reveal>
+        <p class="ws-cta" data-reveal>
           <button class="btn btn-yellow" data-ws-cta>Register for the Workshop · ₹300</button>
         </p>
       </div>
@@ -474,7 +462,6 @@
   <div class="motif motif-br motif-spin" aria-hidden="true"><svg><use href="#mandala"/></svg></div>
   <div class="wrap">
     <div class="sec-head">
-      <p class="kicker k-mag" data-reveal>Passes</p>
       <h2 data-reveal>Choose your Navkar Navratri Utsav <span class="underline">pass.</span></h2>
       <p class="lede" data-reveal>Whether you are joining for one night or dancing through all nine, there is a Navkar pass for you.</p>
       <p class="pass-early" data-reveal>Early bird passes end by <b>3 October</b>.</p>
@@ -559,12 +546,38 @@
     </div>
 
     <div class="regband" data-reveal>
-      <div>
-        <h3>Your spot in the circle is three steps away.</h3>
-        <p>Pick your night, choose your passes, pay on Razorpay. The Navkar team verifies each booking manually.</p>
-        <div class="steps"><span>01 Date &amp; time</span><span>02 Tickets</span><span>03 Pay on Razorpay</span></div>
+      <div class="regband-top">
+        <div class="regband-copy">
+          <p class="regband-kicker">How booking works</p>
+          <h3>Your spot in the circle is three steps away.</h3>
+          <p>Book online in a few taps. Pay on Razorpay — the Navkar team verifies every booking manually before you enter.</p>
+        </div>
+        <button class="btn btn-lg btn-yellow" data-cta>Book Your Passes</button>
       </div>
-      <button class="btn btn-lg btn-yellow" data-cta>Book Your Passes</button>
+
+      <ol class="book-how">
+        <li>
+          <span class="book-how-n" aria-hidden="true">01</span>
+          <div class="book-how-body">
+            <strong>Pick your night</strong>
+            <span>Choose any night from 11–19 October at Jalavihar</span>
+          </div>
+        </li>
+        <li>
+          <span class="book-how-n" aria-hidden="true">02</span>
+          <div class="book-how-body">
+            <strong>Choose your passes</strong>
+            <span>Single night, kids, season pass or a group pack</span>
+          </div>
+        </li>
+        <li>
+          <span class="book-how-n" aria-hidden="true">03</span>
+          <div class="book-how-body">
+            <strong>Pay on Razorpay</strong>
+            <span>Pay securely — we verify and confirm your booking</span>
+          </div>
+        </li>
+      </ol>
     </div>
   </div>
 </section>
@@ -579,7 +592,6 @@
 
   <div class="gal-head">
     <div>
-      <p class="kicker k-yel" data-reveal>The Floor</p>
       <h2 data-reveal>Nine nights, caught mid-beat.</h2>
       <p class="lede" data-reveal>Moments from the Navkar floor: the colour, the circles and the energy you are booking a place in.</p>
     </div>
@@ -637,7 +649,6 @@
 <section class="sec sec-alt faq-sec" id="faqs">
   <div class="wrap faq-in">
     <div class="sec-head faq-head">
-      <p class="kicker k-teal" data-reveal>FAQs</p>
       <h2 data-reveal>Before you book.</h2>
       <p class="lede" data-reveal>The questions we are asked most, answered.</p>
     </div>
@@ -653,7 +664,7 @@
       <details class="faq" name="faq" data-reveal>
         <summary><span>How do I book my passes?</span><i class="faq-i" aria-hidden="true"></i></summary>
         <div class="faq-a">
-          <p>Tap <strong>Book Your Passes</strong>, pick your night and tickets, then pay on Razorpay. The Navkar team verifies every payment manually. Single night entry is ₹499, children aged 3 to 5 are ₹299 for one night or ₹1,500 for a Kids Season Pass (all nine days, food not included), and a Season Pass covering all nine nights is ₹2,000.</p>
+          <p>Tap <strong>Book Your Passes</strong>, pick your night, choose your tickets, then pay on Razorpay. The Navkar team verifies every payment manually. Single night entry is ₹499, children aged 3 to 5 are ₹299 for one night or ₹1,500 for a Kids Season Pass (all nine days, food not included), and a Season Pass covering all nine nights is ₹2,000.</p>
         </div>
       </details>
 
@@ -687,7 +698,6 @@
 <section class="sec sponsors-sec" id="sponsors">
   <div class="wrap">
     <div class="sec-head">
-      <p class="kicker k-mag" data-reveal>Sponsors</p>
       <h2 data-reveal>Our <span class="underline">Sponsors</span></h2>
       <p class="lede" data-reveal>Navkar Navratri Utsav is proud to be backed by brands that believe in culture, community and unforgettable experiences.</p>
     </div>
@@ -799,7 +809,7 @@
     <h2 data-reveal>Hyderabad, let’s put Navkar Navratri Utsav on repeat.</h2>
     <p class="l2" data-reveal>Navkar Navratri Utsav | Season 9. Nine nights of Garba, Dandiya, music, culture and full-power festive energy.</p>
     <p class="dt" data-reveal>11–19 October 2026 &nbsp;|&nbsp; Jalavihar, Hyderabad</p>
-    <p style="margin-top:34px" data-reveal>
+    <p class="final-cta" data-reveal>
       <button class="btn btn-lg btn-yellow" data-cta>Book Your Passes</button>
     </p>
   </div>
@@ -812,7 +822,6 @@
   <div class="wrap">
     <div class="venue-grid">
       <div data-stagger="100">
-        <p class="kicker k-teal" data-reveal>Venue</p>
         <h2 data-reveal>Meet us at Jalavihar.</h2>
         <p class="lede" data-reveal>Right in the heart of the city, Navkar Navratri Utsav brings the colours, energy and celebration of Navratri to one iconic waterfront venue.</p>
 
@@ -922,7 +931,7 @@
     <div class="fline">
       <p class="fcopy">© 2026 Navkar Entertainments &amp; Ido Events. All rights reserved.</p>
       <a class="fcredit" href="https://purviewdigital.com/" target="_blank" rel="noopener noreferrer">
-        <span class="fcredit-txt">Developed and marketed by</span>
+        <span class="fcredit-txt">Developed and Marketed by</span>
         <img class="fcredit-logo" src="assets/img/purview-digital.webp" width="160" height="40"
              loading="lazy" decoding="async" alt="Purview Digital">
       </a>

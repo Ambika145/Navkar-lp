@@ -227,6 +227,8 @@ body.menu-open .drawer-foot{opacity:1;transform:none;transition-delay:520ms}
      persistent booking entry point */
   .mobile-cta{display:flex}
   body{padding-bottom:78px}
+  /* Keep the final Book CTA clear of the sticky booking bar */
+  .final{padding-bottom:calc(clamp(84px,12vw,140px) + 88px)}
 }
 @media (max-width:640px){
   :root{--nav-h:78px}

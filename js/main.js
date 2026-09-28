@@ -536,6 +536,17 @@
           if (data) return data;
           throw new Error('Could not confirm that your registration was saved.');
         });
+      }).then(function (data) {
+        try {
+          console.log('[Navkar sheet]', {
+            emailSent: data && data.emailSent,
+            emailTo: data && data.emailTo,
+            emailError: data && data.emailError,
+            version: data && data.version,
+            duplicate: data && data.duplicate
+          });
+        } catch (e) { /* ignore */ }
+        return data;
       });
     }
 

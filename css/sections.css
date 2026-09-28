@@ -230,19 +230,22 @@
   display:flex;align-items:center;
   gap:clamp(10px,1.2vw,16px);
   padding:clamp(16px,2vw,24px) 0;
+  overflow:visible;
 }
 .stat + .stat{border-top:1px solid var(--cream-18)}
 .stat .n{
   flex:none;
+  display:inline-block;
   font-family:'Outfit',sans-serif;
   font-size:clamp(46px,5.6vw,74px);font-weight:900;
-  /* The gradient is painted across this box and then clipped to the glyphs,
-     so the box has to be taller than the type. A tight line-height leaves the
-     tail of the 9 outside it with nothing to paint, and it disappears. */
-  line-height:1.2;letter-spacing:-.055em;
-  background:var(--gold);
-  -webkit-background-clip:text;background-clip:text;
-  -webkit-text-fill-color:transparent;color:transparent;
+  line-height:1.15;
+  letter-spacing:-.02em;
+  /* Solid gold — background-clip:text was clipping the bowl of the 9 */
+  color:var(--yellow);
+  -webkit-text-fill-color:var(--yellow);
+  background:none;
+  padding:0;
+  overflow:visible;
 }
 .stat .l{
   min-width:0;
@@ -254,74 +257,114 @@
 /* ------------------------------------------------------------
    3 — Workshop : arch photo + copy + info boxes
    ------------------------------------------------------------ */
-.ws-sec{position:relative;overflow:hidden}
-.ws-grid{
-  display:grid;
-  grid-template-columns:minmax(0,.86fr) minmax(0,1fr);
-  gap:clamp(36px,6vw,80px);
+.sec.ws-sec{
+  position:relative;
+  /* visible so the CTA + hard offset shadow are not cropped */
+  overflow:visible;
+  padding:clamp(24px,4.5vh,56px) 0 clamp(36px,5.5vh,72px);
+  min-height:100vh;
+  min-height:100svh;
+  display:flex;
   align-items:center;
 }
-.ws-media{position:relative}
-/* The frame matches the photograph's own proportions, so a full length
-   figure keeps its head and its hem instead of being cropped at both ends. */
-.ws-media .img-arch{aspect-ratio:1122/1402}
+.ws-sec > .wrap{width:100%}
+.ws-grid{
+  display:grid;
+  grid-template-columns:minmax(0,.82fr) minmax(0,1.1fr);
+  gap:clamp(20px,3.5vw,48px);
+  align-items:center;
+}
+.ws-media{position:relative;max-width:100%}
+/* Cap height so the tall photo cannot push the section past one screen */
+.ws-media .img-arch{
+  aspect-ratio:3 / 4;
+  max-height:min(56vh,480px);
+  width:min(100%,380px);
+  margin-inline:auto;
+}
+.ws-media .img-arch img{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;
+  object-position:center 18%;
+}
 .ws-float{
-  position:absolute;right:-22px;bottom:34px;z-index:3;
+  position:absolute;right:-14px;bottom:22px;z-index:3;
   background:#fff;
   border-radius:var(--r-md);
-  padding:18px 24px;
+  padding:12px 16px;
   box-shadow:var(--sh-lg);
   text-align:center;
-  min-width:132px;
+  min-width:100px;
 }
 .sec-ink .ws-float,.legacy .ws-float{background:#fff;color:var(--ink)}
 .ws-float .n{
-  font-family:'Outfit',sans-serif;font-size:32px;font-weight:900;
+  font-family:'Outfit',sans-serif;font-size:26px;font-weight:900;
   line-height:1;letter-spacing:-.04em;color:var(--magenta-ink);
 }
 .ws-float .l{
-  font-family:'Outfit',sans-serif;font-size:10px;font-weight:800;
-  letter-spacing:.15em;text-transform:uppercase;color:var(--body);margin-top:5px;
+  font-family:'Outfit',sans-serif;font-size:9.5px;font-weight:800;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--body);margin-top:4px;
 }
 
+.ws-copy h2{font-size:clamp(26px,3.4vw,42px);line-height:1.1;margin:0}
 .ws-when{
-  margin:14px 0 0;
+  margin:10px 0 0;
   font-family:'Outfit',sans-serif;font-size:clamp(14px,1.2vw,16px);font-weight:700;
   letter-spacing:.04em;color:var(--magenta-ink);line-height:1.4;
 }
 .ws-when sup{font-size:.7em;top:-.35em}
+.ws-copy .lede{
+  margin-top:12px;
+  font-size:clamp(15px,1.25vw,17px);
+  line-height:1.55;
+  max-width:46ch;
+}
 
-.wslist{margin-top:28px;display:grid;gap:12px}
-.wslist > div{display:flex;align-items:flex-start;gap:13px;font-size:15px;line-height:1.6}
+.wslist{margin-top:16px;display:grid;gap:8px}
+.wslist > div{display:flex;align-items:flex-start;gap:11px;font-size:14.5px;line-height:1.45}
 .tick{
   flex:none;display:grid;place-items:center;
-  width:25px;height:25px;border-radius:50%;
+  width:22px;height:22px;border-radius:50%;
   background:var(--teal);color:#fff;
-  font-size:13px;font-weight:700;margin-top:1px;
+  font-size:12px;font-weight:700;margin-top:1px;
 }
 .sec-ink .wslist > div{color:var(--cream-70)}
 
 .wsgrid{
   display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:12px;margin-top:32px;
+  gap:10px;margin-top:18px;
 }
 .wsbox{
   background:#fff;border-radius:var(--r-md);
-  padding:20px 22px;
+  padding:14px 16px;
   box-shadow:var(--sh-sm);
   border:1px solid var(--line);
   transition:transform var(--t-fast),box-shadow var(--t-fast);
 }
-.wsbox:hover{transform:translateY(-4px);box-shadow:var(--sh-md)}
+.wsbox:hover{transform:translateY(-3px);box-shadow:var(--sh-md)}
 .wsbox .k{
-  font-family:'Outfit',sans-serif;font-size:9.5px;font-weight:800;
-  letter-spacing:.16em;text-transform:uppercase;color:var(--magenta-ink);
+  font-family:'Outfit',sans-serif;font-size:9px;font-weight:800;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--magenta-ink);
 }
 .wsbox .v{
-  font-family:'Outfit',sans-serif;font-size:23px;font-weight:900;
-  letter-spacing:-.03em;margin-top:5px;
+  font-family:'Outfit',sans-serif;font-size:clamp(18px,1.8vw,22px);font-weight:900;
+  letter-spacing:-.03em;margin-top:4px;
 }
-.wsbox .s{font-size:12.5px;color:var(--body);margin-top:2px}
+.wsbox .s{font-size:12px;color:var(--body);margin-top:2px}
+.ws-cta{
+  margin-top:18px;
+  /* hard 6px offset shadow under .btn-yellow needs clearance */
+  padding-bottom:12px;
+  overflow:visible;
+}
+.ws-cta .btn{
+  max-width:100%;
+  white-space:normal;
+  text-align:center;
+  line-height:1.25;
+  padding:16px 28px;
+}
 
 /* ------------------------------------------------------------
    4 — Passes
@@ -521,25 +564,84 @@
 .btn-ico{width:17px;height:17px;flex:none;fill:currentColor}
 .bulk .btn{position:relative;z-index:1;flex:none}
 
-/* 4-step register band */
+/* How booking works — clear numbered steps under the passes */
 .regband{
   margin-top:clamp(20px,2.4vw,28px);
   background:var(--cream-2);
   border:2px dashed var(--ink-12);
   border-radius:var(--r-lg);
   padding:clamp(26px,3.2vw,40px);
-  display:flex;align-items:center;justify-content:space-between;
-  gap:26px;flex-wrap:wrap;
+  display:flex;
+  flex-direction:column;
+  gap:clamp(22px,2.8vw,32px);
 }
-.regband > div{min-width:0}
-.regband h3{margin-bottom:8px}
-.regband p{font-size:14.5px;color:var(--body);max-width:56ch}
-.steps{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
-.steps span{
-  font-family:'Outfit',sans-serif;font-size:11px;font-weight:800;
-  letter-spacing:.11em;text-transform:uppercase;
-  padding:7px 14px;border-radius:var(--r-pill);
-  background:#fff;border:1px solid var(--line);color:var(--body);
+.regband-top{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:22px;
+  flex-wrap:wrap;
+}
+.regband-copy{min-width:0;flex:1 1 280px}
+.regband-kicker{
+  font-family:'Outfit',sans-serif;
+  font-size:10.5px;font-weight:800;
+  letter-spacing:.16em;text-transform:uppercase;
+  color:var(--magenta-ink);
+  margin:0 0 8px;
+}
+.regband h3{margin:0 0 8px}
+.regband-copy p{font-size:14.5px;color:var(--body);max-width:56ch;margin:0}
+.regband-top .btn{flex:none}
+
+.book-how{
+  list-style:none;margin:0;padding:0;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:clamp(14px,2vw,22px);
+  counter-reset:none;
+}
+.book-how > li{
+  display:flex;
+  align-items:flex-start;
+  gap:14px;
+  min-width:0;
+  position:relative;
+}
+/* Connector line between steps on desktop */
+.book-how > li:not(:last-child)::after{
+  content:"";
+  position:absolute;
+  top:18px;left:calc(48px + 14px);
+  right:-11px;
+  height:1px;
+  background:var(--ink-12);
+  pointer-events:none;
+}
+.book-how-n{
+  flex:none;
+  position:relative;z-index:1;
+  display:grid;place-items:center;
+  width:36px;height:36px;
+  border-radius:50%;
+  background:var(--ink);
+  color:var(--yellow);
+  font-family:'Outfit',sans-serif;
+  font-size:12px;font-weight:800;
+  letter-spacing:.04em;
+}
+.book-how-body{
+  display:flex;flex-direction:column;gap:4px;
+  min-width:0;padding-top:4px;
+}
+.book-how-body strong{
+  font-family:'Outfit',sans-serif;
+  font-size:15px;font-weight:800;
+  letter-spacing:-.01em;color:var(--ink);
+  line-height:1.25;
+}
+.book-how-body span{
+  font-size:13.5px;line-height:1.45;color:var(--body);
 }
 
 /* ------------------------------------------------------------
@@ -778,12 +880,13 @@
    ------------------------------------------------------------ */
 .final{
   position:relative;
-  padding:clamp(84px,12vw,160px) 0;
+  padding:clamp(84px,12vw,160px) 0 clamp(96px,13vw,180px);
   text-align:center;color:#fff;
   background:var(--ink-900);
-  overflow:hidden;isolation:isolate;
+  /* keep media clipped; allow the CTA hard-shadow to paint fully */
+  overflow:visible;isolation:isolate;
 }
-.final-media{position:absolute;inset:0;z-index:-2;overflow:hidden}
+.final-media{position:absolute;inset:0;z-index:-2;overflow:hidden;border-radius:0}
 .final-media img{
   position:absolute;top:-10%;left:0;width:100%;height:120%;
   object-fit:cover;object-position:50% 40%;
@@ -832,6 +935,19 @@
   backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
   background:var(--cream-10);
 }
+.final-cta{
+  margin:34px 0 0;
+  /* room for the 6px hard offset under .btn-yellow */
+  padding-bottom:14px;
+  position:relative;
+  z-index:3;
+  overflow:visible;
+}
+.final-cta .btn{
+  max-width:100%;
+  white-space:normal;
+  line-height:1.25;
+}
 
 /* ------------------------------------------------------------
    7 — Footer
@@ -856,7 +972,7 @@ footer{
 
 .fbrand{display:flex;flex-direction:column;align-items:flex-start;gap:8px}
 .flogo{
-  flex:none;width:clamp(140px,16vw,180px);height:auto;
+  flex:none;width:clamp(170px,19vw,220px);height:auto;
   filter:drop-shadow(0 4px 14px rgba(0,0,0,.4));
 }
 .org-logo-foot{
@@ -929,7 +1045,7 @@ a.fext:focus-visible{outline:3px solid var(--yellow);outline-offset:3px;border-r
 }
 .fcredit{
   display:inline-flex;align-items:center;gap:8px;
-  color:var(--cream-45);text-decoration:none;
+  color:var(--cream);text-decoration:none;
   transition:color var(--t-fast),opacity var(--t-fast);
 }
 .fcredit:hover{color:var(--cream)}
@@ -939,8 +1055,8 @@ a.fext:focus-visible{outline:3px solid var(--yellow);outline-offset:3px;border-r
   letter-spacing:.02em;white-space:nowrap;
 }
 .fcredit-logo{
-  display:block;height:22px;width:auto;
-  opacity:.92;transition:opacity var(--t-fast),transform var(--t-fast);
+  display:block;height:28px;width:auto;
+  opacity:1;transition:opacity var(--t-fast),transform var(--t-fast);
 }
 .fcredit:hover .fcredit-logo{opacity:1;transform:translateY(-1px)}
 
@@ -950,10 +1066,19 @@ a.fext:focus-visible{outline:3px solid var(--yellow);outline-offset:3px;border-r
 @media (max-width:1040px){
   /* Once these stack, the media column must centre — left-aligning it in a
      full-width row leaves a dead gutter on the right. */
-  .ws-grid,.venue-grid{grid-template-columns:minmax(0,1fr);gap:clamp(34px,6vw,54px)}
-  .ws-grid .ws-media{order:-1;max-width:460px;margin-inline:auto;width:100%}
+  .ws-grid,.venue-grid{grid-template-columns:minmax(0,1fr);gap:clamp(28px,5vw,44px)}
+  .sec.ws-sec{
+    min-height:0;
+    padding:clamp(40px,7vw,72px) 0;
+    display:block;
+  }
+  .ws-grid .ws-media{order:-1;max-width:380px;margin-inline:auto;width:100%}
   /* stays portrait when stacked; a landscape crop would cut the figure off */
-  .ws-media .img-arch{aspect-ratio:1122/1402}
+  .ws-media .img-arch{
+    aspect-ratio:3/4;
+    max-height:min(46vh,420px);
+    width:100%;
+  }
   .venue-media{max-width:620px;margin-inline:auto;width:100%}
 
   /* At two columns a span-2 card can't fit beside a single one, which would
@@ -987,8 +1112,15 @@ a.fext:focus-visible{outline:3px solid var(--yellow);outline-offset:3px;border-r
 
 @media (max-width:760px){
   .pass-grid,.pass-grid.pass-grid-4,.pass-grid.pass-grid-5{grid-template-columns:minmax(0,1fr)}
-  .bulk,.regband{flex-direction:column;align-items:flex-start}
-  .bulk .btn,.regband .btn{width:100%}
+  .bulk{flex-direction:column;align-items:flex-start}
+  .bulk .btn,.regband-top .btn{width:100%}
+  .regband-top{flex-direction:column;align-items:stretch}
+  .book-how{grid-template-columns:minmax(0,1fr);gap:16px}
+  .book-how > li:not(:last-child)::after{display:none}
+  .book-how > li:not(:last-child){
+    padding-bottom:16px;
+    border-bottom:1px solid var(--ink-12);
+  }
   .map-bar{flex-direction:column;align-items:stretch;gap:14px}
   .map-bar .btn{width:100%}
   .map-frame{aspect-ratio:1}
@@ -1010,7 +1142,7 @@ a.fext:focus-visible{outline:3px solid var(--yellow);outline-offset:3px;border-r
   .vrow .k{width:auto}
 
   .fbrand{gap:8px}
-  .flogo{width:min(170px,72vw)}
+  .flogo{width:min(210px,78vw)}
   .forg{max-width:none}
 }
 

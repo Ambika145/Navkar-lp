@@ -5,7 +5,7 @@
    ============================================================ */
 window.NAVKAR_CONFIG = {
   /* Razorpay Dashboard → API Keys → Key Id (test or live) */
-  razorpayKey: 'rzp_test_T3C6cn6Psek2Fc',
+  razorpayKey: 'rzp_live_TdtaNfYom90LAu',
 
   /* Google Apps Script web-app URL after you Deploy → Web app
      (Execute as: Me, Who has access: Anyone) */

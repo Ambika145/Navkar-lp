@@ -30,11 +30,18 @@ var EVENT_VENUE = 'Jalavihar, Necklace Road, Hyderabad';
 var EVENT_GATES = 'Gates open 7:00 PM';
 var SUPPORT_PHONE = '+91 81421 11145 / +91 80191 61198';
 
-var TEST_EMAIL = 'methreeambika@gmail.com';
+/**
+ * Confirmation emails are sent FROM the Google account that owns this script
+ * (Deploy → Execute as: Me). That account MUST be navkarentertainments90@gmail.com.
+ * You cannot keep the script on a personal Gmail and forge this From address.
+ */
+var SENDER_EMAIL = 'navkarentertainments90@gmail.com';
+var SENDER_NAME = 'Navkar Entertainment';
+var TEST_EMAIL = 'navkarentertainments90@gmail.com';
 
 /* Bump this whenever you deploy so you can verify the live web app is updated.
    Open your /exec URL in a browser — doGet must show this same version. */
-var SCRIPT_VERSION = 'mail-v3-2026-09-28';
+var SCRIPT_VERSION = 'mail-v4-sender-2026-09-29';
 
 var HEADERS = [
   'Timestamp',
@@ -220,10 +227,19 @@ function emailFieldSnapshot_(data) {
    ============================================================ */
 
 function testConfirmationEmail() {
-  var TEST_TO = 'methreeambika@gmail.com';
+  var TEST_TO = SENDER_EMAIL;
 
   if (!TEST_TO || TEST_TO.indexOf('@') < 1) {
     throw new Error('TEST_TO is blank.');
+  }
+
+  var effective = '';
+  try { effective = Session.getEffectiveUser().getEmail() || ''; } catch (e) { effective = ''; }
+  Logger.log('[TEST MAIL] Script running as: ' + (effective || '(unknown)'));
+  Logger.log('[TEST MAIL] Expected owner: ' + SENDER_EMAIL);
+  if (effective && effective.toLowerCase() !== SENDER_EMAIL.toLowerCase()) {
+    Logger.log('[TEST MAIL] WARNING: Script is NOT owned by ' + SENDER_EMAIL +
+      '. Customer From: will be ' + effective + '. Move Sheet + deploy under the Navkar Gmail.');
   }
 
   Logger.log('[TEST MAIL] Sending to: ' + TEST_TO);
@@ -238,15 +254,25 @@ function testConfirmationEmail() {
   var body =
     'Standalone test from Navkar Apps Script.\n\n' +
     'If you got this, Google can send email from this project.\n' +
+    'Sent by script account: ' + (effective || '(unknown)') + '\n' +
     'Time: ' + new Date().toString();
 
   try {
-    GmailApp.sendEmail(TEST_TO, subject, body);
+    GmailApp.sendEmail(TEST_TO, subject, body, {
+      name: SENDER_NAME,
+      replyTo: SENDER_EMAIL
+    });
     Logger.log('[TEST MAIL] GmailApp.sendEmail OK → ' + TEST_TO);
   } catch (gmailErr) {
     Logger.log('[TEST MAIL] GmailApp failed: ' + gmailErr + ' — trying MailApp…');
     try {
-      MailApp.sendEmail(TEST_TO, subject, body);
+      MailApp.sendEmail({
+        to: TEST_TO,
+        subject: subject,
+        body: body,
+        name: SENDER_NAME,
+        replyTo: SENDER_EMAIL
+      });
       Logger.log('[TEST MAIL] MailApp.sendEmail OK → ' + TEST_TO);
     } catch (mailErr) {
       throw new Error('[TEST MAIL] BOTH FAILED. GmailApp: ' + gmailErr + ' | MailApp: ' + mailErr);
@@ -377,9 +403,16 @@ function sendRawEmail_(to, subject, plainBody, htmlBody) {
   try {
     Logger.log('[MAIL] GmailApp.sendEmail → ' + to);
     if (htmlBody) {
-      GmailApp.sendEmail(to, subject, plainBody, { htmlBody: htmlBody });
+      GmailApp.sendEmail(to, subject, plainBody, {
+        htmlBody: htmlBody,
+        name: SENDER_NAME,
+        replyTo: SENDER_EMAIL
+      });
     } else {
-      GmailApp.sendEmail(to, subject, plainBody);
+      GmailApp.sendEmail(to, subject, plainBody, {
+        name: SENDER_NAME,
+        replyTo: SENDER_EMAIL
+      });
     }
     Logger.log('[MAIL] GmailApp OK');
     return;
@@ -396,10 +429,18 @@ function sendRawEmail_(to, subject, plainBody, htmlBody) {
         to: to,
         subject: subject,
         body: plainBody,
-        htmlBody: htmlBody
+        htmlBody: htmlBody,
+        name: SENDER_NAME,
+        replyTo: SENDER_EMAIL
       });
     } else {
-      MailApp.sendEmail(to, subject, plainBody);
+      MailApp.sendEmail({
+        to: to,
+        subject: subject,
+        body: plainBody,
+        name: SENDER_NAME,
+        replyTo: SENDER_EMAIL
+      });
     }
     Logger.log('[MAIL] MailApp OK');
     return;

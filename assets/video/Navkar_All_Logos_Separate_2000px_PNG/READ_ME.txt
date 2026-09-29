@@ -1,1 +1,0 @@
-Each logo is a separate PNG in this single folder. Every PNG is 2000 pixels wide and retains its original aspect ratio. These files are enlarged from the supplied story artwork. Pixel enlargement cannot restore lost detail; use the original brand files for large-format print. Filenames identify each tier. The separate 00 file is the Navkar event mark.

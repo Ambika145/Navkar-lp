@@ -9,7 +9,7 @@ window.NAVKAR_CONFIG = {
 
   /* Google Apps Script web-app URL after you Deploy → Web app
      (Execute as: Me, Who has access: Anyone) */
-  sheetsEndpoint: 'https://script.google.com/macros/s/AKfycbwWBq-Z8APo0skoIZkqbwQu3OjZtSSJagAtb3nOfX6SUwySBliTPZUMUpwphdAcUCpkUw/exec',
+  sheetsEndpoint: 'https://script.google.com/macros/s/AKfycbyCeVVBQaEPcbupGakycGAC1mhK1m0II7kSRxIqek9BU2Kg0akVR4AmWqSFKGXuQhIc/exec',
 
   /* Shown inside Razorpay Checkout */
   merchantName: 'Navkar Navratri Utsav',

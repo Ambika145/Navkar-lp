@@ -797,29 +797,12 @@
     radial-gradient(ellipse 60% 45% at 90% 100%, rgba(201,162,39,.08), transparent 50%),
     var(--cream);
 }
-.sponsors-sec .sec-head{margin-bottom:clamp(28px,4vw,44px)}
-.sponsor-marquee{
-  position:relative;
-  overflow:hidden;
-  margin-top:8px;
-  mask-image:linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
-  -webkit-mask-image:linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
-}
-.sponsor-track{
-  display:flex;
-  width:max-content;
-  gap:0;
-  animation:sponsor-marquee var(--speed,96s) linear infinite;
-  will-change:transform;
-}
-.sponsor-marquee:hover .sponsor-track{animation-play-state:paused}
-.sponsor-group{
-  display:flex;
-  align-items:center;
-  flex:none;
-  gap:clamp(16px,2vw,24px);
-  padding-right:clamp(16px,2vw,24px);
-}
+.sponsors-sec .sec-head{margin-bottom:clamp(16px,1.9vw,22px);max-width:92ch}
+/* the board is the point of this section, so it does not need the full
+   section rhythm above and below it */
+.sponsors-sec{padding-top:clamp(38px,4.2vw,56px);padding-bottom:clamp(36px,4vw,52px)}
+.sponsors-sec .sec-head h2{margin-bottom:10px}
+.sponsors-sec .sec-head .lede{font-size:clamp(14.5px,1.15vw,16px)}
 .sponsor-logo{
   margin:0;
   flex:none;
@@ -851,16 +834,7 @@
   border-radius:10px;
   background:#111;
 }
-/* Logos with lots of empty padding in the file — zoom so the mark reads */
-.sponsor-logo.is-tight img{transform:scale(1.28);transform-origin:center}
-@keyframes sponsor-marquee{to{transform:translate3d(-50%,0,0)}}
 
-@media (prefers-reduced-motion:reduce){
-  .sponsor-track{animation:none;transform:none;flex-wrap:wrap;width:100%;justify-content:center;padding:0 clamp(16px,4vw,40px);gap:14px}
-  .sponsor-group{flex-wrap:wrap;justify-content:center;padding-right:0;gap:14px}
-  .sponsor-group[aria-hidden="true"]{display:none}
-  .sponsor-marquee{mask-image:none;-webkit-mask-image:none}
-}
 
 /* Animate open/close where the browser can. Elsewhere it simply snaps open,
    which is a perfectly good accordion. */
@@ -883,8 +857,11 @@
   padding:clamp(84px,12vw,160px) 0 clamp(96px,13vw,180px);
   text-align:center;color:#fff;
   background:var(--ink-900);
-  /* keep media clipped; allow the CTA hard-shadow to paint fully */
-  overflow:visible;isolation:isolate;
+  /* The CTA's hard shadow needs to paint below the button, so this cannot be
+     overflow:hidden. But visible let the decorative glow at right:-8% hang
+     past the viewport and scroll the whole page sideways. Clipping only the
+     horizontal axis fixes that and leaves vertical painting alone. */
+  overflow-x:clip;overflow-y:visible;isolation:isolate;
 }
 .final-media{position:absolute;inset:0;z-index:-2;overflow:hidden;border-radius:0}
 .final-media img{
@@ -1200,4 +1177,67 @@ a.fext:focus-visible{outline:3px solid var(--yellow);outline-offset:3px;border-r
    ------------------------------------------------------------ */
 @media (max-width:430px){
   .ws-media .img-cap{display:none}
+}
+
+/* ------------------------------------------------------------
+   Sponsor tiers
+   The supplied artwork arrived as cards with the tier printed on
+   each one, which would repeat the same caption ten times down a
+   platinum row. The captions are cropped off the images and set
+   once per row instead.
+
+   Twelve stacked rows ran to three screens, so the tiers are laid
+   out as grid items and pack side by side: small tiers share a
+   line, the two biggest claim extra columns.
+   ------------------------------------------------------------ */
+.sp-tiers{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(clamp(210px,17vw,250px),1fr));
+  gap:clamp(18px,2vw,26px) clamp(20px,2.2vw,32px);
+  align-items:start;
+  grid-auto-flow:row dense;
+}
+.sp-tier{margin:0;min-width:0}
+/* each tier claims the columns its logo count needs to stay on one line */
+.sp-w1{grid-column:span 1}
+.sp-w2{grid-column:span 2}
+.sp-w4{grid-column:span 4}
+.sp-full{grid-column:1 / -1}
+
+/* Left aligned inside a column, with the rule running out to the edge */
+.sp-tier-k{
+  display:flex;align-items:center;gap:10px;
+  font-family:'Outfit',sans-serif;font-size:10px;font-weight:900;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:var(--magenta-ink);
+  margin:0 0 10px;
+  white-space:nowrap;
+}
+.sp-tier-k::after{content:"";height:1px;flex:1 1 auto;background:var(--ink-12)}
+
+.sp-row{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px}
+
+/* Plates are small so the whole board reads at a glance; the title
+   sponsors keep a larger one. */
+.sponsor-logo{
+  margin:0;flex:none;
+  display:flex;align-items:center;justify-content:center;
+  width:clamp(104px,8.4vw,124px);
+  height:clamp(64px,5.2vw,76px);
+  padding:8px 10px;
+  background:#fff;
+  border:1px solid rgba(32,18,59,.1);
+  border-radius:12px;
+  box-shadow:0 4px 14px rgba(32,18,59,.06);
+}
+.sponsor-logo img{display:block;width:100%;height:100%;object-fit:contain;object-position:center}
+.sp-lg .sponsor-logo{width:clamp(150px,12vw,182px);height:clamp(92px,7.4vw,110px);border-radius:14px}
+
+@media (max-width:1040px){
+  .sp-w4{grid-column:span 3}
+}
+@media (max-width:760px){
+  .sp-tiers{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sp-w1{grid-column:span 1}
+  .sp-w2,.sp-w4,.sp-full{grid-column:1 / -1}
 }

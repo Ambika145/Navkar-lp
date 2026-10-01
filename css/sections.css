@@ -1248,6 +1248,20 @@ a.fext:focus-visible{outline:3px solid var(--yellow);outline-offset:3px;border-r
 
 .sp-row{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px}
 
+/* Partners stay on one row (poster order) */
+.sp-partners{grid-column:1 / -1}
+.sp-partners .sp-row{
+  flex-wrap:nowrap;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  padding-bottom:2px;
+}
+.sp-partners .sponsor-logo{
+  width:clamp(96px,7.2vw,118px);
+  height:clamp(60px,4.8vw,72px);
+  flex:0 0 auto;
+}
+
 /* Plates are small so the whole board reads at a glance; the title
    sponsors keep a larger one. */
 .sponsor-logo{

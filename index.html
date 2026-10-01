@@ -115,7 +115,6 @@
 
     <nav class="nav-links" aria-label="Primary">
       <a href="#experience">Experience</a>
-      <a href="#workshop">Workshop</a>
       <a href="#passes">Passes</a>
       <a href="#gallery">Gallery</a>
       <a href="#sponsors">Sponsors</a>
@@ -135,11 +134,10 @@
 <div class="drawer" id="drawer">
   <div class="drawer-inner">
     <a class="dl" href="#experience" style="--i:0"><span class="idx">01</span>Experience</a>
-    <a class="dl" href="#workshop"   style="--i:1"><span class="idx">02</span>Workshop</a>
-    <a class="dl" href="#passes"     style="--i:2"><span class="idx">03</span>Passes</a>
-    <a class="dl" href="#gallery"    style="--i:3"><span class="idx">04</span>Gallery</a>
-    <a class="dl" href="#sponsors"   style="--i:4"><span class="idx">05</span>Sponsors</a>
-    <a class="dl" href="#venue"      style="--i:5"><span class="idx">06</span>Venue</a>
+    <a class="dl" href="#passes"     style="--i:1"><span class="idx">02</span>Passes</a>
+    <a class="dl" href="#gallery"    style="--i:2"><span class="idx">03</span>Gallery</a>
+    <a class="dl" href="#sponsors"   style="--i:3"><span class="idx">04</span>Sponsors</a>
+    <a class="dl" href="#venue"      style="--i:4"><span class="idx">05</span>Venue</a>
     <div class="drawer-foot">
       <button class="btn btn-yellow btn-lg" data-cta>Book Your Passes</button>
       <p class="drawer-meta">
@@ -207,15 +205,10 @@
         <div><dt>From</dt><dd class="hi">₹299 a night</dd></div>
       </dl>
 
-      <!-- Two real actions, three weights: the festival passes lead, the
-           workshop is a distinct product, "see all passes" just scrolls. -->
       <div class="cta-row">
         <button class="btn btn-hero" data-cta>
           Book Your Passes
           <svg class="cta-arrow" aria-hidden="true"><use href="#i-right"/></svg>
-        </button>
-        <button class="btn btn-glass btn-hero-alt" data-ws-cta>
-          Workshop <span>· ₹300</span>
         </button>
         <a class="cta-text" href="#passes">
           See all passes
@@ -223,17 +216,10 @@
         </a>
       </div>
 
-      <!-- Billing line, poster style. Each item is wrapped in its own element
-           so the <b> stays inline inside it rather than becoming a flex item. -->
       <div class="hero-billing">
         <p class="bill">
           <span class="bill-k">Live</span>
           <b>Bamboo Beats</b>, Mumbai · All 9 nights
-        </p>
-        <svg class="bill-sep" aria-hidden="true"><use href="#dandiya"/></svg>
-        <p class="bill">
-          <span class="bill-k">03 Oct</span>
-          <b>Garba Workshop</b> · 11 AM–2 PM · ₹300
         </p>
       </div>
     </div>
@@ -428,55 +414,6 @@
 </section>
 
 <!-- ============================================================
-     WORKSHOP
-     ============================================================ -->
-<section class="sec ws-sec" id="workshop">
-  <div class="wrap">
-    <div class="ws-grid">
-      <div class="ws-media" data-reveal="left">
-        <div class="img-frame img-arch img-keyline">
-          <img src="assets/img/workshop-1100.jpg"
-               srcset="assets/img/workshop-650.jpg 650w, assets/img/workshop-1100.jpg 1100w"
-               sizes="(max-width:1040px) 86vw, 38vw"
-               loading="lazy" decoding="async"
-               alt="A dancer in a black kediyu swinging dandiya sticks mid-step, the floor full of dancers behind him">
-          <span class="img-cap">One-Day Workshop</span>
-        </div>
-        <div class="ws-float">
-          <div class="n">03</div>
-          <div class="l">October</div>
-        </div>
-      </div>
-
-      <div class="ws-copy" data-stagger="100">
-        <h2 data-reveal>One-Day Garba Workshop</h2>
-        <p class="ws-when" data-reveal>3 October · 11 AM–2 PM<sup>*</sup></p>
-        <p class="lede" data-reveal>Learn the steps before Night 1. Beginner-friendly Garba and Dandiya — walk into the circle already knowing what you are doing.</p>
-
-        <div class="wslist" data-reveal>
-          <div><span class="tick">✓</span><span>Core Garba and Dandiya steps</span></div>
-          <div><span class="tick">✓</span><span>Beginner-friendly, no experience needed</span></div>
-          <div><span class="tick">✓</span><span>Meet fellow Navkar revellers early</span></div>
-          <div><span class="tick">✓</span><span>Collect your pass at the Pass Lounge</span></div>
-        </div>
-
-        <div class="wsgrid" data-reveal>
-          <div class="wsbox"><div class="k">Date</div><div class="v">3 October</div><div class="s">Saturday, 2026</div></div>
-          <div class="wsbox"><div class="k">Time</div><div class="v">11 AM–2 PM<sup>*</sup></div><div class="s">3 hours · one day only</div></div>
-          <div class="wsbox"><div class="k">Fee</div><div class="v">₹300</div><div class="s">Per person</div></div>
-          <div class="wsbox"><div class="k">Venue</div><div class="v">Jalavihar</div><div class="s">Necklace Road, Hyderabad</div></div>
-        </div>
-
-        <p class="ws-cta" data-reveal>
-          <button class="btn btn-yellow" data-ws-cta>Register for the Workshop · ₹300</button>
-        </p>
-      </div>
-    </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
      PASSES
      ============================================================ -->
 <section class="sec sec-alt passes-sec" id="passes">
@@ -488,66 +425,70 @@
       <p class="pass-early" data-reveal>Early bird passes end by <b>3 October</b>.</p>
     </div>
 
-    <div class="pass-grid pass-grid-4" data-stagger="90">
-      <article class="pass ws" data-reveal>
-        <h3 class="pname">One-Day Garba Workshop</h3>
-        <div class="price">₹300</div>
-        <p class="pdesc">3 October · 11 AM–2 PM. Learn the steps before the celebration begins. Beginners welcome.</p>
-        <button class="pbtn" data-ws-cta>Register</button>
-      </article>
+    <div class="pass-block">
+      <p class="pass-block-lab" data-reveal>One night</p>
+      <div class="pass-grid pass-grid-4" data-stagger="90">
+        <article class="pass" data-reveal>
+          <span class="ribbon ribbon-ghost" aria-hidden="true">&nbsp;</span>
+          <h3 class="pname">Kids 3–5 Years</h3>
+          <div class="price">₹299</div>
+          <p class="pdesc">Single-night entry for children aged 3 to 5 years.</p>
+          <button class="pbtn" data-cta data-pass="Kids 3–5 Years" data-amt="299">Select Kids Pass</button>
+        </article>
 
-      <article class="pass" data-reveal>
-        <h3 class="pname">Kids 3–5 Years</h3>
-        <div class="price">₹299</div>
-        <p class="pdesc">Single-night entry for children aged 3 to 5 years.</p>
-        <button class="pbtn" data-cta data-pass="Kids 3–5 Years" data-amt="299">Select Kids Pass</button>
-      </article>
+        <article class="pass" data-reveal>
+          <span class="ribbon ribbon-ghost" aria-hidden="true">&nbsp;</span>
+          <h3 class="pname">Single Night</h3>
+          <div class="price">₹499</div>
+          <p class="pdesc">Single-night entry, valid for the night of your choice.</p>
+          <button class="pbtn" data-cta data-pass="Single Night" data-amt="499">Select Single Night</button>
+        </article>
 
-      <article class="pass" data-reveal>
-        <h3 class="pname">Single Night</h3>
-        <div class="price">₹499</div>
-        <p class="pdesc">Single-night entry, valid for the night of your choice.</p>
-        <button class="pbtn" data-cta data-pass="Single Night" data-amt="499">Select Single Night</button>
-      </article>
+        <article class="pass" data-reveal>
+          <span class="ribbon ribbon-ghost" aria-hidden="true">&nbsp;</span>
+          <h3 class="pname">Group of 4</h3>
+          <div class="price">₹1,800 <span>₹450 each</span></div>
+          <p class="pdesc">Four people, one night.</p>
+          <button class="pbtn" data-cta data-pass="Group of 4" data-amt="1800">Select Group of 4</button>
+        </article>
 
-      <article class="pass" data-reveal>
-        <h3 class="pname">Group of 4</h3>
-        <div class="price">₹1,800 <span>₹450 each</span></div>
-        <p class="pdesc">Four people, one night.</p>
-        <button class="pbtn" data-cta data-pass="Group of 4" data-amt="1800">Select Group of 4</button>
-      </article>
+        <article class="pass" data-reveal>
+          <span class="ribbon ribbon-ghost" aria-hidden="true">&nbsp;</span>
+          <h3 class="pname">Group of 10</h3>
+          <div class="price">₹4,800 <span>₹480 each</span></div>
+          <p class="pdesc">Ten people, one night.</p>
+          <button class="pbtn" data-cta data-pass="Group of 10" data-amt="4800">Select Group of 10</button>
+        </article>
+      </div>
     </div>
 
-    <div class="pass-grid pass-grid-4" data-stagger="90">
-      <article class="pass" data-reveal>
-        <h3 class="pname">Kids Season Pass</h3>
-        <div class="price">₹1,500</div>
-        <p class="pdesc">Ages 3–5 · All 9 days · Food not included.</p>
-        <button class="pbtn" data-cta data-pass="Kids Season Pass" data-amt="1500" data-night="All 9 Nights">Select Kids Season</button>
-      </article>
+    <div class="pass-block">
+      <p class="pass-block-lab" data-reveal>All nine nights</p>
+      <div class="pass-grid pass-grid-3" data-stagger="90">
+        <article class="pass" data-reveal>
+          <span class="ribbon ribbon-ghost" aria-hidden="true">&nbsp;</span>
+          <h3 class="pname">Kids Season Pass</h3>
+          <div class="price">₹1,500</div>
+          <p class="pdesc">Ages 3–5 · All 9 days · Food not included.</p>
+          <button class="pbtn" data-cta data-pass="Kids Season Pass" data-amt="1500" data-night="All 9 Nights">Select Kids Season</button>
+        </article>
 
-      <article class="pass feat" data-reveal>
-        <span class="ribbon">Best value</span>
-        <h3 class="pname">Season Pass</h3>
-        <div class="price">₹2,000</div>
-        <p class="pdesc">Full entry for all 9 nights of Navkar Navratri Utsav. Issued as a physical card and a QR code.</p>
-        <button class="pbtn" data-cta data-pass="Season Pass" data-amt="2000" data-night="All 9 Nights">Select Season Pass</button>
-      </article>
+        <article class="pass feat" data-reveal>
+          <span class="ribbon">Best value</span>
+          <h3 class="pname">Season Pass</h3>
+          <div class="price">₹2,000</div>
+          <p class="pdesc">Full entry for all 9 nights of Navkar Navratri Utsav. Issued as a physical card and a QR code.</p>
+          <button class="pbtn" data-cta data-pass="Season Pass" data-amt="2000" data-night="All 9 Nights">Select Season Pass</button>
+        </article>
 
-      <article class="pass" data-reveal>
-        <span class="ribbon">Includes buffet</span>
-        <h3 class="pname">9-Day Navratri Pass</h3>
-        <div class="price">₹2,500</div>
-        <p class="pdesc">Full entry for all 9 nights of Navkar Navratri Utsav. Buffet included for first 5 days 7:00 PM–9:00 PM.</p>
-        <button class="pbtn" data-cta data-pass="9-Day Navratri Pass" data-amt="2500" data-night="All 9 Nights · Buffet 11–15 Oct 7–9 PM">Select Navratri Pass</button>
-      </article>
-
-      <article class="pass" data-reveal>
-        <h3 class="pname">Group of 10</h3>
-        <div class="price">₹4,800 <span>₹480 each</span></div>
-        <p class="pdesc">Ten people, one night.</p>
-        <button class="pbtn" data-cta data-pass="Group of 10" data-amt="4800">Select Group of 10</button>
-      </article>
+        <article class="pass" data-reveal>
+          <span class="ribbon">Includes buffet</span>
+          <h3 class="pname">9-Day Navratri Pass</h3>
+          <div class="price">₹2,500</div>
+          <p class="pdesc">Full entry for all 9 nights. Buffet included for first 5 days, 7:00 PM–9:00 PM.</p>
+          <button class="pbtn" data-cta data-pass="9-Day Navratri Pass" data-amt="2500" data-night="All 9 Nights · Buffet 11–15 Oct 7–9 PM">Select Navratri Pass</button>
+        </article>
+      </div>
     </div>
 
 
@@ -692,7 +633,7 @@
       <details class="faq" name="faq" data-reveal>
         <summary><span>I have never done Garba. Can I still join?</span><i class="faq-i" aria-hidden="true"></i></summary>
         <div class="faq-a">
-          <p>Yes, and plenty of people arrive exactly that way. Every night is beginner friendly. If you would rather walk in already knowing the steps, the <a href="#workshop">One-Day Garba Workshop</a> on 3 October covers the core Garba and Dandiya moves for ₹300.</p>
+          <p>Yes, and plenty of people arrive exactly that way. Every night is beginner friendly — experienced dancers and first-timers share the same circle.</p>
         </div>
       </details>
 
@@ -1237,98 +1178,6 @@
         <button type="button" class="btn btn-yellow mcta" id="bkDoneClose" style="margin-top:12px">Done</button>
       </div>
     </div>
-  </div>
-</div>
-
-<!-- ============ WORKSHOP : booked directly, so it takes a form ============ -->
-<div class="overlay" id="wsov" role="dialog" aria-modal="true" aria-labelledby="wsTitle" aria-hidden="true">
-  <div class="modal">
-    <div class="mhead">
-      <div class="motif motif-tr motif-spin" aria-hidden="true"><svg><use href="#mandala"/></svg></div>
-      <button class="mclose" id="wsx" aria-label="Close">&times;</button>
-      <div class="k">3 October 2026 · 11 AM–2 PM</div>
-      <h3 id="wsTitle">One-Day Garba Workshop</h3>
-      <p>Learn the steps before the celebration begins. Beginner friendly, ₹300 per person.</p>
-    </div>
-
-    <form class="mbody" id="wsForm" novalidate>
-      <div class="mstep">
-        <div class="mlab">Step 1</div><h4>How many people?</h4>
-        <div class="qty">
-          <button type="button" id="wsMinus" aria-label="Decrease">−</button>
-          <b id="wsQtyVal">1</b>
-          <button type="button" id="wsPlus" aria-label="Increase">+</button>
-        </div>
-      </div>
-
-      <div class="mstep">
-        <div class="mlab">Step 2</div><h4>Your details</h4>
-        <div class="fields">
-          <input class="fld" type="text"  name="name"   placeholder="Full Name" autocomplete="name" required>
-          <input class="fld" type="tel"   name="mobile" placeholder="Mobile Number" autocomplete="tel" required
-                 inputmode="numeric" pattern="[0-9 +]{10,15}">
-          <input class="fld" type="email" name="email"  placeholder="Email Address" autocomplete="email">
-          <input class="fld" type="text"  name="city"   placeholder="City" autocomplete="address-level2">
-          <input class="fld full" type="text" name="note" placeholder="Anything we should know? (optional)">
-        </div>
-
-        <!-- One name per place booked. Inputs are added and removed by the
-             quantity stepper, so the count can never disagree with the list. -->
-        <div class="ws-extra" id="wsExtra" hidden>
-          <p class="ws-extra-lab">Who else is coming?</p>
-          <div class="fields" id="wsNames"></div>
-        </div>
-
-        <p class="mfine merr" id="wsErr" hidden></p>
-      </div>
-
-      <div class="mstep">
-        <div class="mlab">Step 3</div><h4>Confirm</h4>
-        <div class="msum">
-          <div><div class="k">Workshop</div><div class="v">3 October · 11 AM–2 PM</div></div>
-          <div><div class="k">People</div><div class="v" id="wsQtyOut">1</div></div>
-          <div class="msum-names" id="wsNameOut" hidden><div class="k">Attending</div><div class="v"></div></div>
-          <div class="tot"><div class="k">Total amount</div><div class="v" id="wsAmt">₹300</div></div>
-        </div>
-        <button class="btn mcta btn-yellow" type="submit" id="wsPayBtn">Pay &amp; Register · ₹300</button>
-        <p class="mfine">Complete payment on Razorpay. Your registration is saved automatically after a successful payment.</p>
-      </div>
-
-      <!-- Shown after successful payment + sheet save -->
-      <div class="mstep ws-done" id="wsDoneStep" hidden>
-        <div class="ok-badge ok-badge-sm" aria-hidden="true">✓</div>
-        <h4>Payment received successfully</h4>
-        <p class="book-sub">
-          Your registration has been received.<br>
-          Your booking has been registered.<br>
-          A confirmation email will be sent to the address you shared.<br>
-          Thank you for registering for Navkar Navratri Utsav.
-        </p>
-        <div class="bk-id-box">
-          <span class="k">Payment Reference ID</span>
-          <strong id="wsPayId">—</strong>
-        </div>
-        <p class="mfine mok" id="wsSaveOk" hidden></p>
-        <p class="mfine merr" id="wsSaveErr" hidden></p>
-
-        <div class="proof-optional" id="wsProofStep">
-          <p class="book-sub" style="margin:14px 0 10px">Optional: add a payment screenshot for our records.</p>
-          <label class="proof-drop" for="wsProofFile">
-            <input type="file" id="wsProofFile" accept="image/png,image/jpeg,image/jpg,image/webp" hidden>
-            <span class="proof-drop-ico" aria-hidden="true">↑</span>
-            <span class="proof-drop-t">Upload screenshot (optional)</span>
-            <span class="proof-drop-s">PNG, JPG or WEBP · max 5 MB</span>
-          </label>
-          <div class="proof-preview" id="wsProofPreview" hidden>
-            <img id="wsProofImg" alt="Payment screenshot preview">
-            <button type="button" class="proof-change" id="wsProofChange">Change photo</button>
-          </div>
-          <p class="mfine merr" id="wsProofErr" hidden></p>
-          <p class="mfine mok" id="wsProofOk" hidden>Screenshot attached to your registration.</p>
-          <button type="button" class="btn mcta btn-yellow" id="wsProofSubmit" disabled>Attach screenshot</button>
-        </div>
-      </div>
-    </form>
   </div>
 </div>
 

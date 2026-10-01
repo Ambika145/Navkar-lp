@@ -1,7 +1,7 @@
 /* ============================================================
    Navkar Navratri Utsav — Interaction layer
    Nav, drawer, scroll reveal, parallax, counters, particles,
-   background video, gallery + lightbox, and the passes / workshop dialogs.
+   background video, gallery + lightbox, and the passes dialog.
    ============================================================ */
 (function () {
   'use strict';
@@ -495,9 +495,8 @@
 
   /* ==========================================================
      10 — Dialogs
-     Two separate flows (no backend):
-       #ov    passes  -> date → tickets → Razorpay → Google Sheet
-       #wsov  workshop-> form → Razorpay → Google Sheet
+     Pass booking (no backend):
+       #ov  → date → tickets → Razorpay → Google Sheet
      Manual verification happens in the sheet.
      ========================================================== */
   (function dialogs() {
@@ -797,8 +796,7 @@
       return { open: open, close: close };
     }
 
-    var passes   = wire($('#ov'),   $('#mx'));
-    var workshop = wire($('#wsov'), $('#wsx'));
+    var passes = wire($('#ov'), $('#mx'));
 
     /* ---- passes multi-step booking ---- */
     (function passBooking() {
@@ -1268,275 +1266,7 @@
       });
     })();
 
-    if (workshop) {
-      /* Registration stays open through 3 Oct 2026 (IST), then every
-         workshop CTA is disabled and the dialog will not open. */
-      var WS_DEADLINE = Date.parse('2026-10-03T23:59:59+05:30');
-      var wsOpen = Date.now() <= WS_DEADLINE;
-      var wsBtns = $$('[data-ws-cta]');
-
-      function disableWorkshop() {
-        wsBtns.forEach(function (b) {
-          b.disabled = true;
-          b.setAttribute('aria-disabled', 'true');
-          b.classList.add('is-closed');
-          if (b.classList.contains('btn-hero-alt')) {
-            b.innerHTML = 'Workshop closed';
-          } else {
-            b.textContent = 'Registration closed';
-          }
-        });
-        var form = $('#wsForm');
-        if (form) {
-          $$('input, button', form).forEach(function (el) { el.disabled = true; });
-        }
-      }
-
-      if (!wsOpen) disableWorkshop();
-
-      wsBtns.forEach(function (b) {
-        b.addEventListener('click', function (e) {
-          e.preventDefault();
-          if (!wsOpen || b.disabled) return;
-          workshop.open();
-        });
-      });
-    }
-
-    /* ---- workshop form ---- */
-    (function workshopForm() {
-      var form = $('#wsForm');
-      if (!form) return;
-
-      var UNIT = 300, MAX = 30;
-      var qty = 1;
-      var val = $('#wsQtyVal'), out = $('#wsQtyOut'), amt = $('#wsAmt'), err = $('#wsErr');
-      var extra = $('#wsExtra'), names = $('#wsNames');
-      var nameOut = $('#wsNameOut');
-      var payBtn = $('#wsPayBtn');
-      var doneStep = $('#wsDoneStep');
-      var wsProofOk = $('#wsProofOk');
-      var wsSaveOk = $('#wsSaveOk');
-      var wsSaveErr = $('#wsSaveErr');
-      var wsPending = null;
-      var wsPaymentId = null;
-      var wsProof = wireProofInput({
-        input: $('#wsProofFile'),
-        preview: $('#wsProofPreview'),
-        img: $('#wsProofImg'),
-        changeBtn: $('#wsProofChange'),
-        submitBtn: $('#wsProofSubmit'),
-        errEl: $('#wsProofErr')
-      });
-
-      /* One name field per extra place. Rebuilt whenever the count changes;
-         names already typed for places that remain are carried over. */
-      function syncNames() {
-        if (!names) return;
-        var want = Math.max(0, qty - 1);
-        var have = $$('input', names);
-        if (have.length === want) return;
-
-        var kept = have.map(function (i) { return i.value; });
-        names.innerHTML = '';
-        for (var i = 0; i < want; i++) {
-          var inp = document.createElement('input');
-          inp.className = 'fld';
-          inp.type = 'text';
-          inp.name = 'attendee' + (i + 2);
-          inp.placeholder = 'Name of person ' + (i + 2);
-          inp.autocomplete = 'off';
-          inp.value = kept[i] || '';
-          names.appendChild(inp);
-        }
-        if (extra) extra.hidden = want === 0;
-      }
-
-      function sync() {
-        if (val) val.textContent = String(qty);
-        if (out) out.textContent = String(qty);
-        if (amt) amt.textContent = '₹' + (UNIT * qty).toLocaleString('en-IN');
-        syncNames();
-      }
-
-      var minus = $('#wsMinus'), plus = $('#wsPlus');
-      if (minus) minus.addEventListener('click', function () { qty = Math.max(1, qty - 1); sync(); });
-      if (plus)  plus.addEventListener('click',  function () { qty = Math.min(MAX, qty + 1); sync(); });
-      sync();
-
-      // keep the confirm panel showing who is actually coming
-      function allNames() {
-        var first = (form.elements.name.value || '').trim();
-        var rest = $$('input', names || document.createElement('div'))
-                   .map(function (i) { return i.value.trim(); });
-        return [first].concat(rest);
-      }
-      form.addEventListener('input', function () {
-        if (!nameOut) return;
-        var list = allNames().filter(Boolean);
-        nameOut.hidden = list.length < 2;
-        nameOut.querySelector('.v').textContent = list.join(', ');
-      });
-
-      form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        if (Date.now() > Date.parse('2026-10-03T23:59:59+05:30')) {
-          if (err) { err.hidden = false; err.className = 'mfine merr'; err.textContent = 'Workshop registration closed after 3 October.'; }
-          return;
-        }
-        var d = new FormData(form);
-        var name = (d.get('name') || '').toString().trim();
-        var mob  = (d.get('mobile') || '').toString().trim();
-        var email = (d.get('email') || '').toString().trim();
-        var city  = (d.get('city')  || '').toString().trim();
-        var note  = (d.get('note')  || '').toString().trim();
-        var amount = UNIT * qty;
-
-        function fail(msg, el) {
-          if (err) { err.hidden = false; err.className = 'mfine merr'; err.textContent = msg; }
-          if (el) el.focus();
-          if (payBtn) {
-            payBtn.disabled = false;
-            payBtn.textContent = 'Pay & Register · ₹' + amount.toLocaleString('en-IN');
-          }
-        }
-
-        if (!name) return fail('Please add your name.', form.elements.name);
-        if (mob.replace(/\D/g, '').length < 10) {
-          return fail('Please add a valid mobile number.', form.elements.mobile);
-        }
-
-        var rest = $$('input', names || document.createElement('div'));
-        var blank = rest.filter(function (i) { return !i.value.trim(); })[0];
-        if (blank) {
-          return fail('You booked ' + qty + ' places, so please name everyone attending.', blank);
-        }
-        if (err) err.hidden = true;
-
-        var list = allNames();
-
-        if (payBtn) {
-          payBtn.disabled = true;
-          payBtn.textContent = 'Opening Razorpay…';
-        }
-
-        wsPending = {
-          name: name,
-          phone: mob,
-          email: email,
-          city: city,
-          bookingType: 'Workshop',
-          passType: 'One-Day Garba Workshop' + (list.length ? ' · ' + list.join(', ') : ''),
-          quantity: qty,
-          amount: amount
-        };
-        stashPending(wsPending);
-
-        payWithRazorpay({
-          amount: amount,
-          name: name,
-          email: email,
-          mobile: mob,
-          description: 'One-Day Garba Workshop · 3 Oct 2026',
-          notes: {
-            type: 'workshop',
-            people: String(qty),
-            attending: list.join(', ')
-          }
-        }).then(function (response) {
-          wsPaymentId = response.razorpay_payment_id || '';
-          var details = wsPending || readPending();
-          if (!details) {
-            fail(sheetSaveSupportMessage(wsPaymentId));
-            return;
-          }
-          if (payBtn) payBtn.textContent = 'Saving registration…';
-
-          return saveToSheet(bookingRow(details, wsPaymentId)).then(function () {
-            clearPending();
-            $$('#wsMinus, #wsPlus, #wsForm .fld').forEach(function (el) { el.disabled = true; });
-            if (payBtn) {
-              payBtn.disabled = true;
-              payBtn.hidden = true;
-            }
-            if ($('#wsPayId')) $('#wsPayId').textContent = wsPaymentId || '—';
-            if (wsSaveOk) {
-              wsSaveOk.hidden = false;
-              wsSaveOk.textContent = 'Your booking has been registered. Check your email for confirmation.';
-            }
-            if (wsSaveErr) wsSaveErr.hidden = true;
-            wsProof.clear();
-            if (wsProofOk) wsProofOk.hidden = true;
-            if (doneStep) {
-              doneStep.hidden = false;
-              doneStep.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
-          }).catch(function () {
-            if (payBtn) {
-              payBtn.disabled = true;
-              payBtn.textContent = 'Payment received';
-            }
-            if ($('#wsPayId')) $('#wsPayId').textContent = wsPaymentId || '—';
-            if (doneStep) doneStep.hidden = false;
-            if (wsSaveOk) wsSaveOk.hidden = true;
-            if (wsSaveErr) {
-              wsSaveErr.hidden = false;
-              wsSaveErr.textContent = sheetSaveSupportMessage(wsPaymentId);
-            }
-            if (err) {
-              err.hidden = false;
-              err.className = 'mfine merr';
-              err.textContent = sheetSaveSupportMessage(wsPaymentId);
-            }
-          });
-        }).catch(function (ex) {
-          var msg = (ex && ex.message) || 'Payment could not be completed.';
-          if (msg === 'Payment cancelled') {
-            fail('Payment was cancelled. You can try again when ready.');
-          } else {
-            fail(msg);
-          }
-        });
-      });
-
-      var wsProofSubmit = $('#wsProofSubmit');
-      if (wsProofSubmit) {
-        wsProofSubmit.addEventListener('click', function () {
-          var file = wsProof.getFile();
-          if (!file || !wsPaymentId) {
-            wsProof.fail('Choose a screenshot to attach.');
-            return;
-          }
-          wsProofSubmit.disabled = true;
-          wsProofSubmit.textContent = 'Uploading…';
-          if (wsProofOk) wsProofOk.hidden = true;
-
-          readProofAsBase64(file).then(function (proof) {
-            return saveToSheet({
-              action: 'attachProof',
-              paymentId: wsPaymentId,
-              proofBase64: proof.proofBase64,
-              proofName: proof.proofName,
-              proofMime: proof.proofMime
-            });
-          }).then(function () {
-            if (wsProofOk) wsProofOk.hidden = false;
-            wsProofSubmit.disabled = true;
-            wsProofSubmit.textContent = 'Attached';
-          }).catch(function (ex) {
-            wsProof.fail((ex && ex.message) || 'Could not attach screenshot. Try again.');
-            wsProofSubmit.disabled = false;
-            wsProofSubmit.textContent = 'Attach screenshot';
-          });
-        });
-      }
-    })();
-
-    if (location.hash === '#open'     && passes)   passes.open();
-    if (location.hash === '#workshop-register' && workshop) {
-      var stillOpen = Date.now() <= Date.parse('2026-10-03T23:59:59+05:30');
-      if (stillOpen) workshop.open();
-    }
+    if (location.hash === '#open' && passes) passes.open();
   })();
 
 

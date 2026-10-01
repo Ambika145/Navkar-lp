@@ -371,10 +371,25 @@
    ------------------------------------------------------------ */
 .passes-sec{position:relative;overflow:hidden}
 .passes-sec .motif-br{color:var(--purple);opacity:.09}
+.passes-sec .sec-head{margin-bottom:clamp(28px,4vw,44px)}
+.passes-sec .sec-head .lede{max-width:42ch;margin-inline:auto}
+
+.pass-block{margin-top:clamp(28px,3.6vw,44px)}
+.pass-block:first-of-type{margin-top:0}
+.pass-block-lab{
+  margin:0 0 14px;
+  font-family:'Outfit',sans-serif;
+  font-size:12px;font-weight:800;
+  letter-spacing:.16em;text-transform:uppercase;
+  color:var(--magenta-ink);
+}
+
 .pass-grid{
   display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
   gap:clamp(14px,1.8vw,22px);
+  align-items:stretch;
 }
+.pass-grid.pass-grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
 .pass-grid.pass-grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
 .pass-grid.pass-grid-5{grid-template-columns:repeat(5,minmax(0,1fr))}
 .pass-grid + .pass-grid{margin-top:clamp(14px,1.8vw,22px)}
@@ -397,9 +412,10 @@
    otherwise tablets get two very wide, very empty cards. */
 @media (max-width:1180px){
   .pass-grid.pass-grid-4,
-  .pass-grid.pass-grid-5{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .pass-grid.pass-grid-5{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (max-width:880px){
+  .pass-grid.pass-grid-3,
   .pass-grid.pass-grid-4,
   .pass-grid.pass-grid-5{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
@@ -409,13 +425,14 @@
   background:#fff;
   border:2px solid var(--line);
   border-radius:var(--r-lg);
-  padding:clamp(26px,2.8vw,34px);
+  padding:clamp(22px,2.4vw,30px);
   display:flex;flex-direction:column;
+  min-height:100%;
   overflow:hidden;
   transition:transform var(--t-mid),box-shadow var(--t-mid),border-color var(--t-mid);
   will-change:transform;
 }
-.pass:hover{transform:translateY(-8px);box-shadow:var(--sh-lg);border-color:var(--magenta)}
+.pass:hover{transform:translateY(-6px);box-shadow:var(--sh-lg);border-color:var(--magenta)}
 .pass::before{
   content:"";position:absolute;left:0;right:0;top:0;height:4px;
   background:var(--gold);
@@ -442,35 +459,44 @@
 
 .ribbon{
   align-self:flex-start;
+  display:inline-flex;align-items:center;
+  min-height:28px;
   font-family:'Outfit',sans-serif;font-size:10px;font-weight:900;
   letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;
   padding:6px 12px;border-radius:var(--r-pill);
   background:var(--gold);color:var(--ink);
-  margin-bottom:16px;
+  margin-bottom:14px;
   position:relative;z-index:1;
 }
+.ribbon-ghost{
+  visibility:hidden;
+  background:transparent;
+  padding-left:0;padding-right:0;
+}
 .pname{
-  font-family:'Outfit',sans-serif;font-size:clamp(18px,1.9vw,22px);
-  font-weight:800;letter-spacing:-.02em;
+  font-family:'Outfit',sans-serif;font-size:clamp(17px,1.8vw,21px);
+  font-weight:800;letter-spacing:-.02em;line-height:1.2;
+  min-height:2.4em;
   position:relative;z-index:1;
 }
 .price{
   font-family:'Outfit',sans-serif;
   /* four across, so this is capped to what a quarter-width card can hold:
      at 52px a five figure price overflowed its own card */
-  font-size:clamp(30px,3.1vw,42px);font-weight:900;
+  font-size:clamp(28px,2.8vw,40px);font-weight:900;
   letter-spacing:-.045em;line-height:1;
-  margin:12px 0 14px;
+  margin:10px 0 12px;
+  min-height:1.55em;
   position:relative;z-index:1;
 }
 .price span{
-  display:block;font-size:13px;font-weight:600;letter-spacing:0;
+  display:block;font-size:12.5px;font-weight:600;letter-spacing:0;
   color:var(--body);margin-top:7px;
 }
 .pass.feat .price span{color:var(--cream-70)}
 .pdesc{
-  font-size:14px;line-height:1.65;color:var(--body);
-  margin-bottom:24px;flex:1;
+  font-size:13.5px;line-height:1.6;color:var(--body);
+  margin:0 0 20px;flex:1;
   position:relative;z-index:1;
 }
 .pass-rich .pdesc{margin-bottom:14px;flex:0}
@@ -1088,7 +1114,12 @@ a.fext:focus-visible{outline:3px solid var(--yellow);outline-offset:3px;border-r
 }
 
 @media (max-width:760px){
-  .pass-grid,.pass-grid.pass-grid-4,.pass-grid.pass-grid-5{grid-template-columns:minmax(0,1fr)}
+  .pass-grid,
+  .pass-grid.pass-grid-3,
+  .pass-grid.pass-grid-4,
+  .pass-grid.pass-grid-5{grid-template-columns:minmax(0,1fr)}
+  .pname{min-height:0}
+  .price{min-height:0}
   .bulk{flex-direction:column;align-items:flex-start}
   .bulk .btn,.regband-top .btn{width:100%}
   .regband-top{flex-direction:column;align-items:stretch}

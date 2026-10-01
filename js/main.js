@@ -574,6 +574,21 @@
       try { sessionStorage.removeItem(PENDING_KEY); } catch (e) { /* ignore */ }
     }
 
+    /* After Razorpay success, open the dedicated thank-you page. */
+    function goThankYou(info) {
+      try {
+        sessionStorage.setItem('navkar_thanks', JSON.stringify({
+          paymentId: info.paymentId || '',
+          name: info.name || '',
+          amount: info.amount,
+          passType: info.passType || '',
+          email: info.email || '',
+          saved: info.saved !== false
+        }));
+      } catch (e) { /* ignore */ }
+      window.location.href = 'thankyou.html';
+    }
+
     function bookingRow(details, paymentId, proof) {
       var row = {
         name: details.name || '',
@@ -1194,18 +1209,23 @@
 
           return saveToSheet(bookingRow(details, state.paymentId)).then(function () {
             clearPending();
-            passProof.clear();
-            if (proofOk) proofOk.hidden = true;
-            go(4);
+            goThankYou({
+              paymentId: state.paymentId,
+              name: details.name,
+              amount: details.amount,
+              passType: details.passType,
+              email: details.email,
+              saved: true
+            });
           }).catch(function () {
-            if (payBtn) {
-              payBtn.disabled = true;
-              payBtn.textContent = 'Payment received';
-            }
-            if (payErr) {
-              payErr.hidden = false;
-              payErr.textContent = sheetSaveSupportMessage(state.paymentId);
-            }
+            goThankYou({
+              paymentId: state.paymentId,
+              name: details.name,
+              amount: details.amount,
+              passType: details.passType,
+              email: details.email,
+              saved: false
+            });
           });
         }).catch(function (err) {
           var msg = (err && err.message) || 'Payment could not be completed.';

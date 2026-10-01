@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#20123B">
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://www.navkarnavratriutsav.com/thankyou.html">
+
+<link rel="icon" href="assets/img/logo-128.png" type="image/png" sizes="128x128">
+<link rel="apple-touch-icon" href="assets/img/logo-320.png" sizes="320x320">
+
+<title>Thank you · Navkar Navratri Utsav 2026</title>
+<meta name="description" content="Your Navkar Navratri Utsav booking payment was received successfully.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/thankyou.css">
+</head>
+<body class="thanks-page">
+
+<a class="skip" href="#thanks">Skip to content</a>
+
+<header class="thanks-top">
+  <a class="thanks-brand" href="index.html">
+    <img src="assets/img/navkar-navratri-26-420.png"
+         srcset="assets/img/navkar-navratri-26-420.png 420w, assets/img/navkar-navratri-26-640.png 640w"
+         sizes="180px"
+         width="180" height="34"
+         alt="Navkar Navratri Utsav 2026">
+  </a>
+</header>
+
+<main id="thanks" class="thanks-main">
+  <div class="thanks-card" id="thanksCard">
+    <div class="thanks-badge" aria-hidden="true">✓</div>
+    <p class="thanks-kicker">Payment successful</p>
+    <h1>Thank you<span id="thanksNameWrap" hidden>, <span id="thanksName"></span></span></h1>
+    <p class="thanks-lede">
+      Your registration for <strong>Navkar Navratri Utsav 2026</strong> has been received.
+      A confirmation email will be sent to the address you shared.
+    </p>
+
+    <div class="thanks-id">
+      <span class="k">Payment Reference ID</span>
+      <strong id="thanksPayId">—</strong>
+    </div>
+
+    <dl class="thanks-meta" id="thanksMeta" hidden>
+      <div>
+        <dt>Booking</dt>
+        <dd id="thanksPass">—</dd>
+      </div>
+      <div>
+        <dt>Amount paid</dt>
+        <dd id="thanksAmt">—</dd>
+      </div>
+    </dl>
+
+    <p class="thanks-note" id="thanksSaveOk">
+      Your booking has been registered. Please keep this Payment Reference ID for entry support.
+    </p>
+    <p class="thanks-note thanks-warn" id="thanksSaveErr" hidden>
+      Payment succeeded, but we could not save your booking automatically.
+      WhatsApp or call Bookings with your Payment Reference ID so we can confirm your entry.
+    </p>
+
+    <div class="thanks-actions">
+      <a class="btn btn-yellow" href="index.html">Back to home</a>
+      <a class="btn btn-ink" href="https://wa.me/918142111145?text=Hi!%20I%20just%20paid%20for%20Navkar%20Navratri%20Utsav%202026.%20Payment%20ID%3A%20"
+         id="thanksWa"
+         target="_blank" rel="noopener noreferrer">WhatsApp Bookings</a>
+    </div>
+  </div>
+</main>
+
+<footer class="thanks-foot">
+  <p>Organised by Navkar Entertainments &amp; Ido Events · Jalavihar, Hyderabad · 11–19 October 2026</p>
+</footer>
+
+<script>
+(function () {
+  var data = null;
+  try {
+    data = JSON.parse(sessionStorage.getItem('navkar_thanks') || 'null');
+  } catch (e) {
+    data = null;
+  }
+
+  var params = new URLSearchParams(location.search);
+  if (!data) {
+    data = {
+      paymentId: params.get('pid') || '',
+      name: params.get('name') || '',
+      amount: params.get('amount') || '',
+      passType: params.get('pass') || '',
+      saved: params.get('saved') !== '0'
+    };
+  }
+
+  var payId = (data && data.paymentId) || '';
+  var name = (data && data.name) || '';
+  var amount = data && data.amount;
+  var passType = (data && data.passType) || '';
+  var saved = !(data && data.saved === false);
+
+  var payEl = document.getElementById('thanksPayId');
+  if (payEl) payEl.textContent = payId || '—';
+
+  if (name) {
+    var wrap = document.getElementById('thanksNameWrap');
+    var nameEl = document.getElementById('thanksName');
+    if (wrap && nameEl) {
+      nameEl.textContent = name.split(' ')[0];
+      wrap.hidden = false;
+    }
+  }
+
+  var meta = document.getElementById('thanksMeta');
+  var showMeta = false;
+  if (passType) {
+    var passEl = document.getElementById('thanksPass');
+    if (passEl) passEl.textContent = passType;
+    showMeta = true;
+  }
+  if (amount !== '' && amount != null) {
+    var amtEl = document.getElementById('thanksAmt');
+    if (amtEl) {
+      var n = Number(amount);
+      amtEl.textContent = isFinite(n)
+        ? ('₹' + n.toLocaleString('en-IN'))
+        : String(amount);
+    }
+    showMeta = true;
+  }
+  if (meta) meta.hidden = !showMeta;
+
+  var ok = document.getElementById('thanksSaveOk');
+  var err = document.getElementById('thanksSaveErr');
+  if (!saved) {
+    if (ok) ok.hidden = true;
+    if (err) err.hidden = false;
+  }
+
+  var wa = document.getElementById('thanksWa');
+  if (wa && payId) {
+    wa.href = 'https://wa.me/918142111145?text=' +
+      encodeURIComponent('Hi! I just paid for Navkar Navratri Utsav 2026. Payment ID: ' + payId);
+  }
+
+  try { sessionStorage.removeItem('navkar_thanks'); } catch (e) {}
+})();
+</script>
+</body>
+</html>

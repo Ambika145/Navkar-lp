@@ -1,0 +1,182 @@
+/* ============================================================
+   Thank-you page — after successful Razorpay payment
+   ============================================================ */
+
+.thanks-page{
+  min-height:100vh;
+  min-height:100dvh;
+  display:flex;
+  flex-direction:column;
+  background:
+    radial-gradient(900px 420px at 12% -10%, rgba(252,230,10,.35), transparent 60%),
+    radial-gradient(700px 380px at 100% 0%, rgba(227,11,84,.18), transparent 55%),
+    var(--cream);
+  color:var(--ink);
+}
+
+.thanks-top{
+  padding:18px clamp(18px,4vw,40px);
+}
+.thanks-brand{
+  display:inline-flex;
+  line-height:0;
+}
+.thanks-brand img{
+  width:min(180px,52vw);
+  height:auto;
+}
+
+.thanks-main{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:12px clamp(18px,4vw,40px) 40px;
+}
+
+.thanks-card{
+  width:min(560px,100%);
+  background:#fff;
+  border:2px solid var(--line);
+  border-radius:var(--r-lg);
+  padding:clamp(28px,4vw,44px);
+  box-shadow:var(--sh-md);
+  text-align:center;
+  animation:thanks-in .55s var(--e-out) both;
+}
+
+@keyframes thanks-in{
+  from{opacity:0;transform:translateY(18px) scale(.98)}
+  to{opacity:1;transform:none}
+}
+
+.thanks-badge{
+  width:64px;height:64px;margin:0 auto 18px;
+  border-radius:50%;
+  display:grid;place-items:center;
+  font-size:28px;font-weight:900;color:var(--ink);
+  background:var(--yellow);
+  box-shadow:0 6px 0 #D2AE00;
+}
+
+.thanks-kicker{
+  margin:0 0 8px;
+  font-family:'Outfit',sans-serif;
+  font-size:12px;font-weight:800;
+  letter-spacing:.16em;text-transform:uppercase;
+  color:var(--magenta-ink);
+}
+
+.thanks-card h1{
+  margin:0 0 12px;
+  font-family:'Outfit',sans-serif;
+  font-size:clamp(28px,5vw,40px);
+  font-weight:900;
+  letter-spacing:-.03em;
+  line-height:1.1;
+}
+
+.thanks-lede{
+  margin:0 0 22px;
+  font-size:15px;
+  line-height:1.65;
+  color:var(--body);
+}
+.thanks-lede strong{color:var(--ink);font-weight:700}
+
+.thanks-id{
+  background:rgba(227,11,84,.06);
+  border:1px solid rgba(227,11,84,.16);
+  border-radius:var(--r-md,14px);
+  padding:14px 16px;
+  margin-bottom:16px;
+}
+.thanks-id .k{
+  display:block;
+  font-family:'Outfit',sans-serif;
+  font-size:11px;font-weight:800;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:var(--magenta-ink);
+  margin-bottom:6px;
+}
+.thanks-id strong{
+  display:block;
+  font-family:'Outfit',sans-serif;
+  font-size:clamp(15px,2.4vw,18px);
+  font-weight:800;
+  letter-spacing:-.01em;
+  word-break:break-all;
+}
+
+.thanks-meta{
+  display:grid;
+  gap:10px;
+  text-align:left;
+  margin:0 0 18px;
+  padding:0;
+}
+.thanks-meta > div{
+  display:grid;
+  gap:2px;
+  padding:12px 14px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--cream);
+}
+.thanks-meta dt{
+  font-family:'Outfit',sans-serif;
+  font-size:11px;font-weight:800;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:var(--magenta-ink);
+}
+.thanks-meta dd{
+  margin:0;
+  font-size:14px;
+  font-weight:600;
+  color:var(--ink);
+  line-height:1.45;
+}
+
+.thanks-note{
+  margin:0 0 22px;
+  font-size:13.5px;
+  line-height:1.6;
+  color:var(--body);
+}
+.thanks-warn{
+  color:#8a1c1c;
+  background:rgba(214,40,40,.08);
+  border:1px solid rgba(214,40,40,.2);
+  border-radius:12px;
+  padding:12px 14px;
+}
+
+.thanks-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  justify-content:center;
+}
+.thanks-actions .btn{
+  min-width:min(100%,180px);
+}
+
+.thanks-foot{
+  padding:18px clamp(18px,4vw,40px) 28px;
+  text-align:center;
+}
+.thanks-foot p{
+  margin:0;
+  font-size:12.5px;
+  line-height:1.6;
+  color:var(--ink-45);
+}
+
+@media (max-width:520px){
+  .thanks-actions{flex-direction:column}
+  .thanks-actions .btn{width:100%}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .thanks-card{animation:none}
+}
